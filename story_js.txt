@@ -1,0 +1,133 @@
+/* ---------- each genre on its own ---------- */
+(function(){
+  const share = D.genre.map(r => { const t = r.reduce((a,b)=>a+b,0); return t >= 1 ? r.map(v => 100*v/t) : null; });
+  const box = $('#multi'), MAXS = 60;
+  const order = [0,1,2,4,5,6,3,7,8];
+  order.forEach(k => {
+    const vals = share.map(r => r ? r[k] : null);
+    const valid = vals.map((v,i) => [v,i]).filter(z => z[0] != null && D.musich[z[1]] > 2);
+    const pk = valid.reduce((a,b) => b[0] > a[0] ? b : a);
+    const tot = D.genre.reduce((a,r) => a + r[k], 0);
+    const d = document.createElement('div');
+    d.innerHTML = `<div class="mh"><b><i style="background:${GC(k)}"></i>${GN[k]}</b><span>${Math.round(tot)} h</span></div><svg></svg><p>Peak ${Math.round(pk[0])}% in ${mLong(M[pk[1]])}</p>`;
+    box.appendChild(d);
+    const svg = d.querySelector('svg'), W = 340, H = 110, pl = 26, pr = 6, pt = 8, pb = 16, iw = W-pl-pr, ih = H-pt-pb;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.width = '100%';
+    const x = i => pl + i*iw/(NM-1), y = v => pt + ih - Math.min(v, MAXS)/MAXS*ih;
+    let s = '';
+    D.eras.forEach((e,j) => { if (j % 2) return; const a = M.indexOf(e.a), b = M.indexOf(e.b);
+      const xa = a === 0 ? pl : (x(a)+x(a-1))/2, xb = b === NM-1 ? x(NM-1) : (x(b)+x(b+1))/2;
+      s += `<rect x="${xa}" y="${pt}" width="${xb-xa}" height="${ih}" fill="var(--rule)" opacity=".45"/>`; });
+    [0,30,60].forEach(v => s += `<line x1="${pl}" x2="${pl+iw}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule)"/><text x="${pl-4}" y="${y(v)+4}" text-anchor="end">${v}</text>`);
+    const segs = []; let cur = [];
+    vals.forEach((v,i) => { if (v == null) { if (cur.length) segs.push(cur); cur = []; } else cur.push([x(i), y(v)]); }); if (cur.length) segs.push(cur);
+    segs.forEach(sg => { s += `<polygon points="${sg[0][0]},${y(0)} ${sg.map(p => p.join(',')).join(' ')} ${sg.at(-1)[0]},${y(0)}" fill="${GC(k)}" opacity=".22"/><polyline points="${sg.map(p => p.join(',')).join(' ')}" fill="none" stroke="${GC(k)}" stroke-width="1.8" stroke-linejoin="round"/>`; });
+    s += `<circle cx="${x(pk[1])}" cy="${y(pk[0])}" r="3.5" fill="${GC(k)}" stroke="var(--paper)" stroke-width="1.5"/>`;
+    M.forEach((m,i) => { if (m.endsWith('-01')) s += `<text x="${x(i)}" y="${H-3}" text-anchor="middle">${m.slice(2,4)}</text>`; });
+    s += `<line class="cx" y1="${pt}" y2="${pt+ih}" stroke="var(--ink)" visibility="hidden"/>`;
+    svg.innerHTML = s;
+    const cx = svg.querySelector('.cx');
+    svg.onmousemove = e => { const p = svgX(svg, e), i = Math.max(0, Math.min(NM-1, Math.round((p.x-pl)/(iw/(NM-1)))));
+      cx.setAttribute('x1', x(i)); cx.setAttribute('x2', x(i)); cx.setAttribute('visibility','visible');
+      showTip(e, `<b>${GN[k]}</b> · ${mLong(M[i])}<br>${vals[i] == null ? 'Almost nothing played' : `${Math.round(vals[i])}% of the month · ${D.genre[i][k].toFixed(1)} h`}`); };
+    svg.onmouseleave = () => { cx.setAttribute('visibility','hidden'); hideTip(); };
+  });
+  $('#multiP').innerHTML = `<p>The river stacks everything together. Here each genre gets its own line, so you can see when it arrived, when it peaked and whether it came back. The shaded bands are alternating eras.</p><p>Some genres rose once and stayed, like <b>hard rock and metal</b>: rarely above 10% before November 2024, and between 9% and 40% of every month since. Others came and went: <b>electronic</b> was a fifth to a third of your music through June 2024 and almost vanished after early 2025. <b>Hip-hop</b> keeps coming back, in summer 2024, summer 2025 and again in summer 2026. <b>Israeli</b> music comes in short bursts.</p>`;
+})();
+
+/* ---------- the story ---------- */
+const TT = [
+  { type: 'Pause, then restart', when: 'Dec 2023 – Feb 2024',
+    text: `This change happened in silence. Through December and January you barely listened, about an hour a week. When you came back in the week of <b>5 February 2024</b> (8.6 hours that week), the music was different. On <b>11 February</b> Eminem had his first big day ("Rap God"). Hip-hop went from about a tenth of your music to a fifth and more, while Imagine Dragons, Pitbull and Cartoon dropped away. Alan Walker kept going, at a lower rate.` },
+  { type: 'Slow takeover', when: 'Jul – Aug 2024',
+    text: `This one built up over five weeks. Drake's first big day was <b>25 June 2024</b> ("One Dance"). Hip-hop then climbed week by week: 21% in early July, 47% by late July, <b>80% in the week of 5 August</b>. On 6 August you started Kan 88's Dr. Dre podcast series, and on <b>19 August</b> Dr. Dre's own music had its first big day. On the way out: Alan Walker, Martin Garrix, TheFatRat. Electronic music never got its share back. (The Israeli spike in late June came from Omer Adam and Osher Cohen and lasted one week.)` },
+  { type: 'Overnight flip', when: 'late Oct – mid Nov 2024',
+    text: `The sharpest change in the whole file. Through September hip-hop was still half of everything. There was one early sign, in the week of 30 September, when Linkin Park and Metallica pushed rock to a third. Then, on <b>31 October 2024</b>, the Eagles took 61% of your day. From 3 November rock led almost every day: the Eagles every day from 4 to 7 November, Van Halen on the 8th, Guns N' Roses on the 10th. Within two weeks hip-hop fell from 29% to <b>1%</b>, and Eminem went from 3 hours a month to almost nothing.` },
+  { type: 'Slow fade', when: 'Feb – Apr 2025',
+    text: `Nothing replaced the rock all at once. It thinned out. Pop came back first, reaching 35% in mid-February and over half of some weeks in March. On <b>5 March 2025</b> Gamazda's piano version of "Stairway to Heaven" opened something new, and instrumental music followed. Then the volume dropped: by April you were listening less than an hour a week. Van Halen, the Eagles, AC/DC and Calvin Harris disappeared. Metallica stayed, at a third of its earlier rate.` },
+  { type: 'Relapse, then flip', when: 'late Jun – mid Aug 2025',
+    text: `First a step back. In late June and early July hip-hop returned at over 60% of your music (Eminem, Biggie, 2Pac). Then metal took over in two jumps. In the week of 21 July it reached 47%, and between <b>10 and 14 August</b> it flipped for good: 77 minutes of Guns N' Roses on the 10th, <b>113 minutes of Metallica on the 13th</b>. The classic rock side came three weeks later. On <b>4 September</b> Pink Floyd and Fleetwood Mac had their first big day on the same day. Metallica's monthly listening quadrupled.` },
+  { type: 'Slow takeover', when: 'Oct – Dec 2025',
+    text: `Israeli music rose week by week for seven straight weeks: 1%, 2%, 5%, 8%, 9%, 23%, 32%, then <b>64% in the week of 24 November</b>. Tamir Bar arrived on <b>14 November</b>, Yuval Dayan on 1 December, and Tuna, the biggest of them, had his first big day on <b>8 January 2026</b>. Unlike earlier changes, the old favorite didn't leave: Metallica nearly doubled, to 5 hours a month. What fell away was the 70s side (Fleetwood Mac, Pink Floyd, Lynyrd Skynyrd). Mid-December had one classical week (Vivaldi, Beethoven).` },
+  { type: 'Silence, then reset', when: 'Apr – Aug 2026',
+    text: `After March 2026 you stopped. April had about a minute of music and May had none, <b>65 silent days</b> in total. On <b>22 June</b> you came back with 10 hours in a week, then 23 the next, spread across everything at once: Metallica, Black Eyed Peas, Drake, ZZ Top, Pantera, Beyoncé. New favorites then arrived one by one: Doja Cat on 26 June, Pearl Jam on 31 July, Rush on 10 August, Pantera on 15 August, Megadeth on 22 August. The Israeli wave did not come back: Tuna went from 2.1 hours a month to 0.3.` },
+];
+
+function transChart(svg, t){
+  const W = 1000, pl = 40, pr = 10, pt = 36, sh = 160, gap = 14, hh = 46, pb = 22, H = pt + sh + gap + hh + pb;
+  const n = t.weeks.length, iw = W - pl - pr, bw = iw/n;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.width = '100%'; svg.style.minWidth = '620px';
+  const tots = t.wg.map(r => r.reduce((a,b)=>a+b,0)), hmax = Math.max(...tots);
+  let s = `<defs><pattern id="h${t.frm}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="var(--rule)" stroke-width="2"/></pattern></defs>`;
+  [0,50,100].forEach(v => { const yy = pt + sh - v/100*sh; s += `<text x="${pl-6}" y="${yy+4}" text-anchor="end">${v}%</text>`; });
+  t.wg.forEach((r,i) => {
+    const x0 = pl + i*bw + 1, w = bw - 2, tot = tots[i];
+    if (tot < 0.15){ s += `<rect x="${x0}" y="${pt}" width="${w}" height="${sh}" fill="url(#h${t.frm})"/>`; }
+    else { let acc = 0; r.forEach((v,k) => { if (v <= 0) return; const h = v/tot*sh; const yy = pt + sh - acc - h; acc += h;
+      if (h > 1.2) s += `<rect x="${x0}" y="${yy + 0.6}" width="${w}" height="${h - 1.2}" fill="${GC(k)}" rx="1"/>`; }); }
+    const hb = tot/hmax*hh; s += `<rect x="${x0}" y="${pt + sh + gap + hh - hb}" width="${w}" height="${Math.max(hb, tot>0?1:0)}" fill="var(--muted)" rx="1"/>`;
+    s += `<rect data-i="${i}" x="${pl + i*bw}" y="${pt-14}" width="${bw}" height="${H - pb - pt + 14}" fill="transparent"/>`;
+    const d = t.weeks[i]; if (+d.slice(8) <= 7) s += `<text x="${pl + i*bw + 2}" y="${H-6}">${MON[+d.slice(5,7)-1]}${d.slice(5,7)==='01'?' ’'+d.slice(2,4):''}</text>`;
+  });
+  s += `<text x="${pl-6}" y="${pt + sh + gap + 10}" text-anchor="end">${Math.round(hmax)}h</text>`;
+  const bi = t.weeks.findIndex(w => w >= t.boundary + '-01'), xb = pl + Math.max(0, bi - (t.weeks[bi] > t.boundary + '-01' ? 1 : 0))*bw + (t.weeks[bi] > t.boundary + '-01' ? bw*((7 - (new Date(t.weeks[bi]) - new Date(t.boundary + '-01'))/864e5)/7) : 0);
+  s += `<line x1="${xb}" x2="${xb}" y1="${pt-30}" y2="${pt + sh + gap + hh}" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="3 3"/><text x="${xb + 5}" y="${pt-22}" style="fill:var(--ink);font-family:var(--display);font-style:italic;font-size:13px">era ${t.to+1} →</text>`;
+  const marks = {}; t.firsts.forEach(f => { const i = t.weeks.findIndex((w,j) => f[0] >= w && (j === n-1 || f[0] < t.weeks[j+1])); if (i >= 0) (marks[i] ||= []).push(f); });
+  Object.entries(marks).forEach(([i]) => { const cx = pl + (+i + .5)*bw; s += `<path d="M${cx-4},${pt-11} L${cx+4},${pt-11} L${cx},${pt-4} Z" fill="var(--ink)"/>`; });
+  svg.innerHTML = s;
+  svg.onmousemove = e => { const r = e.target.closest('[data-i]'); if (!r) return hideTip(); const i = +r.dataset.i, row = t.wg[i], tot = tots[i];
+    const end = new Date(new Date(t.weeks[i]).getTime() + 6*864e5).toISOString().slice(0,10);
+    const fs = (marks[i] || []).map(f => `<br>▼ ${esc(f[1])}: first big day (${+f[0].slice(8)} ${MON[+f[0].slice(5,7)-1]})`).join('');
+    showTip(e, `<b>Week of ${+t.weeks[i].slice(8)} ${MON[+t.weeks[i].slice(5,7)-1]} ${t.weeks[i].slice(0,4)}</b> · ${tot.toFixed(1)} h` + (tot < 0.15 ? '<br>Almost nothing played' :
+      row.map((v,k) => [k,v]).filter(z => z[1] > 0.02).sort((a,b) => b[1]-a[1]).map(([k,v]) => `<div class="r"><span><i style="background:${GC(k)}"></i>${GN[k]}</span><span>${Math.round(100*v/tot)}%</span></div>`).join('')) + fs); };
+  svg.onmouseleave = hideTip;
+}
+
+(function(){
+  const box = $('#story'); let h = '';
+  const rate = v => v < 0.05 ? '0' : v.toFixed(1);
+  D.eras.forEach((e,i) => {
+    const months = M.indexOf(e.b) - M.indexOf(e.a) + 1;
+    const mix = e.g.map((v,k) => v>0 ? `<i style="width:${v}%;background:${GC(k)}" class="${LIGHT_TEXT.has(k)?'lt':''}" title="${GN[k]} ${v}%">${v>=9?v+'%':''}</i>` : '').join('');
+    const sig = e.sig.length ? `<div><div class="lbl">Mostly heard here</div><ul>${e.sig.slice(0,4).map(s => `<li><span dir="auto">${esc(s[0])}</span><span>${s[2]}% of all time</span></li>`).join('')}</ul></div>` : '';
+    h += `<article class="era" id="era${i+1}"><div class="n">${i+1}</div><div class="body">
+      <div class="when">${mLong(e.a)} – ${mLong(e.b)} · ${months} months</div>
+      <h3>${ERA_NAMES[i]}</h3>
+      <div class="mix" role="img" aria-label="Genre mix">${mix}</div>
+      <p>${ERA_TEXT[i](e)}</p>
+      <div class="facts"><span><b>${e.h} h</b> music</span><span><b>${(e.h/months).toFixed(0)} h</b> a month</span><span>average year <b>${e.yr}</b></span><span>variety <b>${e.eff}</b></span></div>
+      <div class="cols">
+        <div><div class="lbl">Most played</div><ul>${e.top.slice(0,4).map(t => `<li><span dir="auto">${esc(t[0])}</span><span>${t[1]} h</span></li>`).join('')}</ul></div>
+        ${sig}
+        <div><div class="lbl">On repeat</div><ul>${e.trk.map(t => `<li><span dir="auto">${esc(clean(t[0]))}</span><span>${t[2]}×</span></li>`).join('')}</ul></div>
+      </div></div></article>`;
+    if (i < D.trans.length){
+      const t = D.trans[i], T = TT[i];
+      const li = (arr, f) => `<ul>${arr.slice(0,5).map(a => `<li><span dir="auto">${esc(a[0])}</span><span>${f(a)}</span></li>`).join('')}</ul>`;
+      h += `<div class="change" id="change${i+1}"><div class="rail"><i></i></div><div class="body">
+        <div class="tag"><span class="type">${T.type}</span><b>Era ${i+1} → ${i+2}</b><span>${T.when}</span></div>
+        <div class="scroll"><svg data-t="${i}" role="img" aria-label="Weekly genre mix around the change from era ${i+1} to ${i+2}"></svg></div>
+        <p>${T.text}</p>
+        <div class="flow">
+          <div><div class="lbl">Came in · hours a month</div>${li(t.inn, a => `${rate(a[1])} → ${rate(a[2])}`)}</div>
+          <div><div class="lbl">Faded out · hours a month</div>${li(t.out, a => `${rate(a[1])} → ${rate(a[2])}`)}</div>
+          <div><div class="lbl">Carried over</div>${li(t.stay, a => `${rate(a[1])} → ${rate(a[2])}`)}</div>
+          ${t.firsts.length ? `<div><div class="lbl">▼ First big days</div><ul class="firsts">${t.firsts.map(f => `<li><span>${+f[0].slice(8)} ${MON[+f[0].slice(5,7)-1]} ${f[0].slice(2,4)}</span><span><b dir="auto">${esc(f[1])}</b>, <span dir="auto">${esc(clean(f[2]))}</span></span></li>`).join('')}</ul></div>` : ''}
+        </div></div></div>`;
+    }
+  });
+  box.innerHTML = h;
+  box.querySelectorAll('svg[data-t]').forEach(svg => transChart(svg, D.trans[+svg.dataset.t]));
+})();
+
+/* ---------- afterlife ---------- */
+(function(){
+  const A = D.after, max = Math.max(...A.map(a => a.bef + a.inn + a.aft));
+  $('#after').innerHTML = A.map((a,i) => { const tot = a.bef + a.inn + a.aft;
+    const seg = (v,c) => v > 0 ? `<i style="width:${100*v/max}%;background:${c}" title="${v} h"></i>` : '';
+    return `<div class="arow"><div class="an">${i+1} · ${ERA_NAMES[i]}<small dir="auto">${a.art.map(esc).join(', ')}</small></div>
+      <div class="ab">${seg(a.bef,'var(--q2)')}${seg(a.inn,'var(--q5)')}${seg(a.aft,'var(--g1)')}</div>
+      <div class="av">${i === A.length-1 ? 'still now' : `${Math.round(100*a.aft/tot)}% after`}</div></div>`; }).join('');
+  $('#afterP').innerHTML = `<p>Each row takes the artists that lived mostly in one era and splits their total listening into before, during and after. It shows whether an era really ended or kept echoing.</p><p>The 2023 pop and EDM era echoes the most: Alan Walker, Imagine Dragons and Avicii got another ${A[0].aft} hours after it ended. The Israeli wave of winter 2025–26 ended the most cleanly. Tuna, Tamir Bar and Yuval Dayan got only ${A[6].aft} hours in the months since. Every era shows the same pattern: once it ends, its defining artists get far less than they had during it.</p>`;
+})();
+

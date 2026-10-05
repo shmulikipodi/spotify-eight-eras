@@ -1,0 +1,9 @@
+# personal raw data and bulky outputs stay local
+spotify_raw/
+output/*.csv
+output/*.xlsx
+*.zip
+.venv/
+__pycache__/
+.DS_Store
+.vercel

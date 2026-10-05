@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>Eight Eras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Rubik:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: companion to The Long Play. One 1120px column; the genre river is the centerpiece,
+   then eight era chapters in sequence, then the slower measures (age, variety, similarity), then every artist's lifeline. */
+:root{
+  --paper:#F3F4F1; --sheet:#FBFBF9; --ink:#15161A; --ink2:#4A4D57; --muted:#80838D; --rule:#DADDD6;
+  --g0:#2a78d6; --g1:#eb6834; --g2:#1baf7a; --g3:#eda100; --g4:#e87ba4; --g5:#008300; --g6:#4a3aa7; --g7:#e34948; --g8:#B3B5AE;
+  --q0:#E3E9F6; --q1:#C2D0EE; --q2:#97AFE3; --q3:#6A8CD6; --q4:#3F68C4; --q5:#25489E; --q6:#152E70;
+  --display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --body:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111318; --sheet:#171A21; --ink:#ECEDEA; --ink2:#B3B6BF; --muted:#7D818C; --rule:#2A2E37;
+  --g0:#3987e5; --g1:#d95926; --g2:#199e70; --g3:#c98500; --g4:#d55181; --g5:#008300; --g6:#9085e9; --g7:#e66767; --g8:#5A5E68;
+  --q0:#1B2233; --q1:#1F3260; --q2:#26478A; --q3:#3260B4; --q4:#4F80D8; --q5:#82A6EB; --q6:#BFD1F7; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111318; --sheet:#171A21; --ink:#ECEDEA; --ink2:#B3B6BF; --muted:#7D818C; --rule:#2A2E37;
+  --g0:#3987e5; --g1:#d95926; --g2:#199e70; --g3:#c98500; --g4:#d55181; --g5:#008300; --g6:#9085e9; --g7:#e66767; --g8:#5A5E68;
+  --q0:#1B2233; --q1:#1F3260; --q2:#26478A; --q3:#3260B4; --q4:#4F80D8; --q5:#82A6EB; --q6:#BFD1F7; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:16px/1.6 var(--body);padding-inline:20px;padding-block:0 80px}
+.col{max-width:1120px;margin-inline:auto}
+h1,h2,h3{font-family:var(--display);font-weight:500;margin:0;text-wrap:balance}
+h1{font-size:clamp(3rem,9vw,6.6rem);line-height:.92;letter-spacing:-.025em}
+h2{font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.05;letter-spacing:-.01em}
+h1 em,h2 em{font-style:italic}
+h3{font-size:1.4rem;line-height:1.15}
+p{margin:0}
+.prose{max-width:64ch;color:var(--ink2);display:flex;flex-direction:column;gap:12px}
+.prose b{color:var(--ink);font-weight:500}
+.kicker{font:500 12px/1.4 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums lining-nums}
+section{padding-block:80px 0;display:flex;flex-direction:column;gap:26px}
+.head{display:flex;flex-direction:column;gap:14px}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+svg{display:block;overflow:visible}
+svg text{font:11px var(--mono);fill:var(--muted)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--ink);color:var(--paper);font:12px/1.5 var(--mono);padding:8px 10px;border-radius:3px;max-width:300px}
+.tip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-inline-end:6px}
+.tip .r{display:flex;justify-content:space-between;gap:14px}
+:focus-visible{outline:2px solid var(--g0);outline-offset:2px}
+a{color:var(--ink)}
+
+header{padding-block:64px 0;display:flex;flex-direction:column;gap:22px}
+.lede{font-size:1.15rem;max-width:60ch;color:var(--ink2)}
+.lede b{color:var(--ink);font-weight:500}
+
+/* era ribbon */
+.ribbon{display:grid;gap:3px;margin-top:8px}
+.ribbon .seg{display:flex;flex-direction:column;gap:6px;min-width:0;text-decoration:none;color:inherit}
+.ribbon .bar{height:14px;border-radius:2px;display:flex;overflow:hidden;gap:1px;background:var(--paper)}
+.ribbon .bar i{display:block;height:100%}
+.ribbon .lab{font-size:13px;line-height:1.25;overflow:hidden}
+.ribbon .lab b{display:block;font:italic 500 1.05rem var(--display)}
+.ribbon .lab span{font:11px var(--mono);color:var(--muted)}
+.ribbon .gap{background:repeating-linear-gradient(135deg,var(--rule) 0 2px,transparent 2px 6px);height:14px;border-radius:2px}
+@media (max-width:760px){ .ribbon .lab{display:none} }
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--ink2)}
+.legend button{font:inherit;color:inherit;background:none;border:0;padding:2px 0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.legend button[aria-pressed="false"]{opacity:.35}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px}
+.toggle{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:2px;gap:2px;align-self:flex-start}
+.toggle button{font:13px var(--body);border:0;background:none;color:var(--ink2);padding:4px 12px;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.controls{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+
+/* era chapters */
+.eras{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,500px),1fr));gap:0 56px}
+.era{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:4px 16px;padding-block:28px;border-top:1px solid var(--ink)}
+.era .n{font:italic 500 2.6rem/1 var(--display);color:var(--muted)}
+.era .body{display:flex;flex-direction:column;gap:12px;min-width:0}
+.era .when{font:12px var(--mono);color:var(--muted)}
+.era h3{font-size:1.7rem}
+.era p{color:var(--ink2);font-size:15px}
+.era p b{color:var(--ink);font-weight:500}
+.mix{display:flex;height:22px;gap:2px;border-radius:2px;overflow:hidden}
+.mix i{display:flex;align-items:center;justify-content:center;font:500 10px var(--mono);color:#fff;min-width:0;overflow:hidden;white-space:nowrap}
+.mix i.lt{color:#15161A}
+.facts{display:flex;flex-wrap:wrap;gap:6px 22px;font:12px var(--mono);color:var(--muted)}
+.facts b{font:500 14px var(--body);color:var(--ink)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px 24px;font-size:14px}
+.cols .lbl{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.cols ul{list-style:none;margin:0;padding:0;color:var(--ink2)}
+.cols li{display:flex;justify-content:space-between;gap:10px}
+.cols li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cols li span:last-child{font:12px var(--mono);color:var(--muted);white-space:nowrap}
+
+.twin{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:40px 56px}
+.twin>*{min-width:0;display:flex;flex-direction:column;gap:10px}
+.twin h3{font-size:1.25rem}
+.twin .q{font-size:14px;color:var(--muted)}
+
+/* lifelines */
+.lifectl{display:flex;flex-wrap:wrap;gap:6px}
+.lifectl button{font:13px var(--body);border:1px solid var(--rule);background:var(--paper);color:var(--ink2);padding:4px 11px;border-radius:999px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.lifectl button i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.lifectl button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.more{align-self:flex-start;font:500 14px var(--body);background:none;border:1px solid var(--ink2);color:var(--ink);padding:7px 14px;border-radius:3px;cursor:pointer}
+
+/* library */
+.tailbar{display:flex;height:44px;gap:2px}
+.tailbar div{display:flex;flex-direction:column;justify-content:flex-end;padding:0 8px 6px;color:#fff;font:500 12px var(--mono);overflow:hidden;white-space:nowrap;min-width:0}
+.tailkey{display:flex;gap:2px;font-size:13px;color:var(--ink2)}
+.tailkey div{padding:6px 8px 0 0;min-width:0;overflow:hidden}
+.glist{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:0 48px;border-top:1px solid var(--ink)}
+.grow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding-block:12px;border-bottom:1px solid var(--rule)}
+.grow .gn{font-weight:500;display:flex;align-items:center;gap:8px}
+.grow .gn i{width:11px;height:11px;border-radius:2px;flex:none}
+.grow .gh{font:500 1.3rem var(--display);text-align:end}
+.grow .gb{grid-column:1/3;height:5px;background:var(--rule);border-radius:2px;overflow:hidden}
+.grow .gb i{display:block;height:100%;border-radius:0 2px 2px 0}
+.grow .ga{grid-column:1/3;font-size:13px;color:var(--muted)}
+
+footer{padding-block:80px 0}
+footer .notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:20px 32px;font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+footer b{color:var(--ink2);font-weight:500}
+
+/* story: eras alternate with the changes between them */
+.story{display:flex;flex-direction:column}
+.story .era{grid-template-columns:3.2rem minmax(0,1fr)}
+.change{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:4px 16px;padding-block:8px 36px}
+.change .rail{display:flex;justify-content:center}
+.change .rail i{width:1px;background:var(--ink);opacity:.5;height:100%;background:repeating-linear-gradient(var(--ink) 0 4px,transparent 4px 8px)}
+.change .body{display:flex;flex-direction:column;gap:14px;min-width:0;background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:20px 22px}
+.change .tag{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.change .tag b{font:italic 500 1.35rem var(--display)}
+.change .tag span{font:12px var(--mono);color:var(--muted)}
+.change .tag .type{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--paper);background:var(--ink);padding:2px 8px;border-radius:999px}
+.change p{color:var(--ink2);font-size:15px;max-width:72ch}
+.change p b{color:var(--ink);font-weight:500}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px 28px;font-size:14px}
+.flow .lbl{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.flow ul{list-style:none;margin:0;padding:0}
+.flow li{display:flex;justify-content:space-between;gap:10px;padding-block:2px;border-bottom:1px solid var(--rule)}
+.flow li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+.flow li span:last-child{font:12px var(--mono);color:var(--muted);white-space:nowrap}
+.firsts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--ink2)}
+.firsts li{display:grid;grid-template-columns:6.6em minmax(0,1fr);gap:10px}
+.firsts li span:first-child{font:12px var(--mono);color:var(--muted);padding-top:2px}
+.firsts b{font-weight:500;color:var(--ink)}
+.flow .firsts li{display:grid;justify-content:stretch;border:0}
+.flow .firsts li > span:last-child{white-space:normal;font:14px/1.4 var(--body);color:var(--ink2);min-width:0}
+.flow .firsts li > span:first-child{font:12px var(--mono);color:var(--muted);white-space:nowrap}
+.flow .firsts li span span{white-space:normal;color:inherit;font:inherit}
+.multi{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px 36px}
+.multi>div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.multi .mh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.multi .mh b{font-weight:500;display:inline-flex;align-items:center;gap:8px}
+.multi .mh b i{width:11px;height:11px;border-radius:2px}
+.multi .mh span{font:12px var(--mono);color:var(--muted)}
+.multi p{font-size:13px;color:var(--muted)}
+.after{display:flex;flex-direction:column;border-top:1px solid var(--ink)}
+.arow{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr) 7.5em;gap:6px 20px;align-items:center;padding-block:12px;border-bottom:1px solid var(--rule)}
+.arow .an{font:italic 500 1.1rem var(--display)}
+.arow .an small{display:block;font:12px var(--body);font-style:normal;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arow .ab{display:flex;height:18px;gap:2px;min-width:0}
+.arow .ab i{display:block;height:100%;border-radius:2px}
+.arow .av{font:12px var(--mono);color:var(--ink2);text-align:end}
+@media (max-width:640px){ .arow{grid-template-columns:1fr} .arow .av{text-align:start} .change,.story .era{grid-template-columns:1.6rem minmax(0,1fr)} .era .n{font-size:1.6rem} .change .body{padding:16px} }
+</style>
+
+<div class="col">
+  <header>
+    <p class="kicker">Spotify, May 2023 – September 2026 · 41 months · <span id="hTot"></span></p>
+    <h1>Your taste changed <em>seven times</em></h1>
+    <p class="lede" id="lede"></p>
+    <div class="ribbon" id="ribbon"></div>
+  </header>
+
+  <section aria-labelledby="riverH">
+    <div class="head">
+      <p class="kicker">Music per month, by genre</p>
+      <h2 id="riverH">The whole <em>river</em></h2>
+      <div class="prose" id="riverP"></div>
+    </div>
+    <div class="controls">
+      <div class="legend" id="riverLegend"></div>
+      <div class="toggle" role="group" aria-label="Scale"><button type="button" data-mode="share" aria-pressed="true">Share of month</button><button type="button" data-mode="hours" aria-pressed="false">Hours</button></div>
+    </div>
+    <div class="scroll"><svg id="river" role="img" aria-label="Stacked area chart of music by genre per month, with era boundaries"></svg></div>
+  </section>
+
+  <section aria-labelledby="multiH">
+    <div class="head">
+      <p class="kicker">Share of each month's music · one shared scale</p>
+      <h2 id="multiH">Each genre <em>on its own</em></h2>
+      <div class="prose" id="multiP"></div>
+    </div>
+    <div class="multi" id="multi"></div>
+  </section>
+
+  <section aria-labelledby="storyH">
+    <div class="head">
+      <p class="kicker">Eight eras and the seven changes between them, in order</p>
+      <h2 id="storyH">How it <em>actually went</em></h2>
+      <div class="prose"><p>Each era is followed by the change that ended it. The change panels zoom in to weeks: the top bars show the genre mix each week, the gray bars below show how many hours you listened. The dashed line is where the next era begins.</p></div>
+    </div>
+    <div class="story" id="story"></div>
+  </section>
+
+  <section aria-labelledby="afterH">
+    <div class="head">
+      <p class="kicker">The artists that defined each era, before, during and after it</p>
+      <h2 id="afterH">What each era <em>left behind</em></h2>
+      <div class="prose" id="afterP"></div>
+    </div>
+    <div class="legend"><span style="display:inline-flex;gap:6px;align-items:center"><i style="background:var(--q2)"></i>before the era</span><span style="display:inline-flex;gap:6px;align-items:center"><i style="background:var(--q5)"></i>during</span><span style="display:inline-flex;gap:6px;align-items:center"><i style="background:var(--g1)"></i>after it ended</span></div>
+    <div class="after" id="after"></div>
+  </section>
+
+  <section aria-labelledby="ageH">
+    <div class="head">
+      <p class="kicker">When the music you played was made</p>
+      <h2 id="ageH">Your music got <em>older</em></h2>
+      <div class="prose" id="ageP"></div>
+    </div>
+    <div class="legend" id="ageLegend"></div>
+    <div class="scroll"><svg id="age" role="img" aria-label="Stacked bars of music by decade it comes from, per month"></svg></div>
+  </section>
+
+  <section aria-labelledby="varH">
+    <div class="head">
+      <p class="kicker">How spread out, and how new</p>
+      <h2 id="varH">Wide months, <em>narrow months</em></h2>
+      <div class="prose" id="varP"></div>
+    </div>
+    <div class="twin">
+      <div><h3>Variety</h3><p class="q">How many artists your month was really split between</p><div class="scroll"><svg id="var1"></svg></div></div>
+      <div><h3>New to you</h3><p class="q">Share of listening on songs you first heard in the past 30 days</p><div class="scroll"><svg id="var2"></svg></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="simH">
+    <div class="head">
+      <p class="kicker">Every month compared with every other month</p>
+      <h2 id="simH">Where the <em>breaks</em> are</h2>
+      <div class="prose" id="simP"></div>
+    </div>
+    <div class="scroll"><svg id="sim" role="img" aria-label="Similarity matrix between months"></svg></div>
+  </section>
+
+  <section aria-labelledby="lifeH">
+    <div class="head">
+      <p class="kicker">Every artist you played for two hours or more</p>
+      <h2 id="lifeH">Who came, who stayed, <em>who left</em></h2>
+      <div class="prose" id="lifeP"></div>
+    </div>
+    <div class="lifectl" id="lifeCtl"></div>
+    <div class="scroll"><svg id="life" role="img" aria-label="Lifelines of artists across months"></svg></div>
+    <button type="button" class="more" id="lifeMore"></button>
+  </section>
+
+  <footer>
+    <div class="notes">
+      <p><b>Genres and decades</b> are tags I gave your 400 most-played artists (95% of your music time) based on what each artist is known for. Spotify's export has no genre data. Unknown artists with Hebrew song titles count as Israeli; the rest go to "Everything else".</p>
+      <p><b>Eras</b> come from a segmentation that splits the timeline where the mix of genres and artists changed most. April–May 2026 had almost no listening and sits outside any era.</p>
+      <p><b>Variety</b> is the number of artists that would give the same spread if your time were split evenly among them. <b>Similarity</b> compares which artists filled each month.</p>
+      <p><b>Companion page:</b> listening habits, skips, sessions and side stories are in <a href="/long-play">The Long Play</a>.</p>
+    </div>
+  </footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = {"months": ["2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"], "gnames": ["Pop", "Electronic & dance", "Hip-hop & R&B", "Israeli", "Alternative & modern rock", "Classic rock", "Hard rock & metal", "Instrumental & classical", "Everything else"], "gkeys": ["P", "E", "H", "I", "A", "C", "M", "N", "O"], "genre": [[4.74, 2.88, 0.58, 0.78, 2.52, 0.17, 0.15, 0.21, 0.75], [4.69, 3.31, 0.77, 1.98, 2.41, 1.53, 0.42, 0.62, 1.25], [7.95, 3.3, 1.77, 1.21, 2.78, 3.81, 1.28, 0.15, 1.43], [9.48, 3.79, 3.73, 5.6, 5.73, 0.88, 0.26, 0.02, 2.15], [8.75, 3.79, 2.25, 0.12, 3.81, 1.34, 0.46, 0.0, 1.38], [10.63, 6.61, 2.23, 0.36, 4.66, 1.68, 1.11, 0.23, 1.74], [12.55, 8.15, 2.76, 0.1, 5.31, 3.6, 4.06, 0.72, 1.22], [1.64, 0.97, 1.13, 0.06, 0.63, 0.12, 0.29, 0.01, 1.2], [1.5, 1.55, 0.65, 0.03, 1.28, 0.18, 0.24, 0.21, 0.22], [8.5, 6.87, 5.5, 0.04, 3.3, 0.5, 0.51, 0.21, 0.77], [5.34, 4.05, 5.19, 0.04, 2.45, 1.48, 0.95, 0.04, 0.8], [4.01, 3.68, 1.49, 0.11, 1.45, 0.43, 0.18, 0.11, 0.93], [2.24, 2.22, 1.04, 0.0, 0.32, 0.55, 0.57, 0.11, 0.34], [3.96, 4.56, 3.75, 5.2, 0.57, 0.84, 0.38, 0.06, 0.3], [5.85, 1.95, 8.88, 1.68, 0.99, 0.69, 1.85, 0.01, 0.97], [3.06, 0.84, 10.71, 1.55, 0.76, 0.53, 0.56, 0.0, 0.65], [10.54, 5.27, 26.02, 0.01, 5.48, 1.39, 1.9, 0.0, 1.71], [9.21, 1.61, 5.74, 0.0, 2.95, 1.1, 0.89, 0.02, 0.78], [1.86, 0.19, 1.09, 0.0, 3.79, 9.55, 11.97, 0.0, 1.67], [5.92, 6.56, 1.6, 0.89, 6.96, 11.83, 11.16, 0.0, 2.21], [1.08, 2.37, 0.13, 0.0, 1.94, 2.46, 2.39, 0.38, 0.1], [4.82, 2.99, 1.42, 0.11, 1.4, 2.96, 4.12, 0.03, 0.7], [7.29, 2.04, 2.4, 0.09, 0.29, 2.84, 2.03, 1.52, 1.08], [0.48, 0.0, 0.32, 0.09, 0.22, 0.63, 0.43, 0.48, 0.32], [3.18, 0.36, 1.06, 0.16, 0.33, 1.91, 1.12, 3.39, 0.68], [2.51, 0.19, 3.01, 0.02, 0.18, 1.59, 1.55, 1.68, 0.35], [0.38, 0.1, 2.69, 1.06, 0.07, 0.86, 1.08, 0.33, 0.14], [0.72, 0.18, 0.89, 0.28, 2.51, 4.95, 5.72, 0.26, 0.66], [0.73, 0.5, 1.3, 0.0, 2.56, 10.64, 7.0, 1.06, 1.64], [1.71, 0.73, 1.78, 1.09, 1.99, 7.93, 7.38, 4.82, 2.54], [1.41, 0.06, 0.18, 7.01, 1.75, 3.56, 8.79, 1.97, 0.56], [1.07, 0.05, 1.22, 3.95, 0.61, 0.54, 4.15, 3.07, 0.56], [3.48, 0.11, 3.99, 9.39, 3.44, 4.72, 13.73, 3.04, 2.03], [4.13, 0.34, 3.02, 4.35, 6.76, 7.26, 15.45, 1.13, 0.76], [1.71, 0.23, 0.83, 0.48, 0.64, 1.49, 1.98, 1.85, 0.55], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [2.58, 0.3, 3.8, 0.3, 0.42, 1.82, 2.69, 2.14, 1.83], [4.86, 1.1, 8.02, 0.41, 3.99, 6.27, 8.47, 0.84, 3.44], [9.78, 0.63, 10.14, 2.33, 11.0, 14.41, 13.52, 1.4, 3.82], [4.8, 0.18, 4.27, 0.87, 4.86, 3.4, 9.04, 0.43, 1.82]], "podh": [17.1, 33.0, 26.5, 11.2, 22.0, 11.9, 16.9, 9.5, 4.0, 11.3, 5.4, 16.8, 2.6, 0.2, 3.3, 15.7, 3.3, 3.5, 1.1, 2.5, 0.0, 0.1, 0.1, 0.9, 7.0, 4.1, 3.1, 1.3, 0.2, 1.6, 0.5, 0.0, 0.1, 5.0, 1.0, 0.0, 0.0, 0.1, 1.3, 1.4, 0.4], "dkeys": ["60s & before", "70s", "80s", "90s", "2000s", "2010s", "2020s"], "decade": [[0.0, 0.2, 0.25, 0.19, 1.06, 8.17, 2.2], [0.14, 0.91, 1.36, 0.08, 1.2, 9.37, 2.82], [0.56, 1.5, 4.01, 0.34, 1.96, 11.56, 2.25], [0.07, 0.49, 1.36, 0.48, 2.7, 17.19, 6.13], [0.08, 0.41, 1.86, 0.88, 1.88, 13.66, 1.69], [0.09, 1.14, 2.48, 1.18, 3.12, 17.46, 2.22], [0.1, 1.91, 6.52, 0.83, 4.35, 20.25, 3.49], [0.02, 0.17, 0.39, 0.13, 0.55, 3.22, 0.33], [0.0, 0.02, 0.49, 0.12, 0.98, 3.52, 0.47], [0.0, 0.21, 1.04, 0.86, 6.06, 14.7, 2.58], [0.02, 1.34, 1.59, 0.84, 6.13, 8.63, 0.96], [0.0, 0.25, 0.7, 0.49, 1.98, 6.11, 1.89], [0.01, 0.43, 0.72, 0.12, 1.24, 3.83, 0.76], [0.01, 0.77, 0.75, 0.42, 3.12, 9.64, 2.93], [0.0, 0.32, 2.55, 0.98, 6.06, 9.31, 1.53], [0.05, 0.4, 0.83, 1.99, 5.76, 6.2, 2.27], [0.08, 0.95, 3.22, 6.24, 14.21, 21.81, 4.49], [0.02, 0.69, 1.65, 1.12, 3.57, 12.46, 2.07], [1.69, 7.09, 13.47, 1.1, 3.09, 1.7, 0.3], [1.03, 5.53, 16.41, 3.4, 3.65, 13.22, 1.03], [0.33, 0.42, 4.04, 1.33, 0.58, 3.4, 0.65], [0.29, 0.77, 6.18, 1.19, 0.89, 7.57, 0.96], [0.11, 1.75, 3.05, 0.29, 1.68, 8.12, 3.48], [0.01, 0.76, 0.38, 0.14, 0.31, 0.75, 0.29], [0.0, 1.68, 2.41, 0.85, 1.04, 2.17, 1.51], [0.04, 0.86, 3.1, 1.86, 1.34, 1.58, 1.37], [0.19, 0.47, 1.52, 0.62, 2.32, 0.7, 0.38], [0.35, 4.04, 6.62, 1.06, 2.38, 0.61, 0.15], [0.18, 10.6, 7.64, 2.24, 1.6, 1.03, 0.05], [0.43, 6.74, 8.77, 1.15, 3.28, 3.4, 1.26], [0.07, 2.27, 9.85, 1.19, 1.96, 1.46, 6.94], [0.01, 0.3, 4.57, 0.8, 1.9, 1.08, 3.34], [0.64, 3.59, 15.93, 4.92, 5.13, 7.43, 2.29], [0.62, 5.31, 16.87, 8.77, 3.65, 5.67, 1.09], [0.16, 1.39, 2.8, 0.96, 1.11, 0.83, 0.16], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.09, 1.49, 2.28, 2.55, 2.4, 2.51, 0.9], [0.47, 5.55, 8.45, 8.12, 5.15, 4.68, 0.96], [2.68, 12.54, 10.71, 16.73, 7.94, 8.21, 3.75], [0.11, 3.04, 6.04, 7.96, 4.39, 3.4, 2.54]], "avgyear": [2013.8, 2010.1, 2005.1, 2013.0, 2010.1, 2009.1, 2006.7, 2009.8, 2010.6, 2011.1, 2006.1, 2010.9, 2008.2, 2010.9, 2007.4, 2007.9, 2007.7, 2009.4, 1986.0, 1995.5, 1998.0, 2000.6, 2006.1, 1997.6, 1998.8, 1998.2, 1997.7, 1987.3, 1984.0, 1991.0, 1998.8, 2001.6, 1995.3, 1992.3, 1991.1, null, null, 1998.5, 1993.8, 1993.5, 1997.0], "eff": [50, 69, 82, 89, 86, 85, 85, 78, 45, 54, 54, 68, 56, 80, 67, 50, 63, 86, 44, 82, 33, 45, 38, 25, 32, 34, 25, 45, 54, 83, 30, 28, 46, 41, 42, null, null, 93, 113, 113, 79], "arts": [80, 121, 160, 187, 142, 159, 146, 69, 58, 108, 135, 102, 72, 134, 138, 101, 145, 134, 129, 201, 67, 105, 92, 36, 67, 60, 52, 91, 120, 212, 103, 59, 145, 144, 81, null, null, 136, 206, 301, 173], "top5": [27, 25, 22, 19, 20, 21, 19, 24, 33, 33, 33, 25, 28, 26, 31, 38, 29, 18, 44, 27, 43, 35, 38, 48, 44, 38, 47, 41, 35, 31, 50, 49, 40, 42, 39, null, null, 19, 17, 21, 27], "newtr": [null, null, null, 19, 16, 11, 9, 25, 7, 11, 9, 14, 3, 19, 19, 11, 5, 6, 17, 13, 12, 12, 20, 23, 29, 15, 32, 10, 19, 27, 42, 22, 12, 11, 21, null, null, 24, 19, 12, 13], "musich": [12.8, 17.0, 23.7, 31.6, 21.9, 29.2, 38.5, 6.1, 5.9, 26.2, 20.3, 12.4, 7.4, 19.6, 22.9, 18.7, 52.3, 22.3, 30.1, 47.1, 10.9, 18.6, 19.6, 3.0, 12.2, 11.1, 6.7, 16.2, 25.4, 30.0, 25.3, 15.2, 43.9, 43.2, 9.8, 0.0, 0, 15.9, 37.4, 67.0, 29.7], "eras": [{"a": "2023-05", "b": "2024-01", "h": 187, "g": [33, 18, 9, 5, 16, 7, 4, 1, 6], "top": [["Alan Walker", 8.4], ["Imagine Dragons", 7.1], ["Avicii", 6.0], ["Coldplay", 5.6], ["Black Eyed Peas", 5.0], ["Maroon 5", 4.3]], "sig": [["Alan Walker", 8.4, 70], ["Imagine Dragons", 7.1, 66], ["Avicii", 6.0, 57], ["Black Eyed Peas", 5.0, 53], ["Pitbull", 3.7, 68]], "trk": [["I Gotta Feeling", "Black Eyed Peas", 82], ["On & On", "Cartoon", 81], ["Mood (feat. iann dior)", "24kGoldn", 76]], "new": [], "yr": 2009, "eff": 129}, {"a": "2024-02", "b": "2024-06", "h": 86, "g": [28, 25, 20, 6, 9, 4, 3, 1, 4], "top": [["Eminem", 10.9], ["Alan Walker", 2.9], ["Mark Ronson", 2.6], ["The Chainsmokers", 2.6], ["Smash Mouth", 2.2], ["Avicii", 2.0]], "sig": [["Martin Garrix", 1.8, 66], ["TheFatRat", 1.2, 90], ["Tiktunz", 1.2, 65], ["Osher Cohen", 0.6, 95], ["Charlie Puth", 0.6, 78]], "trk": [["Uptown Funk (feat. Bruno Mars)", "Mark Ronson", 52], ["Godzilla (feat. Juice WRLD)", "Eminem", 42], ["Without Me", "Eminem", 41]], "new": ["Tiktunz", "Elektronomia"], "yr": 2010, "eff": 94}, {"a": "2024-07", "b": "2024-10", "h": 116, "g": [25, 8, 44, 3, 9, 3, 4, 0, 4], "top": [["Eminem", 12.0], ["Dr. Dre", 5.9], ["Drake", 5.7], ["Maroon 5", 3.7], ["Post Malone", 3.2], ["Macklemore & Ryan Lewis", 2.8]], "sig": [["Dr. Dre", 5.9, 59], ["Drake", 5.7, 57], ["Post Malone", 3.2, 66], ["Sean Paul", 2.2, 60], ["USHER", 2.0, 87]], "trk": [["Still D.R.E.", "Dr. Dre", 65], ["The Next Episode", "Dr. Dre", 58], ["Without Me", "Eminem", 57]], "new": ["Trick Trick", "Hanumankind", "יונתן שינפלד", "Anastacia"], "yr": 2008, "eff": 91}, {"a": "2024-11", "b": "2025-02", "h": 107, "g": [13, 11, 4, 1, 13, 25, 28, 0, 4], "top": [["Metallica", 8.0], ["Guns N' Roses", 6.6], ["Van Halen", 6.3], ["Dire Straits", 4.9], ["Calvin Harris", 4.3], ["Eagles", 4.0]], "sig": [["Van Halen", 6.3, 59], ["Eagles", 4.0, 66], ["AC/DC", 3.9, 56], ["Mike Posner", 2.8, 72], ["Nirvana", 2.8, 52]], "trk": [["Panama - 2015 Remaster", "Van Halen", 61], ["Enter Sandman", "Metallica", 57], ["I Took A Pill In Ibiza - Seeb Remix", "Mike Posner", 54]], "new": ["Cream"], "yr": 1994, "eff": 83}, {"a": "2025-03", "b": "2025-07", "h": 53, "g": [26, 5, 18, 3, 2, 15, 12, 14, 5], "top": [["Gamazda", 4.3], ["Metallica", 3.4], ["Ariana Grande", 2.7], ["Eminem", 2.5], ["Led Zeppelin", 2.4], ["Rihanna", 2.3]], "sig": [["Gamazda", 4.3, 94], ["Ludwig van Beethoven", 2.0, 69], ["Madonna", 1.4, 68], ["Belinda Carlisle", 0.6, 99]], "trk": [["thank u, next", "Ariana Grande", 41], ["Stairway to Heaven - Remaster", "Led Zeppelin", 37], ["Save Your Tears (Remix) (with Ariana Grande) - Bonus Track", "The Weeknd", 36]], "new": ["Gamazda", "Belinda Carlisle"], "yr": 2001, "eff": 60}, {"a": "2025-08", "b": "2025-10", "h": 72, "g": [4, 2, 6, 2, 10, 33, 28, 9, 7], "top": [["Metallica", 8.3], ["Pink Floyd", 4.0], ["Fleetwood Mac", 3.9], ["Guns N' Roses", 3.5], ["Eric Clapton", 2.6], ["Lynyrd Skynyrd", 2.2]], "sig": [["Pink Floyd", 4.0, 55], ["Fleetwood Mac", 3.9, 73], ["Eric Clapton", 2.6, 63], ["Lynyrd Skynyrd", 2.2, 55], ["Lindsey Stirling", 1.7, 65]], "trk": [["Comfortably Numb", "Pink Floyd", 51], ["Master Of Puppets", "Metallica", 33], ["The Chain - 2004 Remaster", "Fleetwood Mac", 31]], "new": ["Lindsey Stirling", "Tom Bailey Backing Tracks", "Polyphia"], "yr": 1988, "eff": 85}, {"a": "2025-11", "b": "2026-03", "h": 137, "g": [9, 1, 7, 18, 10, 13, 32, 8, 3], "top": [["Metallica", 25.5], ["Tuna", 10.5], ["Red Hot Chili Peppers", 4.7], ["Scorpions", 4.7], ["Ozzy Osbourne", 3.9], ["Eminem", 3.8]], "sig": [["Tuna", 10.5, 87], ["Scorpions", 4.7, 64], ["Ozzy Osbourne", 3.9, 51], ["Tamir Bar", 3.6, 98], ["Yuval Dayan", 3.0, 95]], "trk": [["For Whom The Bell Tolls - Remastered", "Metallica", 93], ["היי בייב", "Tuna", 66], ["Playing God", "Polyphia", 59]], "new": ["Tamir Bar"], "yr": 1995, "eff": 59}, {"a": "2026-06", "b": "2026-09", "h": 150, "g": [15, 1, 17, 3, 14, 17, 22, 3, 7], "top": [["Metallica", 9.0], ["Pantera", 4.8], ["Pearl Jam", 4.8], ["Megadeth", 4.6], ["Rush", 3.9], ["Doja Cat", 3.8]], "sig": [["Pantera", 4.8, 96], ["Pearl Jam", 4.8, 98], ["Megadeth", 4.6, 92], ["Rush", 3.9, 100], ["Doja Cat", 3.8, 95]], "trk": [["Paint The Town Red", "Doja Cat", 33], ["Butterfly", "Crazy Town", 33], ["Pump It", "Black Eyed Peas", 31]], "new": ["Rockabye Baby!"], "yr": 1995, "eff": 149}], "simm": ["2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-06", "2026-07", "2026-08", "2026-09"], "sim": [[1.0, 0.78, 0.65, 0.62, 0.62, 0.63, 0.6, 0.39, 0.59, 0.47, 0.36, 0.49, 0.4, 0.35, 0.27, 0.21, 0.33, 0.43, 0.11, 0.24, 0.14, 0.17, 0.12, 0.09, 0.07, 0.11, 0.04, 0.08, 0.03, 0.13, 0.08, 0.05, 0.08, 0.11, 0.08, 0.15, 0.11, 0.14, 0.1], [0.78, 1.0, 0.79, 0.68, 0.67, 0.69, 0.67, 0.42, 0.59, 0.5, 0.43, 0.5, 0.48, 0.38, 0.32, 0.23, 0.33, 0.44, 0.24, 0.37, 0.24, 0.26, 0.19, 0.22, 0.16, 0.16, 0.08, 0.19, 0.12, 0.2, 0.13, 0.07, 0.12, 0.16, 0.13, 0.18, 0.19, 0.22, 0.16], [0.65, 0.79, 1.0, 0.74, 0.69, 0.7, 0.69, 0.47, 0.59, 0.5, 0.47, 0.47, 0.46, 0.37, 0.35, 0.26, 0.34, 0.45, 0.32, 0.42, 0.29, 0.3, 0.22, 0.22, 0.17, 0.21, 0.14, 0.29, 0.18, 0.27, 0.18, 0.1, 0.16, 0.2, 0.18, 0.22, 0.28, 0.28, 0.21], [0.62, 0.68, 0.74, 1.0, 0.75, 0.71, 0.68, 0.51, 0.59, 0.53, 0.46, 0.54, 0.46, 0.44, 0.38, 0.32, 0.39, 0.47, 0.19, 0.31, 0.17, 0.19, 0.14, 0.12, 0.11, 0.14, 0.11, 0.14, 0.07, 0.17, 0.1, 0.07, 0.1, 0.13, 0.11, 0.18, 0.18, 0.19, 0.15], [0.62, 0.67, 0.69, 0.75, 1.0, 0.84, 0.81, 0.59, 0.72, 0.68, 0.6, 0.62, 0.59, 0.46, 0.45, 0.35, 0.49, 0.58, 0.27, 0.41, 0.25, 0.29, 0.25, 0.17, 0.13, 0.19, 0.11, 0.2, 0.12, 0.23, 0.1, 0.08, 0.13, 0.18, 0.15, 0.24, 0.22, 0.24, 0.2], [0.63, 0.69, 0.7, 0.71, 0.84, 1.0, 0.9, 0.61, 0.76, 0.72, 0.64, 0.67, 0.65, 0.5, 0.48, 0.37, 0.49, 0.58, 0.3, 0.43, 0.27, 0.32, 0.26, 0.23, 0.17, 0.21, 0.14, 0.24, 0.18, 0.26, 0.13, 0.09, 0.17, 0.23, 0.19, 0.26, 0.27, 0.27, 0.21], [0.6, 0.67, 0.69, 0.68, 0.81, 0.9, 1.0, 0.6, 0.75, 0.73, 0.66, 0.66, 0.68, 0.52, 0.51, 0.38, 0.5, 0.57, 0.39, 0.49, 0.34, 0.39, 0.31, 0.28, 0.23, 0.27, 0.2, 0.32, 0.23, 0.32, 0.22, 0.16, 0.23, 0.3, 0.24, 0.27, 0.31, 0.31, 0.26], [0.39, 0.42, 0.47, 0.51, 0.59, 0.61, 0.6, 1.0, 0.6, 0.57, 0.51, 0.49, 0.47, 0.37, 0.39, 0.33, 0.41, 0.45, 0.26, 0.33, 0.2, 0.26, 0.2, 0.2, 0.14, 0.18, 0.16, 0.2, 0.18, 0.27, 0.12, 0.11, 0.14, 0.21, 0.15, 0.22, 0.27, 0.27, 0.22], [0.59, 0.59, 0.59, 0.59, 0.72, 0.76, 0.75, 0.6, 1.0, 0.69, 0.57, 0.6, 0.59, 0.44, 0.4, 0.32, 0.42, 0.48, 0.19, 0.34, 0.21, 0.25, 0.21, 0.13, 0.16, 0.21, 0.13, 0.2, 0.15, 0.23, 0.16, 0.12, 0.16, 0.22, 0.18, 0.22, 0.22, 0.22, 0.22], [0.47, 0.5, 0.5, 0.53, 0.68, 0.72, 0.73, 0.57, 0.69, 1.0, 0.84, 0.75, 0.7, 0.62, 0.61, 0.47, 0.54, 0.57, 0.24, 0.39, 0.2, 0.33, 0.34, 0.27, 0.21, 0.28, 0.29, 0.25, 0.15, 0.27, 0.14, 0.15, 0.18, 0.25, 0.2, 0.28, 0.25, 0.25, 0.24], [0.36, 0.43, 0.47, 0.46, 0.6, 0.64, 0.66, 0.51, 0.57, 0.84, 1.0, 0.72, 0.71, 0.63, 0.65, 0.54, 0.56, 0.56, 0.33, 0.46, 0.27, 0.37, 0.34, 0.32, 0.24, 0.31, 0.39, 0.32, 0.22, 0.34, 0.19, 0.18, 0.24, 0.29, 0.27, 0.31, 0.33, 0.31, 0.28], [0.49, 0.5, 0.47, 0.54, 0.62, 0.67, 0.66, 0.49, 0.6, 0.75, 0.72, 1.0, 0.75, 0.62, 0.56, 0.43, 0.49, 0.53, 0.18, 0.36, 0.21, 0.29, 0.27, 0.19, 0.16, 0.21, 0.22, 0.18, 0.12, 0.21, 0.1, 0.11, 0.14, 0.19, 0.17, 0.25, 0.23, 0.23, 0.19], [0.4, 0.48, 0.46, 0.46, 0.59, 0.65, 0.68, 0.47, 0.59, 0.7, 0.71, 0.75, 1.0, 0.63, 0.58, 0.42, 0.49, 0.5, 0.28, 0.45, 0.31, 0.36, 0.33, 0.26, 0.2, 0.28, 0.3, 0.28, 0.23, 0.33, 0.18, 0.2, 0.22, 0.28, 0.27, 0.3, 0.31, 0.3, 0.27], [0.35, 0.38, 0.37, 0.44, 0.46, 0.5, 0.52, 0.37, 0.44, 0.62, 0.63, 0.62, 0.63, 1.0, 0.62, 0.51, 0.5, 0.49, 0.24, 0.37, 0.24, 0.29, 0.26, 0.2, 0.17, 0.23, 0.27, 0.21, 0.17, 0.26, 0.14, 0.14, 0.19, 0.25, 0.22, 0.28, 0.27, 0.28, 0.25], [0.27, 0.32, 0.35, 0.38, 0.45, 0.48, 0.51, 0.39, 0.4, 0.61, 0.65, 0.56, 0.58, 0.62, 1.0, 0.77, 0.71, 0.69, 0.38, 0.46, 0.33, 0.44, 0.4, 0.31, 0.29, 0.4, 0.43, 0.34, 0.22, 0.36, 0.21, 0.25, 0.3, 0.35, 0.32, 0.38, 0.37, 0.36, 0.35], [0.21, 0.23, 0.26, 0.32, 0.35, 0.37, 0.38, 0.33, 0.32, 0.47, 0.54, 0.43, 0.42, 0.51, 0.77, 1.0, 0.78, 0.65, 0.33, 0.37, 0.25, 0.35, 0.31, 0.29, 0.26, 0.4, 0.42, 0.31, 0.2, 0.32, 0.17, 0.21, 0.3, 0.33, 0.3, 0.37, 0.36, 0.34, 0.31], [0.33, 0.33, 0.34, 0.39, 0.49, 0.49, 0.5, 0.41, 0.42, 0.54, 0.56, 0.49, 0.49, 0.5, 0.71, 0.78, 1.0, 0.78, 0.4, 0.44, 0.3, 0.4, 0.37, 0.33, 0.3, 0.44, 0.4, 0.36, 0.23, 0.36, 0.17, 0.22, 0.3, 0.35, 0.33, 0.39, 0.38, 0.35, 0.32], [0.43, 0.44, 0.45, 0.47, 0.58, 0.58, 0.57, 0.45, 0.48, 0.57, 0.56, 0.53, 0.5, 0.49, 0.69, 0.65, 0.78, 1.0, 0.47, 0.5, 0.31, 0.46, 0.48, 0.34, 0.34, 0.44, 0.31, 0.34, 0.22, 0.36, 0.17, 0.19, 0.25, 0.33, 0.3, 0.39, 0.38, 0.39, 0.34], [0.11, 0.24, 0.32, 0.19, 0.27, 0.3, 0.39, 0.26, 0.19, 0.24, 0.33, 0.18, 0.28, 0.24, 0.38, 0.33, 0.4, 0.47, 1.0, 0.67, 0.52, 0.54, 0.43, 0.4, 0.34, 0.38, 0.33, 0.61, 0.48, 0.51, 0.39, 0.29, 0.44, 0.51, 0.4, 0.34, 0.48, 0.47, 0.37], [0.24, 0.37, 0.42, 0.31, 0.41, 0.43, 0.49, 0.33, 0.34, 0.39, 0.46, 0.36, 0.45, 0.37, 0.46, 0.37, 0.44, 0.5, 0.67, 1.0, 0.76, 0.73, 0.55, 0.36, 0.42, 0.43, 0.4, 0.59, 0.45, 0.53, 0.39, 0.32, 0.42, 0.53, 0.4, 0.41, 0.49, 0.49, 0.41], [0.14, 0.24, 0.29, 0.17, 0.25, 0.27, 0.34, 0.2, 0.21, 0.2, 0.27, 0.21, 0.31, 0.24, 0.33, 0.25, 0.3, 0.31, 0.52, 0.76, 1.0, 0.77, 0.46, 0.28, 0.34, 0.34, 0.29, 0.5, 0.36, 0.45, 0.38, 0.29, 0.34, 0.44, 0.31, 0.28, 0.37, 0.4, 0.31], [0.17, 0.26, 0.3, 0.19, 0.29, 0.32, 0.39, 0.26, 0.25, 0.33, 0.37, 0.29, 0.36, 0.29, 0.44, 0.35, 0.4, 0.46, 0.54, 0.73, 0.77, 1.0, 0.68, 0.38, 0.47, 0.46, 0.34, 0.49, 0.36, 0.43, 0.35, 0.34, 0.36, 0.46, 0.36, 0.39, 0.42, 0.44, 0.36], [0.12, 0.19, 0.22, 0.14, 0.25, 0.26, 0.31, 0.2, 0.21, 0.34, 0.34, 0.27, 0.33, 0.26, 0.4, 0.31, 0.37, 0.48, 0.43, 0.55, 0.46, 0.68, 1.0, 0.48, 0.59, 0.59, 0.42, 0.44, 0.32, 0.42, 0.29, 0.3, 0.31, 0.41, 0.32, 0.37, 0.37, 0.39, 0.35], [0.09, 0.22, 0.22, 0.12, 0.17, 0.23, 0.28, 0.2, 0.13, 0.27, 0.32, 0.19, 0.26, 0.2, 0.31, 0.29, 0.33, 0.34, 0.4, 0.36, 0.28, 0.38, 0.48, 1.0, 0.57, 0.53, 0.42, 0.45, 0.29, 0.32, 0.23, 0.22, 0.29, 0.33, 0.3, 0.23, 0.3, 0.27, 0.22], [0.07, 0.16, 0.17, 0.11, 0.13, 0.17, 0.23, 0.14, 0.16, 0.21, 0.24, 0.16, 0.2, 0.17, 0.29, 0.26, 0.3, 0.34, 0.34, 0.42, 0.34, 0.47, 0.59, 0.57, 1.0, 0.77, 0.43, 0.43, 0.33, 0.38, 0.28, 0.35, 0.32, 0.42, 0.39, 0.33, 0.36, 0.35, 0.31], [0.11, 0.16, 0.21, 0.14, 0.19, 0.21, 0.27, 0.18, 0.21, 0.28, 0.31, 0.21, 0.28, 0.23, 0.4, 0.4, 0.44, 0.44, 0.38, 0.43, 0.34, 0.46, 0.59, 0.53, 0.77, 1.0, 0.56, 0.5, 0.33, 0.44, 0.33, 0.41, 0.44, 0.5, 0.45, 0.39, 0.42, 0.41, 0.41], [0.04, 0.08, 0.14, 0.11, 0.11, 0.14, 0.2, 0.16, 0.13, 0.29, 0.39, 0.22, 0.3, 0.27, 0.43, 0.42, 0.4, 0.31, 0.33, 0.4, 0.29, 0.34, 0.42, 0.42, 0.43, 0.56, 1.0, 0.53, 0.4, 0.47, 0.33, 0.43, 0.48, 0.49, 0.41, 0.34, 0.39, 0.34, 0.38], [0.08, 0.19, 0.29, 0.14, 0.2, 0.24, 0.32, 0.2, 0.2, 0.25, 0.32, 0.18, 0.28, 0.21, 0.34, 0.31, 0.36, 0.34, 0.61, 0.59, 0.5, 0.49, 0.44, 0.45, 0.43, 0.5, 0.53, 1.0, 0.73, 0.69, 0.56, 0.48, 0.61, 0.65, 0.52, 0.44, 0.56, 0.53, 0.51], [0.03, 0.12, 0.18, 0.07, 0.12, 0.18, 0.23, 0.18, 0.15, 0.15, 0.22, 0.12, 0.23, 0.17, 0.22, 0.2, 0.23, 0.22, 0.48, 0.45, 0.36, 0.36, 0.32, 0.29, 0.33, 0.33, 0.4, 0.73, 1.0, 0.72, 0.52, 0.41, 0.52, 0.61, 0.48, 0.41, 0.5, 0.49, 0.45], [0.13, 0.2, 0.27, 0.17, 0.23, 0.26, 0.32, 0.27, 0.23, 0.27, 0.34, 0.21, 0.33, 0.26, 0.36, 0.32, 0.36, 0.36, 0.51, 0.53, 0.45, 0.43, 0.42, 0.32, 0.38, 0.44, 0.47, 0.69, 0.72, 1.0, 0.65, 0.56, 0.63, 0.63, 0.52, 0.52, 0.54, 0.52, 0.48], [0.08, 0.13, 0.18, 0.1, 0.1, 0.13, 0.22, 0.12, 0.16, 0.14, 0.19, 0.1, 0.18, 0.14, 0.21, 0.17, 0.17, 0.17, 0.39, 0.39, 0.38, 0.35, 0.29, 0.23, 0.28, 0.33, 0.33, 0.56, 0.52, 0.65, 1.0, 0.7, 0.67, 0.6, 0.49, 0.36, 0.41, 0.45, 0.43], [0.05, 0.07, 0.1, 0.07, 0.08, 0.09, 0.16, 0.11, 0.12, 0.15, 0.18, 0.11, 0.2, 0.14, 0.25, 0.21, 0.22, 0.19, 0.29, 0.32, 0.29, 0.34, 0.3, 0.22, 0.35, 0.41, 0.43, 0.48, 0.41, 0.56, 0.7, 1.0, 0.66, 0.55, 0.54, 0.36, 0.38, 0.37, 0.41], [0.08, 0.12, 0.16, 0.1, 0.13, 0.17, 0.23, 0.14, 0.16, 0.18, 0.24, 0.14, 0.22, 0.19, 0.3, 0.3, 0.3, 0.25, 0.44, 0.42, 0.34, 0.36, 0.31, 0.29, 0.32, 0.44, 0.48, 0.61, 0.52, 0.63, 0.67, 0.66, 1.0, 0.83, 0.67, 0.44, 0.46, 0.51, 0.51], [0.11, 0.16, 0.2, 0.13, 0.18, 0.23, 0.3, 0.21, 0.22, 0.25, 0.29, 0.19, 0.28, 0.25, 0.35, 0.33, 0.35, 0.33, 0.51, 0.53, 0.44, 0.46, 0.41, 0.33, 0.42, 0.5, 0.49, 0.65, 0.61, 0.63, 0.6, 0.55, 0.83, 1.0, 0.74, 0.49, 0.55, 0.58, 0.54], [0.08, 0.13, 0.18, 0.11, 0.15, 0.19, 0.24, 0.15, 0.18, 0.2, 0.27, 0.17, 0.27, 0.22, 0.32, 0.3, 0.33, 0.3, 0.4, 0.4, 0.31, 0.36, 0.32, 0.3, 0.39, 0.45, 0.41, 0.52, 0.48, 0.52, 0.49, 0.54, 0.67, 0.74, 1.0, 0.43, 0.46, 0.47, 0.44], [0.15, 0.18, 0.22, 0.18, 0.24, 0.26, 0.27, 0.22, 0.22, 0.28, 0.31, 0.25, 0.3, 0.28, 0.38, 0.37, 0.39, 0.39, 0.34, 0.41, 0.28, 0.39, 0.37, 0.23, 0.33, 0.39, 0.34, 0.44, 0.41, 0.52, 0.36, 0.36, 0.44, 0.49, 0.43, 1.0, 0.63, 0.61, 0.58], [0.11, 0.19, 0.28, 0.18, 0.22, 0.27, 0.31, 0.27, 0.22, 0.25, 0.33, 0.23, 0.31, 0.27, 0.37, 0.36, 0.38, 0.38, 0.48, 0.49, 0.37, 0.42, 0.37, 0.3, 0.36, 0.42, 0.39, 0.56, 0.5, 0.54, 0.41, 0.38, 0.46, 0.55, 0.46, 0.63, 1.0, 0.76, 0.65], [0.14, 0.22, 0.28, 0.19, 0.24, 0.27, 0.31, 0.27, 0.22, 0.25, 0.31, 0.23, 0.3, 0.28, 0.36, 0.34, 0.35, 0.39, 0.47, 0.49, 0.4, 0.44, 0.39, 0.27, 0.35, 0.41, 0.34, 0.53, 0.49, 0.52, 0.45, 0.37, 0.51, 0.58, 0.47, 0.61, 0.76, 1.0, 0.78], [0.1, 0.16, 0.21, 0.15, 0.2, 0.21, 0.26, 0.22, 0.22, 0.24, 0.28, 0.19, 0.27, 0.25, 0.35, 0.31, 0.32, 0.34, 0.37, 0.41, 0.31, 0.36, 0.35, 0.22, 0.31, 0.41, 0.38, 0.51, 0.45, 0.48, 0.43, 0.41, 0.51, 0.54, 0.44, 0.58, 0.65, 0.78, 1.0]], "turn": [null, 0.22, 0.21, 0.26, 0.25, 0.16, 0.1, 0.4, 0.4, 0.31, 0.16, 0.28, 0.25, 0.37, 0.38, 0.23, 0.22, 0.22, 0.53, 0.33, 0.24, 0.23, 0.32, 0.52, 0.43, 0.23, 0.44, 0.47, 0.27, 0.28, 0.35, 0.3, 0.34, 0.17, 0.26, 0.57, 0.37, 0.24, 0.22], "life": [{"a": "Metallica", "g": "M", "h": 56.5, "v": [0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.41, 0.0, 0.15, 0.01, 0.04, 0.0, 0.22, 0.05, 0.6, 0.12, 0.5, 0.15, 1.57, 3.64, 1.02, 1.73, 1.12, 0.02, 0.6, 1.15, 0.54, 2.01, 2.45, 3.83, 6.33, 3.07, 7.2, 7.52, 1.41, 0.0, 0.0, 0.63, 1.96, 3.57, 2.88]}, {"a": "Eminem", "g": "H", "h": 33.1, "v": [0.0, 0.0, 0.0, 0.06, 0.09, 0.1, 0.3, 0.01, 0.01, 3.62, 3.98, 0.83, 0.66, 1.79, 3.49, 2.73, 5.26, 0.52, 0.01, 0.36, 0.0, 0.0, 0.07, 0.11, 0.01, 0.47, 1.86, 0.36, 0.23, 0.89, 0.03, 0.43, 1.75, 1.36, 0.26, 0.0, 0.0, 0.39, 0.29, 0.14, 0.65]}, {"a": "Guns N' Roses", "g": "M", "h": 24.6, "v": [0.0, 0.16, 0.7, 0.14, 0.12, 0.52, 2.02, 0.27, 0.0, 0.4, 0.67, 0.0, 0.15, 0.19, 0.7, 0.14, 0.48, 0.22, 2.97, 1.84, 0.52, 1.28, 0.22, 0.31, 0.23, 0.09, 0.27, 1.49, 0.84, 1.14, 0.62, 0.38, 1.01, 1.33, 0.14, 0.0, 0.0, 0.02, 1.33, 1.48, 0.19]}, {"a": "Dire Straits", "g": "C", "h": 15.1, "v": [0.04, 0.57, 1.69, 0.13, 0.16, 0.23, 0.75, 0.0, 0.0, 0.14, 0.11, 0.14, 0.02, 0.0, 0.06, 0.0, 0.0, 0.06, 0.37, 2.47, 0.84, 1.2, 0.53, 0.02, 0.2, 0.3, 0.0, 0.56, 0.18, 0.32, 0.87, 0.0, 0.88, 0.95, 0.09, 0.0, 0.0, 0.01, 0.18, 0.82, 0.17]}, {"a": "Tuna", "g": "I", "h": 12.1, "v": [0.07, 0.02, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.14, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08, 0.01, 0.0, 0.0, 0.21, 0.23, 5.73, 3.97, 0.35, 0.0, 0.0, 0.12, 0.0, 0.76, 0.37]}, {"a": "Coldplay", "g": "A", "h": 12.0, "v": [0.07, 0.13, 0.31, 1.47, 0.69, 0.93, 1.55, 0.2, 0.23, 0.95, 0.65, 0.33, 0.0, 0.05, 0.33, 0.28, 0.51, 0.38, 0.07, 0.18, 0.0, 0.0, 0.01, 0.0, 0.07, 0.03, 0.0, 0.01, 0.0, 0.01, 0.1, 0.0, 0.25, 0.26, 0.01, 0.0, 0.0, 0.05, 0.14, 0.93, 0.83]}, {"a": "Alan Walker", "g": "E", "h": 12.0, "v": [0.63, 0.56, 0.31, 0.36, 1.18, 2.53, 1.87, 0.19, 0.72, 1.59, 0.52, 0.24, 0.28, 0.31, 0.01, 0.0, 0.03, 0.16, 0.0, 0.21, 0.0, 0.02, 0.14, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.04, 0.0]}, {"a": "Linkin Park", "g": "A", "h": 11.9, "v": [0.0, 0.0, 0.0, 0.0, 0.25, 0.49, 0.52, 0.08, 0.28, 0.67, 0.45, 0.06, 0.05, 0.0, 0.06, 0.11, 1.07, 0.35, 1.47, 0.49, 0.06, 0.13, 0.08, 0.13, 0.0, 0.01, 0.01, 1.03, 0.54, 0.24, 0.29, 0.05, 0.72, 0.66, 0.2, 0.0, 0.0, 0.04, 0.66, 0.37, 0.27]}, {"a": "Imagine Dragons", "g": "A", "h": 10.7, "v": [0.71, 0.85, 0.79, 1.77, 0.96, 0.92, 0.89, 0.02, 0.2, 0.19, 0.11, 0.16, 0.06, 0.06, 0.02, 0.08, 1.85, 0.65, 0.12, 0.28, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.03, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0]}, {"a": "Van Halen", "g": "M", "h": 10.6, "v": [0.0, 0.02, 0.15, 0.02, 0.04, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.08, 0.03, 0.04, 0.2, 4.02, 1.92, 0.09, 0.26, 0.31, 0.0, 0.09, 0.22, 0.07, 0.46, 0.4, 0.27, 0.01, 0.0, 0.3, 0.41, 0.02, 0.0, 0.0, 0.13, 0.44, 0.41, 0.14]}, {"a": "Maroon 5", "g": "P", "h": 10.6, "v": [0.3, 0.29, 0.2, 0.96, 0.74, 0.75, 0.91, 0.14, 0.02, 0.14, 0.09, 0.53, 0.12, 0.28, 0.3, 0.31, 2.28, 0.85, 0.05, 0.16, 0.08, 0.36, 0.11, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.05, 0.0, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.07, 0.13, 0.23, 0.06]}, {"a": "Red Hot Chili Peppers", "g": "A", "h": 10.5, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.07, 0.07, 0.25, 1.8, 0.13, 0.01, 0.01, 0.0, 0.13, 0.06, 0.04, 0.19, 0.52, 0.2, 0.38, 0.05, 0.94, 3.17, 0.21, 0.0, 0.0, 0.01, 0.44, 1.17, 0.66]}, {"a": "Avicii", "g": "E", "h": 10.4, "v": [0.75, 0.62, 0.81, 0.71, 0.65, 0.95, 1.05, 0.2, 0.21, 0.57, 0.25, 0.37, 0.15, 0.7, 0.14, 0.05, 0.82, 0.33, 0.0, 0.36, 0.27, 0.31, 0.0, 0.0, 0.0, 0.03, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.0, 0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.06, 0.0]}, {"a": "Drake", "g": "H", "h": 10.0, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.04, 1.04, 1.3, 2.41, 0.91, 0.15, 0.14, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.27, 0.11, 0.0, 0.0, 0.38, 1.13, 0.83, 0.17]}, {"a": "Dr. Dre", "g": "H", "h": 9.9, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.01, 0.0, 0.02, 0.0, 0.0, 0.0, 0.37, 1.58, 3.57, 0.36, 0.01, 0.04, 0.0, 0.08, 0.03, 0.06, 0.47, 0.64, 0.18, 0.16, 0.06, 0.11, 0.0, 0.01, 0.23, 0.14, 0.04, 0.0, 0.0, 0.23, 0.75, 0.5, 0.23]}, {"a": "Black Eyed Peas", "g": "P", "h": 9.5, "v": [0.36, 0.45, 0.94, 0.82, 0.46, 0.56, 0.88, 0.13, 0.44, 0.31, 0.38, 0.18, 0.35, 0.13, 0.1, 0.07, 0.08, 0.18, 0.01, 0.09, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08, 0.08, 0.0, 0.0, 0.0, 0.15, 0.03, 0.0, 0.0, 0.5, 0.69, 0.76, 0.29]}, {"a": "Led Zeppelin", "g": "C", "h": 9.4, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.19, 0.0, 0.0, 0.0, 0.09, 0.0, 0.0, 0.0, 0.09, 0.0, 0.08, 0.09, 0.29, 0.93, 0.01, 0.16, 1.12, 0.07, 0.58, 0.41, 0.23, 0.2, 0.38, 0.33, 0.24, 0.0, 0.74, 1.14, 0.32, 0.0, 0.0, 0.02, 0.34, 0.98, 0.38]}, {"a": "Calvin Harris", "g": "E", "h": 9.4, "v": [0.0, 0.02, 0.0, 0.01, 0.16, 0.46, 0.28, 0.0, 0.04, 0.14, 0.37, 0.42, 0.39, 0.58, 0.71, 0.32, 0.43, 0.22, 0.01, 2.19, 1.04, 1.04, 0.15, 0.0, 0.06, 0.01, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.06, 0.07, 0.0, 0.0, 0.08, 0.01, 0.06, 0.0]}, {"a": "Queen", "g": "C", "h": 9.2, "v": [0.07, 0.34, 0.41, 0.2, 0.17, 0.4, 0.67, 0.0, 0.0, 0.11, 0.04, 0.06, 0.07, 0.06, 0.03, 0.04, 0.31, 0.24, 1.2, 0.91, 0.13, 0.03, 0.13, 0.45, 0.89, 0.38, 0.0, 0.22, 0.12, 0.18, 0.24, 0.0, 0.19, 0.19, 0.11, 0.0, 0.0, 0.07, 0.26, 0.28, 0.01]}, {"a": "ZZ Top", "g": "C", "h": 8.4, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 2.45, 0.6, 0.62, 0.45, 0.0, 0.15, 0.02, 0.2, 0.38, 0.35, 0.54, 0.02, 0.22, 0.0, 0.09, 0.0, 0.0, 0.0, 0.49, 0.94, 0.79, 0.09]}, {"a": "Bruno Mars", "g": "P", "h": 8.4, "v": [0.19, 0.22, 0.05, 0.09, 0.18, 0.1, 0.47, 0.01, 0.09, 0.06, 0.08, 0.06, 0.15, 0.9, 0.69, 0.12, 0.49, 0.39, 0.04, 0.26, 0.13, 0.29, 0.08, 0.0, 0.19, 0.18, 0.0, 0.0, 0.01, 0.03, 0.0, 0.02, 0.1, 0.06, 0.0, 0.0, 0.0, 0.02, 0.01, 1.49, 1.13]}, {"a": "Rihanna", "g": "P", "h": 8.3, "v": [0.0, 0.0, 0.0, 0.0, 0.08, 0.02, 0.03, 0.0, 0.0, 1.39, 0.31, 0.06, 0.0, 0.12, 0.23, 0.12, 0.3, 0.36, 0.28, 0.21, 0.0, 1.3, 1.74, 0.0, 0.47, 0.08, 0.0, 0.0, 0.04, 0.0, 0.0, 0.04, 0.0, 0.09, 0.0, 0.0, 0.0, 0.3, 0.1, 0.45, 0.18]}, {"a": "2Pac", "g": "H", "h": 7.7, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.11, 1.21, 0.27, 0.01, 0.02, 0.0, 0.07, 0.02, 0.01, 0.16, 0.86, 0.0, 0.24, 0.02, 0.1, 0.03, 0.64, 1.13, 0.61, 0.12, 0.0, 0.0, 0.39, 0.75, 0.54, 0.41]}, {"a": "Ozzy Osbourne", "g": "M", "h": 7.6, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.76, 0.11, 0.0, 0.03, 0.01, 0.0, 0.0, 0.0, 0.09, 0.29, 0.7, 0.49, 0.26, 0.53, 1.1, 1.83, 0.16, 0.0, 0.0, 0.12, 0.83, 0.14, 0.18]}, {"a": "The Weeknd", "g": "P", "h": 7.4, "v": [0.0, 0.0, 0.0, 0.03, 0.35, 0.2, 0.19, 0.04, 0.0, 0.25, 0.06, 0.06, 0.12, 0.11, 0.35, 0.27, 0.63, 0.78, 0.11, 0.52, 0.01, 0.07, 1.44, 0.01, 0.04, 0.21, 0.06, 0.02, 0.02, 0.17, 0.0, 0.02, 0.0, 0.03, 0.0, 0.0, 0.0, 0.13, 0.16, 0.87, 0.14]}, {"a": "Scorpions", "g": "M", "h": 7.3, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.09, 0.01, 0.19, 0.07, 0.02, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.53, 0.06, 0.89, 1.11, 0.16, 1.75, 1.57, 0.09, 0.0, 0.0, 0.13, 0.25, 0.24, 0.07]}, {"a": "Pink Floyd", "g": "C", "h": 7.2, "v": [0.0, 0.0, 0.06, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 1.48, 1.93, 0.58, 0.26, 0.11, 0.37, 0.29, 0.15, 0.0, 0.0, 0.3, 0.31, 0.9, 0.48]}, {"a": "Mark Ronson", "g": "P", "h": 7.1, "v": [0.0, 0.05, 0.16, 0.38, 0.14, 0.53, 0.43, 0.04, 0.07, 0.86, 0.7, 0.39, 0.23, 0.43, 0.41, 0.22, 0.49, 0.29, 0.02, 0.18, 0.0, 0.18, 0.21, 0.12, 0.14, 0.09, 0.08, 0.07, 0.0, 0.01, 0.0, 0.01, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.06, 0.14, 0.01]}, {"a": "AC/DC", "g": "M", "h": 7.0, "v": [0.02, 0.15, 0.29, 0.04, 0.1, 0.05, 0.43, 0.0, 0.0, 0.0, 0.18, 0.0, 0.01, 0.0, 0.32, 0.15, 0.3, 0.06, 1.33, 1.45, 0.45, 0.67, 0.1, 0.01, 0.0, 0.02, 0.02, 0.1, 0.01, 0.04, 0.0, 0.0, 0.3, 0.01, 0.0, 0.0, 0.0, 0.04, 0.15, 0.15, 0.03]}, {"a": "Macklemore & Ryan Lewis", "g": "H", "h": 6.5, "v": [0.0, 0.0, 0.12, 0.66, 0.6, 0.4, 0.6, 0.42, 0.14, 0.38, 0.19, 0.07, 0.0, 0.02, 0.4, 0.72, 1.39, 0.29, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Eagles", "g": "C", "h": 6.0, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.16, 0.05, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.01, 0.21, 0.22, 0.1, 3.1, 0.67, 0.11, 0.11, 0.01, 0.03, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.0, 0.0, 0.06, 0.22, 0.02, 0.0, 0.0, 0.05, 0.03, 0.71, 0.01]}, {"a": "Ariana Grande", "g": "P", "h": 5.8, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.01, 1.5, 0.71, 0.04, 0.07, 0.0, 0.36, 1.58, 0.21, 0.39, 0.39, 0.12, 0.06, 0.0, 0.02, 0.0, 0.06, 0.0, 0.04, 0.03, 0.0, 0.0, 0.07, 0.05, 0.1, 0.04]}, {"a": "The Chainsmokers", "g": "E", "h": 5.6, "v": [0.0, 0.01, 0.0, 0.0, 0.23, 0.14, 0.34, 0.0, 0.05, 1.01, 0.66, 0.31, 0.1, 0.51, 0.52, 0.22, 0.98, 0.19, 0.03, 0.21, 0.0, 0.0, 0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01]}, {"a": "Pitbull", "g": "P", "h": 5.5, "v": [0.19, 0.32, 0.19, 0.89, 0.57, 0.62, 0.84, 0.08, 0.04, 0.22, 0.03, 0.04, 0.12, 0.0, 0.05, 0.01, 0.31, 0.17, 0.0, 0.16, 0.06, 0.26, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.23, 0.04, 0.0, 0.0]}, {"a": "Ed Sheeran", "g": "P", "h": 5.4, "v": [0.17, 0.14, 0.19, 0.04, 0.14, 0.4, 0.4, 0.16, 0.06, 1.15, 0.21, 0.16, 0.1, 0.27, 0.49, 0.01, 0.07, 0.42, 0.0, 0.1, 0.0, 0.08, 0.3, 0.06, 0.06, 0.09, 0.0, 0.0, 0.0, 0.03, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08, 0.01, 0.02, 0.0]}, {"a": "Fleetwood Mac", "g": "C", "h": 5.4, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.01, 0.03, 0.0, 0.01, 0.0, 0.04, 0.45, 2.11, 1.36, 0.36, 0.05, 0.18, 0.44, 0.01, 0.0, 0.0, 0.01, 0.01, 0.31, 0.01]}, {"a": "Nirvana", "g": "A", "h": 5.3, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.03, 0.01, 0.0, 0.17, 0.76, 0.99, 0.84, 0.11, 0.07, 0.01, 0.02, 0.01, 0.22, 0.27, 0.17, 0.01, 0.01, 0.17, 0.33, 0.08, 0.0, 0.0, 0.0, 0.08, 0.81, 0.09]}, {"a": "Smash Mouth", "g": "A", "h": 5.2, "v": [0.0, 0.07, 0.18, 0.41, 0.37, 0.46, 0.28, 0.0, 0.11, 0.75, 0.68, 0.47, 0.12, 0.23, 0.34, 0.07, 0.23, 0.1, 0.06, 0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.0, 0.07, 0.0]}, {"a": "Elton John", "g": "C", "h": 5.2, "v": [0.0, 0.08, 0.2, 0.03, 0.0, 0.07, 0.02, 0.04, 0.0, 0.0, 0.12, 0.01, 0.25, 0.45, 0.15, 0.0, 0.06, 0.0, 0.11, 0.27, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.47, 0.21, 0.0, 0.01, 0.0, 0.1, 0.06, 0.0, 0.0, 0.12, 0.91, 1.23, 0.19]}, {"a": "Black Sabbath", "g": "M", "h": 5.1, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.05, 0.12, 0.28, 0.57, 0.05, 0.05, 0.1, 0.09, 0.12, 0.06, 0.06, 0.38, 0.43, 0.3, 0.08, 0.0, 0.93, 0.89, 0.02, 0.0, 0.0, 0.01, 0.3, 0.17, 0.01]}, {"a": "Megadeth", "g": "M", "h": 5.0, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.11, 0.0, 0.12, 0.18, 0.02, 0.0, 0.0, 0.5, 0.59, 2.27, 1.26]}, {"a": "Pantera", "g": "M", "h": 5.0, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.02, 0.12, 0.02, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.6, 0.75, 1.93, 1.54]}, {"a": "Taylor Swift", "g": "P", "h": 4.9, "v": [0.15, 0.16, 0.29, 0.31, 0.17, 0.03, 0.16, 0.03, 0.03, 0.47, 0.2, 0.14, 0.0, 0.05, 0.2, 0.07, 0.11, 0.07, 0.04, 0.0, 0.05, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.01, 1.22, 0.18, 0.03, 0.03, 0.0, 0.0, 0.0, 0.04, 0.22, 0.37, 0.04]}, {"a": "Pearl Jam", "g": "A", "h": 4.9, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.01, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.56, 4.01, 0.21]}, {"a": "David Guetta", "g": "E", "h": 4.9, "v": [0.39, 0.14, 0.12, 0.24, 0.21, 0.3, 0.5, 0.03, 0.01, 0.19, 0.11, 0.14, 0.0, 0.09, 0.13, 0.13, 1.51, 0.24, 0.0, 0.04, 0.0, 0.05, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.07, 0.0, 0.0, 0.0, 0.07, 0.04, 0.0, 0.0, 0.07, 0.03, 0.0, 0.0]}, {"a": "Beyoncé", "g": "H", "h": 4.9, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.05, 0.01, 0.0, 0.0, 0.03, 0.18, 0.07, 0.08, 0.16, 0.02, 0.05, 0.14, 0.14, 0.05, 0.02, 0.41, 1.39, 0.06, 0.19, 0.14, 0.0, 0.0, 0.0, 0.0, 0.0, 0.07, 0.01, 0.02, 0.06, 0.0, 0.0, 0.48, 0.53, 0.36, 0.14]}, {"a": "The Script", "g": "P", "h": 4.9, "v": [0.21, 0.23, 0.49, 0.65, 0.2, 0.47, 0.54, 0.1, 0.19, 0.51, 0.21, 0.06, 0.06, 0.09, 0.17, 0.06, 0.31, 0.16, 0.0, 0.09, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Post Malone", "g": "H", "h": 4.9, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.24, 0.0, 0.02, 0.26, 0.21, 0.14, 0.15, 0.18, 1.16, 0.68, 1.1, 0.29, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.01, 0.01, 0.0, 0.0, 0.0, 0.02, 0.01, 0.01]}, {"a": "Gamazda", "g": "N", "h": 4.6, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.37, 0.24, 1.42, 1.06, 0.24, 0.08, 0.04, 0.03, 0.0, 0.0, 0.0, 0.11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0]}, {"a": "Michael Jackson", "g": "P", "h": 4.5, "v": [0.0, 0.0, 0.14, 0.12, 0.13, 0.08, 0.02, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08, 0.16, 0.78, 0.31, 0.26, 0.03, 0.0, 0.0, 0.0, 0.0, 0.0, 0.07, 0.02, 0.08, 0.04, 0.17, 0.0, 0.0, 0.28, 0.01, 0.01, 0.0, 0.0, 0.25, 0.23, 0.58, 0.64]}, {"a": "OneRepublic", "g": "P", "h": 4.4, "v": [0.15, 0.29, 0.45, 0.47, 0.35, 0.51, 0.64, 0.01, 0.05, 0.22, 0.08, 0.09, 0.16, 0.01, 0.11, 0.09, 0.22, 0.31, 0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.01, 0.0]}, {"a": "Gym Class Heroes", "g": "H", "h": 4.4, "v": [0.0, 0.01, 0.91, 0.7, 0.35, 0.39, 0.44, 0.25, 0.26, 0.15, 0.24, 0.0, 0.06, 0.0, 0.02, 0.06, 0.24, 0.14, 0.0, 0.12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0]}, {"a": "Britney Spears", "g": "P", "h": 4.2, "v": [0.0, 0.01, 0.01, 0.0, 0.01, 0.02, 0.04, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.02, 0.01, 0.0, 0.0, 0.0, 0.0, 0.07, 0.01, 0.0, 0.03, 0.02, 0.0, 0.0, 0.01, 0.06, 0.06, 0.58, 0.99, 0.68, 0.46, 0.0, 0.0, 0.1, 0.16, 0.66, 0.12]}, {"a": "Eric Clapton", "g": "C", "h": 4.1, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.19, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.18, 1.42, 0.32, 0.11, 0.5, 0.26, 0.03, 0.0, 0.0, 0.0, 0.08, 0.03, 0.0]}, {"a": "Lynyrd Skynyrd", "g": "C", "h": 4.1, "v": [0.0, 0.15, 0.18, 0.0, 0.08, 0.12, 0.07, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.17, 0.29, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.01, 0.58, 1.18, 0.49, 0.14, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.14, 0.19, 0.18, 0.04]}, {"a": "Twenty One Pilots", "g": "A", "h": 4.0, "v": [0.33, 0.24, 0.25, 0.54, 0.18, 0.28, 0.25, 0.0, 0.01, 0.01, 0.0, 0.06, 0.06, 0.01, 0.11, 0.12, 0.65, 0.08, 0.13, 0.59, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.01, 0.0, 0.0, 0.03, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.01]}, {"a": "Jonas Blue", "g": "E", "h": 4.0, "v": [0.18, 0.84, 0.67, 0.71, 0.22, 0.23, 0.27, 0.04, 0.07, 0.2, 0.05, 0.06, 0.07, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.38, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Doja Cat", "g": "H", "h": 4.0, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.01, 0.0, 0.0, 0.0, 0.06, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.6, 0.35, 1.99, 0.83]}, {"a": "Mike Posner", "g": "E", "h": 3.9, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08, 0.0, 0.0, 1.17, 0.81, 0.83, 0.69, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.05, 0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0]}, {"a": "Rush", "g": "C", "h": 3.9, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.51, 2.2, 1.17]}, {"a": "Cartoon", "g": "E", "h": 3.8, "v": [0.57, 0.92, 0.76, 0.55, 0.15, 0.12, 0.25, 0.01, 0.12, 0.11, 0.02, 0.0, 0.0, 0.06, 0.02, 0.0, 0.0, 0.12, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0]}, {"a": "Deep Purple", "g": "M", "h": 3.8, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.37, 0.57, 0.0, 0.02, 0.06, 0.05, 0.09, 0.09, 0.1, 0.0, 0.02, 0.09, 0.02, 0.12, 0.05, 0.0, 0.01, 0.02, 0.0, 0.0, 0.0, 0.0, 0.03, 0.98, 0.03, 0.12, 0.0, 0.14, 0.56, 0.03, 0.0, 0.0, 0.01, 0.08, 0.11, 0.0]}, {"a": "Katy Perry", "g": "P", "h": 3.7, "v": [0.13, 0.09, 0.12, 0.05, 0.27, 0.37, 0.71, 0.22, 0.12, 0.33, 0.11, 0.07, 0.0, 0.07, 0.01, 0.0, 0.18, 0.02, 0.0, 0.25, 0.07, 0.04, 0.0, 0.0, 0.03, 0.14, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.16, 0.0, 0.0, 0.0, 0.0, 0.01, 0.15, 0.01]}, {"a": "Tamir Bar", "g": "I", "h": 3.7, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.75, 0.44, 0.26, 0.05, 0.09, 0.0, 0.0, 0.0, 0.0, 0.09, 0.0]}, {"a": "Wiz Khalifa", "g": "H", "h": 3.7, "v": [0.03, 0.09, 0.13, 0.6, 0.46, 0.33, 0.45, 0.16, 0.07, 0.56, 0.18, 0.0, 0.02, 0.0, 0.0, 0.0, 0.38, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.07, 0.04]}, {"a": "Sean Paul", "g": "H", "h": 3.6, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.09, 0.0, 0.0, 0.03, 0.03, 0.06, 0.03, 0.51, 0.27, 0.12, 1.31, 0.49, 0.15, 0.37, 0.0, 0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.03, 0.0]}, {"a": "Baroque Festival Orchestra", "g": "N", "h": 3.6, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.17, 0.09, 0.04, 0.1, 0.16, 0.27, 0.07, 1.29, 0.38, 0.1, 0.66, 0.0, 0.0, 0.0, 0.05, 0.04, 0.14]}, {"a": "Aerosmith", "g": "C", "h": 3.4, "v": [0.0, 0.05, 0.14, 0.01, 0.0, 0.03, 0.01, 0.0, 0.0, 0.0, 0.68, 0.07, 0.0, 0.14, 0.03, 0.07, 0.0, 0.0, 0.21, 0.23, 0.07, 0.16, 0.0, 0.0, 0.07, 0.0, 0.08, 0.02, 0.09, 0.04, 0.07, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.45, 0.6, 0.07]}, {"a": "One Direction", "g": "P", "h": 3.4, "v": [0.05, 0.09, 0.11, 0.11, 0.88, 0.57, 0.68, 0.07, 0.15, 0.2, 0.06, 0.06, 0.05, 0.1, 0.06, 0.0, 0.14, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Green Day", "g": "A", "h": 3.3, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.1, 0.02, 0.0, 0.05, 0.01, 0.35, 0.59, 0.14, 0.01, 0.02, 0.0, 0.06, 0.0, 0.01, 0.43, 0.29, 0.21, 0.07, 0.0, 0.0, 0.14, 0.0, 0.0, 0.0, 0.08, 0.23, 0.22, 0.21]}, {"a": "Daft Punk", "g": "E", "h": 3.3, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.29, 0.09, 0.09, 0.04, 0.27, 0.09, 0.2, 0.0, 0.07, 0.22, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.1, 0.15, 0.5, 0.31, 0.06, 0.0, 0.09, 0.09, 0.01, 0.0, 0.0, 0.01, 0.4, 0.11, 0.11]}, {"a": "a-ha", "g": "P", "h": 3.3, "v": [0.0, 0.0, 0.01, 0.14, 0.3, 0.63, 0.62, 0.04, 0.08, 0.18, 0.29, 0.19, 0.0, 0.16, 0.15, 0.02, 0.0, 0.0, 0.02, 0.19, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.0, 0.0, 0.0, 0.0, 0.13, 0.02, 0.0, 0.0, 0.0, 0.0, 0.08, 0.0, 0.0]}, {"a": "Prince", "g": "P", "h": 3.3, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.14, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.01, 0.0, 0.0, 0.02, 1.33, 1.34, 0.29, 0.0, 0.0, 0.0, 0.0, 0.07, 0.03]}, {"a": "Yuval Dayan", "g": "I", "h": 3.2, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.71, 1.87, 0.45, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.12, 0.01]}, {"a": "Polyphia", "g": "N", "h": 3.1, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.56, 1.19, 0.27, 0.98, 0.13, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.02]}, {"a": "Miley Cyrus", "g": "P", "h": 3.1, "v": [0.4, 0.46, 0.26, 0.06, 0.17, 0.68, 0.57, 0.0, 0.02, 0.1, 0.03, 0.12, 0.0, 0.01, 0.06, 0.0, 0.0, 0.14, 0.01, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0]}, {"a": "Survivor", "g": "C", "h": 3.1, "v": [0.06, 0.11, 0.11, 0.01, 0.05, 0.41, 0.74, 0.0, 0.09, 0.18, 0.08, 0.07, 0.07, 0.04, 0.2, 0.07, 0.26, 0.01, 0.15, 0.01, 0.0, 0.07, 0.0, 0.0, 0.0, 0.0, 0.0, 0.04, 0.0, 0.02, 0.0, 0.0, 0.18, 0.05, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0]}, {"a": "24kGoldn", "g": "H", "h": 3.0, "v": [0.22, 0.49, 0.48, 0.55, 0.25, 0.16, 0.12, 0.08, 0.12, 0.27, 0.04, 0.08, 0.03, 0.11, 0.0, 0.0, 0.01, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Joan Jett & the Blackhearts", "g": "C", "h": 3.0, "v": [0.0, 0.08, 0.31, 0.3, 0.72, 0.18, 0.75, 0.0, 0.09, 0.05, 0.02, 0.07, 0.12, 0.07, 0.0, 0.0, 0.12, 0.0, 0.0, 0.05, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.01, 0.0]}, {"a": "Billie Eilish", "g": "P", "h": 3.0, "v": [0.04, 0.15, 0.24, 0.53, 0.14, 0.15, 0.24, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.13, 0.0, 0.08, 0.82, 0.11, 0.03, 0.0, 0.03, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.07, 0.0, 0.01, 0.06, 0.02, 0.0, 0.0, 0.0, 0.04, 0.01, 0.09, 0.0]}, {"a": "Eviatar Banai", "g": "I", "h": 3.0, "v": [0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.77, 0.88, 0.31, 0.48, 0.0, 0.0, 0.0, 0.0, 0.15, 0.15, 0.12, 0.08]}, {"a": "Ludwig van Beethoven", "g": "N", "h": 2.9, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.45, 0.52, 0.05, 0.01, 0.0, 0.18, 0.01, 0.27, 0.12, 0.18, 0.09, 0.0, 0.0, 0.03, 0.0, 0.01, 0.0]}, {"a": "Jimi Hendrix", "g": "C", "h": 2.9, "v": [0.0, 0.0, 0.12, 0.01, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.23, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.01, 0.0, 0.0, 0.0, 0.08, 0.0, 0.0, 0.0, 0.0, 0.01, 0.36, 1.96, 0.05]}, {"a": "Tom Bailey Backing Tracks", "g": "N", "h": 2.8, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.25, 0.3, 0.0, 0.65, 0.0, 0.0, 0.0, 0.0, 0.62, 0.0, 0.0, 0.0]}, {"a": "Lady Gaga", "g": "P", "h": 2.8, "v": [0.0, 0.05, 0.13, 0.02, 0.08, 0.05, 0.06, 0.0, 0.0, 0.0, 0.03, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.25, 0.01, 0.03, 0.0, 0.07, 1.17, 0.0, 0.0, 0.07, 0.0, 0.0, 0.0, 0.1, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.02, 0.35, 0.26]}, {"a": "Santana", "g": "C", "h": 2.7, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.01, 0.0, 0.0, 0.37, 1.3, 0.17, 0.0, 0.0, 0.21, 0.31, 0.28, 0.05]}, {"a": "JAY-Z", "g": "H", "h": 2.7, "v": [0.0, 0.0, 0.0, 0.0, 0.08, 0.0, 0.01, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.16, 0.34, 0.91, 0.33, 0.23, 0.0, 0.06, 0.0, 0.01, 0.0, 0.0, 0.31, 0.06, 0.04, 0.0, 0.04, 0.0, 0.0, 0.0, 0.07, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Martin Garrix", "g": "E", "h": 2.7, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.49, 0.61, 0.26, 0.11, 0.29, 0.07, 0.0, 0.0, 0.01, 0.01, 0.44, 0.0, 0.13, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.05, 0.05, 0.0]}, {"a": "Lindsey Stirling", "g": "N", "h": 2.6, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 1.44, 0.33, 0.26, 0.0, 0.02, 0.0, 0.0, 0.0, 0.19, 0.08, 0.03, 0.0]}, {"a": "Zara Larsson", "g": "P", "h": 2.6, "v": [0.0, 0.0, 0.0, 0.0, 0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 1.03, 0.48, 0.7, 0.07, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.01, 0.0, 0.0, 0.01, 0.12, 0.0, 0.0, 0.0, 0.05, 0.01, 0.01, 0.0]}, {"a": "The Beatles", "g": "C", "h": 2.6, "v": [0.0, 0.12, 0.24, 0.05, 0.08, 0.08, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.07, 0.09, 0.0, 0.0, 0.03, 0.0, 0.0, 0.04, 0.01, 0.13, 0.01, 0.26, 0.01, 0.0, 0.52, 0.47, 0.16, 0.0, 0.0, 0.02, 0.01, 0.15, 0.0]}, {"a": "Stevie Wonder", "g": "H", "h": 2.6, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.07, 0.14, 0.0, 0.0, 0.18, 0.57, 1.52, 0.01]}, {"a": "Pharrell Williams", "g": "P", "h": 2.5, "v": [0.07, 0.03, 0.14, 0.41, 0.21, 0.26, 0.26, 0.0, 0.0, 0.1, 0.21, 0.0, 0.0, 0.05, 0.13, 0.0, 0.02, 0.22, 0.08, 0.21, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.07, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0]}, {"a": "WALK THE MOON", "g": "A", "h": 2.4, "v": [0.0, 0.16, 0.46, 0.69, 0.19, 0.31, 0.33, 0.11, 0.11, 0.02, 0.0, 0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Dream Theater", "g": "M", "h": 2.4, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.13, 0.29, 0.98, 0.99]}, {"a": "Sabrina Carpenter", "g": "P", "h": 2.4, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.77, 0.27, 0.1, 0.0, 0.02, 0.01, 0.01, 0.12, 0.0, 0.0, 0.12, 0.0, 0.0, 0.0, 0.02, 0.04, 0.02, 0.18, 0.43, 0.01, 0.0, 0.0, 0.04, 0.01, 0.13, 0.01]}, {"a": "Boston", "g": "C", "h": 2.4, "v": [0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.1, 0.0, 0.0, 0.0, 0.23, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.66, 0.53, 0.0, 0.08, 0.23, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.2, 0.08, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.2, 0.01]}, {"a": "Soundgarden", "g": "A", "h": 2.4, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.24, 1.66, 0.08, 0.0, 0.0, 0.01, 0.22, 0.11, 0.03]}, {"a": "Dua Lipa", "g": "P", "h": 2.3, "v": [0.0, 0.0, 0.04, 0.05, 0.05, 0.11, 0.01, 0.01, 0.04, 0.57, 0.07, 0.15, 0.0, 0.07, 0.29, 0.06, 0.0, 0.38, 0.0, 0.11, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.1, 0.11, 0.09]}, {"a": "USHER", "g": "H", "h": 2.3, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.01, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.16, 0.66, 0.94, 0.27, 0.01, 0.08, 0.0, 0.03, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.06, 0.0, 0.02, 0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0]}, {"a": "50 Cent", "g": "H", "h": 2.3, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.16, 0.44, 0.74, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.01, 0.01, 0.03, 0.0, 0.0, 0.23, 0.06, 0.06, 0.0, 0.0, 0.16, 0.15, 0.21, 0.01]}, {"a": "Justin Timberlake", "g": "P", "h": 2.3, "v": [0.15, 0.24, 0.21, 0.26, 0.11, 0.51, 0.32, 0.0, 0.02, 0.03, 0.14, 0.0, 0.0, 0.05, 0.0, 0.0, 0.13, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.01, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.04, 0.01, 0.0]}, {"a": "Shawn Mendes", "g": "P", "h": 2.3, "v": [0.0, 0.0, 0.02, 0.06, 0.23, 0.02, 0.0, 0.0, 0.0, 0.0, 0.39, 0.17, 0.06, 0.06, 0.16, 0.11, 0.34, 0.11, 0.0, 0.4, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.0, 0.0, 0.02, 0.01, 0.04, 0.0]}, {"a": "Glass Animals", "g": "A", "h": 2.2, "v": [0.54, 0.07, 0.27, 0.23, 0.13, 0.18, 0.17, 0.08, 0.09, 0.06, 0.0, 0.07, 0.0, 0.02, 0.03, 0.0, 0.0, 0.18, 0.0, 0.07, 0.0, 0.0, 0.0, 0.01, 0.0, 0.02, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Harry Styles", "g": "P", "h": 2.2, "v": [0.0, 0.02, 0.01, 0.06, 0.07, 0.2, 0.36, 0.05, 0.0, 0.25, 0.37, 0.07, 0.1, 0.02, 0.1, 0.03, 0.0, 0.07, 0.03, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.0, 0.0, 0.01, 0.0, 0.02, 0.0, 0.0, 0.0, 0.06, 0.16, 0.03]}, {"a": "Kendrick Lamar", "g": "H", "h": 2.2, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.43, 0.36, 0.26, 0.0, 0.07, 0.01, 0.02, 0.18, 0.03, 0.07, 0.09, 0.16, 0.0, 0.0, 0.04, 0.0, 0.0, 0.12, 0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0]}, {"a": "The Police", "g": "C", "h": 2.1, "v": [0.0, 0.0, 0.1, 0.0, 0.0, 0.07, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.09, 0.72, 0.21, 0.0, 0.15, 0.0, 0.0, 0.0, 0.1, 0.12, 0.18, 0.14, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.14]}, {"a": "Taio Cruz", "g": "P", "h": 2.1, "v": [0.37, 0.27, 0.62, 0.23, 0.17, 0.13, 0.2, 0.0, 0.0, 0.01, 0.0, 0.06, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Madonna", "g": "P", "h": 2.1, "v": [0.0, 0.0, 0.01, 0.04, 0.0, 0.0, 0.02, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.02, 0.03, 0.02, 1.0, 0.35, 0.0, 0.0, 0.02, 0.07, 0.0, 0.0, 0.0, 0.27, 0.03, 0.0, 0.0, 0.02, 0.09, 0.0, 0.01]}, {"a": "Sia", "g": "P", "h": 2.1, "v": [0.78, 0.11, 0.09, 0.02, 0.07, 0.14, 0.1, 0.01, 0.0, 0.03, 0.06, 0.07, 0.01, 0.0, 0.07, 0.06, 0.13, 0.25, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Eric Johnson", "g": "N", "h": 2.0, "v": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.15, 0.0, 0.03, 0.0, 0.2, 0.51, 0.03, 0.0, 0.0, 0.07, 0.07, 0.91, 0.07]}, {"a": "Lost Frequencies", "g": "E", "h": 2.0, "v": [0.0, 0.0, 0.03, 0.43, 0.24, 0.27, 0.54, 0.06, 0.02, 0.07, 0.06, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.21, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"a": "Shakira", "g": "P", "h": 2.0, "v": [0.0, 0.0, 0.07, 0.04, 0.0, 0.03, 0.0, 0.0, 0.0, 0.03, 0.11, 0.0, 0.0, 0.0, 0.02, 0.12, 0.1, 0.08, 0.0, 0.06, 0.0, 0.04, 0.0, 0.0, 0.58, 0.22, 0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.0, 0.0, 0.12, 0.21, 0.11, 0.0]}], "constants": [["Guns N' Roses", 8, 24.6], ["Metallica", 7, 56.5], ["Eminem", 7, 33.1], ["Linkin Park", 7, 11.9], ["Queen", 7, 9.2], ["Dire Straits", 6, 15.1], ["The Weeknd", 6, 7.4]], "tail": {"n": 2919, "top10": 22, "top100": 70, "top400": 95, "under5": 2338, "under5share": 3.1, "once": 1169}, "gtot": [["Pop", 179, 100, [["Maroon 5", 10.6], ["Black Eyed Peas", 9.5], ["Bruno Mars", 8.4], ["Rihanna", 8.3], ["The Weeknd", 7.4], ["Mark Ronson", 7.1]]], ["Electronic & dance", 85, 39, [["Alan Walker", 12.0], ["Avicii", 10.4], ["Calvin Harris", 9.4], ["The Chainsmokers", 5.6], ["David Guetta", 4.9], ["Jonas Blue", 4.0]]], ["Hip-hop & R&B", 137, 50, [["Eminem", 33.1], ["Drake", 10.0], ["Dr. Dre", 9.9], ["2Pac", 7.7], ["Macklemore & Ryan Lewis", 6.5], ["Beyoncé", 4.9]]], ["Israeli", 52, 319, [["Tuna", 12.1], ["Tamir Bar", 3.7], ["Yuval Dayan", 3.2], ["Eviatar Banai", 3.0], ["הלם תרבות", 1.4], ["שם טוב האבי", 1.3]]], ["Alternative & modern rock", 103, 48, [["Coldplay", 12.0], ["Linkin Park", 11.9], ["Imagine Dragons", 10.7], ["Red Hot Chili Peppers", 10.5], ["Nirvana", 5.3], ["Smash Mouth", 5.2]]], ["Classic rock", 122, 55, [["Dire Straits", 15.1], ["Led Zeppelin", 9.4], ["Queen", 9.2], ["ZZ Top", 8.4], ["Pink Floyd", 7.2], ["Eagles", 6.0]]], ["Hard rock & metal", 150, 29, [["Metallica", 56.5], ["Guns N' Roses", 24.6], ["Van Halen", 10.6], ["Ozzy Osbourne", 7.6], ["Scorpions", 7.3], ["AC/DC", 7.0]]], ["Instrumental & classical", 33, 28, [["Gamazda", 4.6], ["Baroque Festival Orchestra", 3.6], ["Polyphia", 3.1], ["Ludwig van Beethoven", 2.9], ["Tom Bailey Backing Tracks", 2.8], ["Lindsey Stirling", 2.6]]], ["Everything else", 46, 2251, [["Brothers Norge", 1.6], ["Hop! Channel", 1.4], ["Rockabye Baby!", 0.8], ["Jackson Lewis", 0.7], ["Geronimo Stilton", 0.5], ["Jon Lajoie", 0.4]]]], "gyear": {"2023": [33, 18, 8, 6, 15, 7, 4, 1, 6], "2024": [22, 14, 25, 3, 11, 10, 11, 0, 4], "2025": [13, 5, 8, 7, 7, 21, 24, 10, 5], "2026": [13, 1, 14, 7, 13, 16, 26, 4, 6]}, "tot": {"h": 1153, "mh": 907, "arts": 2919, "tracks": 8867, "coverage": 94.6}, "trans": [{"frm": 0, "to": 1, "boundary": "2024-02", "weeks": ["2023-11-20", "2023-11-27", "2023-12-04", "2023-12-11", "2023-12-18", "2023-12-25", "2024-01-01", "2024-01-08", "2024-01-15", "2024-01-22", "2024-01-29", "2024-02-05", "2024-02-12", "2024-02-19", "2024-02-26", "2024-03-04", "2024-03-11", "2024-03-18", "2024-03-25", "2024-04-01", "2024-04-08"], "wg": [[0.64, 0.59, 0.18, 0.0, 0.16, 1.02, 1.01, 0.07, 0.1], [0.33, 0.27, 0.12, 0.05, 0.17, 0.25, 0.49, 0.01, 0.17], [0.17, 0.04, 0.44, 0.01, 0.14, 0.0, 0.0, 0.01, 0.15], [0.13, 0.07, 0.07, 0.04, 0.07, 0.05, 0.05, 0.0, 0.34], [0.61, 0.53, 0.32, 0.0, 0.28, 0.07, 0.24, 0.0, 0.38], [0.5, 0.25, 0.19, 0.0, 0.13, 0.0, 0.0, 0.0, 0.26], [0.49, 0.91, 0.23, 0.03, 0.61, 0.02, 0.0, 0.06, 0.07], [0.36, 0.29, 0.15, 0.0, 0.21, 0.07, 0.24, 0.09, 0.05], [0.22, 0.22, 0.02, 0.0, 0.18, 0.0, 0.0, 0.0, 0.02], [0.3, 0.04, 0.14, 0.0, 0.07, 0.0, 0.0, 0.07, 0.08], [0.19, 0.14, 0.11, 0.01, 0.2, 0.1, 0.0, 0.0, 0.01], [3.47, 2.07, 1.31, 0.04, 0.87, 0.3, 0.26, 0.09, 0.17], [1.59, 1.16, 1.23, 0.0, 0.59, 0.12, 0.11, 0.01, 0.13], [1.47, 1.46, 1.57, 0.0, 0.57, 0.03, 0.05, 0.04, 0.29], [1.97, 2.28, 1.66, 0.0, 1.41, 0.12, 0.12, 0.06, 0.18], [1.13, 1.06, 2.71, 0.03, 0.86, 0.46, 0.22, 0.01, 0.24], [1.84, 1.26, 1.57, 0.0, 0.9, 0.85, 0.57, 0.01, 0.27], [1.38, 0.81, 0.35, 0.0, 0.26, 0.02, 0.08, 0.0, 0.11], [0.93, 0.78, 0.29, 0.0, 0.3, 0.07, 0.05, 0.03, 0.17], [0.98, 0.69, 0.36, 0.0, 0.25, 0.0, 0.0, 0.04, 0.1], [2.49, 2.13, 0.72, 0.0, 0.91, 0.35, 0.18, 0.07, 0.17]], "inn": [["Eminem", 0.06, 2.18], ["The Chainsmokers", 0.09, 0.52], ["Rihanna", 0.02, 0.38], ["Martin Garrix", 0.0, 0.35], ["Mark Ronson", 0.2, 0.52], ["Calvin Harris", 0.11, 0.38]], "out": [["Imagine Dragons", 0.79, 0.11], ["Cartoon", 0.38, 0.04], ["Alan Walker", 0.93, 0.59], ["Pitbull", 0.41, 0.08], ["Dire Straits", 0.4, 0.08], ["Black Eyed Peas", 0.56, 0.27]], "stay": [["Alan Walker", 0.93, 0.59], ["Avicii", 0.66, 0.41], ["Coldplay", 0.62, 0.4], ["Guns N' Roses", 0.44, 0.28], ["Black Eyed Peas", 0.56, 0.27]], "firsts": [["2024-02-11", "Eminem", "Rap God", 17], ["2024-02-11", "Rihanna", "We Found Love", 20]]}, {"frm": 1, "to": 2, "boundary": "2024-07", "weeks": ["2024-04-15", "2024-04-22", "2024-04-29", "2024-05-06", "2024-05-13", "2024-05-20", "2024-05-27", "2024-06-03", "2024-06-10", "2024-06-17", "2024-06-24", "2024-07-01", "2024-07-08", "2024-07-15", "2024-07-22", "2024-07-29", "2024-08-05", "2024-08-12", "2024-08-19", "2024-08-26", "2024-09-02", "2024-09-09"], "wg": [[0.5, 0.68, 0.34, 0.06, 0.29, 0.07, 0.0, 0.0, 0.28], [0.04, 0.13, 0.06, 0.04, 0.0, 0.0, 0.0, 0.0, 0.36], [0.16, 0.39, 0.08, 0.0, 0.0, 0.0, 0.0, 0.0, 0.08], [0.31, 0.15, 0.11, 0.0, 0.01, 0.0, 0.0, 0.0, 0.03], [0.0, 0.03, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03], [1.27, 1.33, 0.21, 0.0, 0.15, 0.34, 0.37, 0.11, 0.18], [0.85, 0.81, 0.9, 0.0, 0.24, 0.3, 0.22, 0.04, 0.04], [0.87, 0.92, 0.36, 0.19, 0.14, 0.0, 0.05, 0.01, 0.02], [0.35, 0.8, 0.54, 0.1, 0.03, 0.27, 0.01, 0.0, 0.13], [0.49, 0.79, 0.54, 0.0, 0.04, 0.04, 0.08, 0.0, 0.09], [1.91, 1.62, 2.06, 4.91, 0.28, 0.43, 0.22, 0.0, 0.06], [1.53, 0.22, 1.36, 0.13, 0.01, 0.15, 0.57, 0.0, 0.39], [1.16, 0.48, 0.53, 0.0, 0.02, 0.09, 0.22, 0.0, 0.01], [0.8, 0.18, 0.61, 0.26, 0.31, 0.09, 0.46, 0.0, 0.17], [0.92, 0.51, 3.41, 1.21, 0.19, 0.26, 0.43, 0.01, 0.34], [2.27, 0.68, 4.31, 0.4, 0.47, 0.52, 0.51, 0.0, 0.14], [0.27, 0.0, 2.17, 0.07, 0.01, 0.01, 0.06, 0.0, 0.11], [1.26, 0.63, 3.37, 0.52, 0.73, 0.04, 0.16, 0.0, 0.34], [0.28, 0.03, 2.49, 0.41, 0.0, 0.0, 0.0, 0.0, 0.02], [0.43, 0.06, 1.79, 0.23, 0.0, 0.07, 0.0, 0.0, 0.1], [2.47, 1.59, 8.24, 0.01, 0.91, 0.14, 0.25, 0.0, 0.54], [3.87, 1.5, 8.85, 0.0, 1.46, 0.36, 0.81, 0.0, 0.21]], "inn": [["Dr. Dre", 0.01, 1.47], ["Drake", 0.21, 1.41], ["Eminem", 2.18, 3.0], ["Maroon 5", 0.23, 0.94], ["Post Malone", 0.19, 0.81], ["Macklemore & Ryan Lewis", 0.13, 0.7]], "out": [["Alan Walker", 0.59, 0.05], ["Martin Garrix", 0.35, 0.02], ["Smash Mouth", 0.45, 0.18], ["TheFatRat", 0.24, 0.0], ["Lost Sky", 0.19, 0.01], ["Mark Ronson", 0.52, 0.35]], "stay": [["Eminem", 2.18, 3.0], ["The Chainsmokers", 0.52, 0.48], ["Calvin Harris", 0.38, 0.42], ["Coldplay", 0.4, 0.37], ["Mark Ronson", 0.52, 0.35]], "firsts": [["2024-06-25", "Drake", "One Dance", 17], ["2024-07-30", "Post Malone", "Congratulations", 19], ["2024-08-19", "Dr. Dre", "Still D.R.E.", 16]]}, {"frm": 2, "to": 3, "boundary": "2024-11", "weeks": ["2024-08-19", "2024-08-26", "2024-09-02", "2024-09-09", "2024-09-16", "2024-09-23", "2024-09-30", "2024-10-07", "2024-10-14", "2024-10-21", "2024-10-28", "2024-11-04", "2024-11-11", "2024-11-18", "2024-11-25", "2024-12-02", "2024-12-09", "2024-12-16", "2024-12-23", "2024-12-30", "2025-01-06"], "wg": [[0.28, 0.03, 2.49, 0.41, 0.0, 0.0, 0.0, 0.0, 0.02], [0.43, 0.06, 1.79, 0.23, 0.0, 0.07, 0.0, 0.0, 0.1], [2.47, 1.59, 8.24, 0.01, 0.91, 0.14, 0.25, 0.0, 0.54], [3.87, 1.5, 8.85, 0.0, 1.46, 0.36, 0.81, 0.0, 0.21], [2.68, 1.6, 5.7, 0.0, 1.17, 0.31, 0.29, 0.0, 0.22], [1.46, 0.59, 2.14, 0.0, 0.77, 0.24, 0.09, 0.0, 0.57], [0.15, 0.0, 1.01, 0.0, 1.3, 0.56, 0.58, 0.0, 0.18], [1.77, 0.13, 1.35, 0.0, 0.67, 0.43, 0.33, 0.0, 0.08], [1.95, 0.47, 0.56, 0.0, 0.46, 0.11, 0.03, 0.01, 0.14], [4.98, 1.0, 2.85, 0.0, 1.61, 0.07, 0.2, 0.01, 0.52], [0.94, 0.03, 0.84, 0.0, 0.13, 0.5, 0.35, 0.0, 0.11], [0.41, 0.12, 0.54, 0.0, 0.23, 2.03, 2.37, 0.0, 0.1], [0.63, 0.02, 0.26, 0.0, 1.75, 2.14, 2.66, 0.0, 1.3], [0.06, 0.02, 0.06, 0.0, 0.27, 1.43, 2.38, 0.0, 0.03], [0.24, 0.0, 0.0, 0.0, 1.48, 3.8, 4.54, 0.0, 0.16], [0.51, 0.36, 0.17, 0.0, 0.68, 1.78, 1.79, 0.0, 0.29], [0.26, 0.01, 0.15, 0.08, 0.49, 2.45, 1.75, 0.0, 0.19], [0.89, 1.35, 0.35, 0.72, 0.57, 2.49, 1.92, 0.0, 0.33], [4.16, 4.83, 0.92, 0.08, 3.98, 4.16, 4.79, 0.0, 1.29], [0.25, 0.13, 0.1, 0.0, 1.95, 1.06, 0.88, 0.0, 0.11], [0.06, 0.18, 0.0, 0.0, 0.15, 0.21, 0.38, 0.0, 0.01]], "inn": [["Metallica", 0.34, 1.99], ["Van Halen", 0.09, 1.57], ["Guns N' Roses", 0.39, 1.65], ["Dire Straits", 0.03, 1.22], ["ZZ Top", 0.0, 0.92], ["Eagles", 0.14, 1.0]], "out": [["Eminem", 3.0, 0.09], ["Dr. Dre", 1.47, 0.03], ["Drake", 1.41, 0.07], ["Post Malone", 0.81, 0.0], ["Maroon 5", 0.94, 0.16], ["Macklemore & Ryan Lewis", 0.7, 0.01]], "stay": [["Calvin Harris", 0.42, 1.07], ["Linkin Park", 0.4, 0.54], ["Guns N' Roses", 0.39, 1.65], ["Metallica", 0.34, 1.99], ["Rihanna", 0.25, 0.45]], "firsts": [["2024-09-15", "Metallica", "Nothing Else Matters", 17], ["2024-11-06", "Eagles", "Hotel California - 2013 Remaster", 16], ["2024-11-17", "Van Halen", "Panama - 2015 Remaster", 20], ["2024-11-20", "Guns N' Roses", "Sweet Child O' Mine", 18], ["2024-12-11", "ZZ Top", "Sharp Dressed Man (2008 Remaster)", 16], ["2024-12-16", "Dire Straits", "Sultans Of Swing", 20]]}, {"frm": 3, "to": 4, "boundary": "2025-03", "weeks": ["2024-12-16", "2024-12-23", "2024-12-30", "2025-01-06", "2025-01-13", "2025-01-20", "2025-01-27", "2025-02-03", "2025-02-10", "2025-02-17", "2025-02-24", "2025-03-03", "2025-03-10", "2025-03-17", "2025-03-24", "2025-03-31", "2025-04-07", "2025-04-14", "2025-04-21", "2025-04-28", "2025-05-05"], "wg": [[0.89, 1.35, 0.35, 0.72, 0.57, 2.49, 1.92, 0.0, 0.33], [4.16, 4.83, 0.92, 0.08, 3.98, 4.16, 4.79, 0.0, 1.29], [0.25, 0.13, 0.1, 0.0, 1.95, 1.06, 0.88, 0.0, 0.11], [0.06, 0.18, 0.0, 0.0, 0.15, 0.21, 0.38, 0.0, 0.01], [0.17, 0.15, 0.0, 0.0, 0.11, 0.19, 0.09, 0.0, 0.0], [0.11, 0.68, 0.0, 0.0, 0.38, 0.87, 0.53, 0.0, 0.0], [0.63, 1.39, 0.03, 0.0, 0.61, 1.19, 1.54, 0.38, 0.09], [0.58, 0.65, 0.12, 0.0, 0.27, 0.64, 1.16, 0.03, 0.03], [2.27, 1.13, 0.33, 0.0, 0.88, 1.16, 0.65, 0.0, 0.1], [0.45, 0.57, 0.28, 0.0, 0.11, 0.64, 0.73, 0.0, 0.25], [2.24, 1.02, 1.22, 0.11, 0.17, 0.41, 1.73, 0.01, 0.71], [2.52, 0.88, 0.77, 0.01, 0.16, 1.53, 0.72, 1.2, 0.59], [1.8, 0.44, 0.41, 0.0, 0.0, 0.51, 0.22, 0.14, 0.03], [1.41, 0.11, 0.27, 0.0, 0.0, 0.33, 0.34, 0.16, 0.02], [0.79, 0.07, 0.41, 0.08, 0.1, 0.38, 0.31, 0.02, 0.05], [0.25, 0.0, 0.06, 0.0, 0.05, 0.22, 0.07, 0.19, 0.0], [0.2, 0.0, 0.01, 0.0, 0.0, 0.14, 0.11, 0.11, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.01], [0.01, 0.0, 0.06, 0.0, 0.04, 0.26, 0.13, 0.12, 0.2], [0.02, 0.0, 0.19, 0.09, 0.12, 0.0, 0.12, 0.07, 0.1], [0.13, 0.0, 0.27, 0.1, 0.02, 0.08, 0.0, 0.13, 0.03]], "inn": [["Gamazda", 0.0, 0.86], ["Ariana Grande", 0.12, 0.54], ["Eminem", 0.09, 0.51], ["Ludwig van Beethoven", 0.0, 0.4], ["Madonna", 0.01, 0.28], ["Dr. Dre", 0.03, 0.28]], "out": [["Van Halen", 1.57, 0.14], ["Guns N' Roses", 1.65, 0.22], ["Metallica", 1.99, 0.69], ["Calvin Harris", 1.07, 0.04], ["Dire Straits", 1.22, 0.21], ["Eagles", 1.0, 0.01]], "stay": [["Metallica", 1.99, 0.69], ["Rihanna", 0.45, 0.46], ["Queen", 0.57, 0.37], ["Led Zeppelin", 0.35, 0.48], ["Guns N' Roses", 1.65, 0.22]], "firsts": [["2025-03-05", "Gamazda", "Stairway to Heaven", 48], ["2025-05-16", "Madonna", "Like a Virgin", 16], ["2025-05-18", "Ludwig van Beethoven", "Moonlight Sonata 3rd Movement", 16]]}, {"frm": 4, "to": 5, "boundary": "2025-08", "weeks": ["2025-05-19", "2025-05-26", "2025-06-02", "2025-06-09", "2025-06-16", "2025-06-23", "2025-06-30", "2025-07-07", "2025-07-14", "2025-07-21", "2025-07-28", "2025-08-04", "2025-08-11", "2025-08-18", "2025-08-25", "2025-09-01", "2025-09-08", "2025-09-15", "2025-09-22", "2025-09-29", "2025-10-06"], "wg": [[0.42, 0.02, 0.07, 0.01, 0.05, 0.69, 0.13, 1.27, 0.14], [1.64, 0.3, 0.4, 0.0, 0.19, 0.96, 1.0, 1.4, 0.45], [0.36, 0.04, 0.17, 0.0, 0.02, 0.52, 0.21, 0.17, 0.08], [1.48, 0.11, 0.85, 0.01, 0.08, 0.88, 1.12, 0.62, 0.06], [0.39, 0.04, 0.98, 0.0, 0.08, 0.17, 0.13, 0.61, 0.19], [0.14, 0.0, 0.94, 0.02, 0.0, 0.0, 0.06, 0.27, 0.0], [0.05, 0.0, 1.49, 0.75, 0.01, 0.02, 0.03, 0.0, 0.07], [0.15, 0.1, 0.52, 0.0, 0.0, 0.17, 0.12, 0.04, 0.0], [0.11, 0.0, 0.54, 0.0, 0.01, 0.28, 0.15, 0.15, 0.04], [0.08, 0.0, 0.2, 0.03, 0.05, 0.27, 0.71, 0.15, 0.03], [0.0, 0.0, 0.0, 0.28, 0.02, 0.14, 0.1, 0.0, 0.0], [0.37, 0.06, 0.25, 0.09, 0.16, 0.8, 0.76, 0.14, 0.1], [0.1, 0.01, 0.34, 0.0, 0.55, 1.19, 2.37, 0.01, 0.03], [0.13, 0.01, 0.16, 0.19, 0.79, 1.08, 1.64, 0.0, 0.34], [0.12, 0.1, 0.14, 0.0, 0.99, 1.87, 0.93, 0.11, 0.18], [0.17, 0.1, 0.25, 0.0, 0.91, 4.02, 2.53, 0.2, 0.82], [0.02, 0.04, 0.22, 0.0, 0.52, 1.51, 1.23, 0.04, 0.09], [0.12, 0.12, 0.19, 0.0, 0.89, 1.3, 2.18, 0.0, 0.16], [0.32, 0.11, 0.42, 0.0, 0.12, 2.87, 0.71, 0.68, 0.41], [0.42, 0.2, 0.71, 0.05, 0.39, 1.49, 0.84, 0.73, 0.48], [1.14, 0.32, 0.82, 0.08, 0.57, 1.73, 1.0, 0.52, 1.08]], "inn": [["Metallica", 0.69, 2.77], ["Pink Floyd", 0.0, 1.33], ["Fleetwood Mac", 0.01, 1.31], ["Guns N' Roses", 0.22, 1.16], ["Eric Clapton", 0.0, 0.87], ["Lynyrd Skynyrd", 0.01, 0.75]], "out": [["Gamazda", 0.86, 0.05], ["Ariana Grande", 0.54, 0.03], ["Rihanna", 0.46, 0.01], ["Beyoncé", 0.36, 0.0], ["Ludwig van Beethoven", 0.4, 0.06], ["The Weeknd", 0.35, 0.07]], "stay": [["Metallica", 0.69, 2.77], ["Eminem", 0.51, 0.49], ["Led Zeppelin", 0.48, 0.3], ["Guns N' Roses", 0.22, 1.16], ["Dire Straits", 0.21, 0.35]], "firsts": [["2025-05-28", "Metallica", "Enter Sandman - Remastered 2021", 23], ["2025-08-31", "Lynyrd Skynyrd", "Free Bird", 31], ["2025-09-04", "Fleetwood Mac", "The Chain - 2004 Remaster", 16], ["2025-09-04", "Pink Floyd", "Comfortably Numb", 44], ["2025-09-14", "Guns N' Roses", "Knockin' On Heaven's Door", 17], ["2025-09-25", "Eric Clapton", "Cocaine", 15]]}, {"frm": 5, "to": 6, "boundary": "2025-11", "weeks": ["2025-08-18", "2025-08-25", "2025-09-01", "2025-09-08", "2025-09-15", "2025-09-22", "2025-09-29", "2025-10-06", "2025-10-13", "2025-10-20", "2025-10-27", "2025-11-03", "2025-11-10", "2025-11-17", "2025-11-24", "2025-12-01", "2025-12-08", "2025-12-15", "2025-12-22", "2025-12-29", "2026-01-05"], "wg": [[0.13, 0.01, 0.16, 0.19, 0.79, 1.08, 1.64, 0.0, 0.34], [0.12, 0.1, 0.14, 0.0, 0.99, 1.87, 0.93, 0.11, 0.18], [0.17, 0.1, 0.25, 0.0, 0.91, 4.02, 2.53, 0.2, 0.82], [0.02, 0.04, 0.22, 0.0, 0.52, 1.51, 1.23, 0.04, 0.09], [0.12, 0.12, 0.19, 0.0, 0.89, 1.3, 2.18, 0.0, 0.16], [0.32, 0.11, 0.42, 0.0, 0.12, 2.87, 0.71, 0.68, 0.41], [0.42, 0.2, 0.71, 0.05, 0.39, 1.49, 0.84, 0.73, 0.48], [1.14, 0.32, 0.82, 0.08, 0.57, 1.73, 1.0, 0.52, 1.08], [0.16, 0.07, 0.39, 0.11, 0.59, 2.04, 1.47, 1.02, 0.68], [0.04, 0.15, 0.07, 0.33, 0.3, 2.01, 2.43, 0.77, 0.33], [0.07, 0.12, 0.09, 0.67, 0.55, 1.68, 2.58, 2.24, 0.18], [0.11, 0.03, 0.07, 0.56, 0.67, 0.95, 3.06, 0.69, 0.3], [0.47, 0.01, 0.02, 1.5, 0.49, 1.6, 1.94, 0.4, 0.11], [0.72, 0.03, 0.03, 2.11, 0.17, 0.23, 2.83, 0.41, 0.05], [0.11, 0.0, 0.0, 2.69, 0.14, 0.7, 0.39, 0.15, 0.05], [0.38, 0.05, 0.2, 2.44, 0.12, 0.26, 1.07, 0.17, 0.06], [0.04, 0.0, 0.52, 0.8, 0.11, 0.11, 0.84, 0.62, 0.1], [0.06, 0.0, 0.0, 0.07, 0.02, 0.02, 0.5, 1.32, 0.18], [0.06, 0.0, 0.43, 0.53, 0.35, 0.15, 1.7, 0.9, 0.21], [0.73, 0.0, 0.26, 0.5, 0.0, 0.0, 0.09, 0.07, 0.01], [0.17, 0.0, 0.01, 1.18, 0.02, 0.0, 1.05, 0.23, 0.01]], "inn": [["Metallica", 2.77, 5.11], ["Tuna", 0.0, 2.1], ["Tamir Bar", 0.0, 0.72], ["Red Hot Chili Peppers", 0.3, 0.95], ["Yuval Dayan", 0.0, 0.6], ["Prince", 0.01, 0.59]], "out": [["Fleetwood Mac", 1.31, 0.2], ["Pink Floyd", 1.33, 0.24], ["Lynyrd Skynyrd", 0.75, 0.03], ["Eric Clapton", 0.87, 0.24], ["Guns N' Roses", 1.16, 0.7], ["Lindsey Stirling", 0.56, 0.12]], "stay": [["Metallica", 2.77, 5.11], ["Guns N' Roses", 1.16, 0.7], ["Scorpions", 0.5, 0.94], ["Ozzy Osbourne", 0.49, 0.78], ["Eminem", 0.49, 0.76]], "firsts": [["2025-11-14", "Tamir Bar", "Welcome to Ya Hood", 19], ["2025-12-01", "Yuval Dayan", "י-ה אכסוף", 24], ["2026-01-08", "Tuna", "סהרה - Live", 26], ["2026-01-16", "Prince", "Purple Rain", 18], ["2026-01-28", "Red Hot Chili Peppers", "Can't Stop", 22]]}, {"frm": 6, "to": 7, "boundary": "2026-06", "weeks": ["2026-01-19", "2026-01-26", "2026-02-02", "2026-02-09", "2026-02-16", "2026-02-23", "2026-03-02", "2026-03-09", "2026-03-16", "2026-03-23", "2026-03-30", "2026-04-06", "2026-04-13", "2026-04-20", "2026-04-27", "2026-05-04", "2026-05-11", "2026-05-18", "2026-05-25", "2026-06-01", "2026-06-08", "2026-06-15", "2026-06-22", "2026-06-29", "2026-07-06", "2026-07-13", "2026-07-20", "2026-07-27", "2026-08-03", "2026-08-10"], "wg": [[0.32, 0.0, 0.99, 3.77, 0.64, 0.86, 3.9, 1.1, 0.42], [1.52, 0.0, 1.34, 2.85, 2.43, 2.51, 8.51, 0.99, 0.42], [1.55, 0.28, 1.27, 1.47, 2.06, 1.53, 5.18, 0.38, 0.36], [1.36, 0.03, 0.94, 1.28, 1.83, 2.17, 3.64, 0.28, 0.1], [1.04, 0.01, 0.62, 0.93, 1.69, 2.56, 3.09, 0.24, 0.21], [0.29, 0.02, 0.47, 0.63, 0.75, 1.16, 2.23, 0.1, 0.03], [0.9, 0.08, 0.33, 0.34, 0.32, 0.5, 0.83, 0.06, 0.39], [0.67, 0.14, 0.21, 0.06, 0.12, 0.66, 0.36, 1.77, 0.15], [0.0, 0.0, 0.0, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [1.4, 0.06, 2.44, 0.04, 0.31, 1.16, 1.56, 1.95, 1.14], [3.62, 0.76, 4.6, 0.35, 1.97, 3.08, 4.12, 0.89, 3.21], [1.52, 0.29, 2.11, 0.21, 1.11, 2.0, 3.52, 0.04, 0.62], [0.2, 0.05, 0.6, 0.0, 0.11, 0.2, 0.65, 0.0, 0.01], [0.05, 0.0, 0.54, 0.09, 0.06, 0.71, 0.21, 0.0, 0.05], [1.08, 0.34, 2.64, 0.02, 1.76, 2.06, 1.8, 0.1, 0.3], [1.06, 0.07, 1.47, 0.19, 3.18, 3.87, 2.86, 0.58, 0.76], [1.52, 0.05, 1.59, 0.21, 1.39, 3.01, 2.03, 0.23, 0.16]], "inn": [["Pantera", 0.0, 1.21], ["Pearl Jam", 0.01, 1.2], ["Megadeth", 0.09, 1.15], ["Rush", 0.0, 0.97], ["Doja Cat", 0.02, 0.94], ["Bruno Mars", 0.04, 0.66]], "out": [["Metallica", 5.11, 2.26], ["Tuna", 2.1, 0.31], ["Scorpions", 0.94, 0.17], ["Tamir Bar", 0.72, 0.02], ["Yuval Dayan", 0.6, 0.03], ["Prince", 0.59, 0.02]], "stay": [["Metallica", 5.11, 2.26], ["Guns N' Roses", 0.7, 0.76], ["Red Hot Chili Peppers", 0.95, 0.57], ["2Pac", 0.51, 0.52], ["Led Zeppelin", 0.49, 0.43]], "firsts": [["2026-06-26", "Doja Cat", "Paint The Town Red", 16], ["2026-07-31", "Pearl Jam", "Alive", 25], ["2026-08-10", "Rush", "La Villa Strangiato", 18], ["2026-08-15", "Pantera", "Floods", 16], ["2026-08-22", "Megadeth", "Holy Wars...The Punishment Due - 2004 Remix", 16], ["2026-08-23", "Bruno Mars", "24K Magic", 25]]}], "after": [{"art": ["Alan Walker", "Imagine Dragons", "Avicii", "Black Eyed Peas", "Pitbull"], "bef": 0.0, "inn": 30.2, "aft": 17.9, "months_after": 30}, {"art": ["Martin Garrix", "TheFatRat", "Tiktunz", "Osher Cohen", "Charlie Puth"], "bef": 0.3, "inn": 5.3, "aft": 1.6, "months_after": 25}, {"art": ["Dr. Dre", "Drake", "Post Malone", "Sean Paul", "USHER"], "bef": 3.4, "inn": 19.0, "aft": 8.3, "months_after": 21}, {"art": ["Van Halen", "Eagles", "AC/DC", "Mike Posner", "Nirvana"], "bef": 3.7, "inn": 19.7, "aft": 9.3, "months_after": 17}, {"art": ["Gamazda", "Ludwig van Beethoven", "Madonna", "Belinda Carlisle"], "bef": 0.2, "inn": 8.3, "aft": 1.7, "months_after": 12}, {"art": ["Pink Floyd", "Fleetwood Mac", "Eric Clapton", "Lynyrd Skynyrd", "Lindsey Stirling"], "bef": 1.6, "inn": 14.5, "aft": 7.5, "months_after": 9}, {"art": ["Tuna", "Scorpions", "Ozzy Osbourne", "Tamir Bar", "Yuval Dayan"], "bef": 4.8, "inn": 25.7, "aft": 3.4, "months_after": 4}, {"art": ["Pantera", "Pearl Jam", "Megadeth", "Rush", "Doja Cat"], "bef": 0.9, "inn": 21.9, "aft": 0.0, "months_after": 0}]};
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mLong = s => `${MON[+s.slice(5)-1]} ${s.slice(0,4)}`;
+const mShort = s => `${MON[+s.slice(5)-1]} ’${s.slice(2,4)}`;
+const clean = t => String(t).replace(/ - (\d{4} )?Remaster(ed)?( \d{4})?$/,'').replace(/ \(feat\..*\)$/,'');
+const GC = i => `var(--g${i})`;
+const GN = D.gnames, NG = GN.length, M = D.months, NM = M.length;
+const LIGHT_TEXT = new Set([1,2,3,4,8]);   // segments that need dark text for contrast
+
+const tip = $('#tip');
+function showTip(e, html){ tip.innerHTML = html; tip.hidden = false;
+  const r = tip.getBoundingClientRect(); let x = e.clientX + 14, y = e.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = Math.max(8, e.clientY - r.height - 14);
+  tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
+const hideTip = () => { tip.hidden = true; };
+function svgX(svg, e){ const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+function size(svg, W, H, minW){ svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.width = '100%'; svg.style.minWidth = (minW || 640) + 'px'; }
+
+const ERA_NAMES = ['Pop and festival EDM','Eminem moves in','Hip-hop summer','The rock turn','Quieter, and instrumental','Deep classic rock','Metallica and Tuna','Wide open'];
+const ERA_TEXT = [
+  e => `The widest era until 2026. A third pop and a fifth electronic: <b>Alan Walker, Avicii, Imagine Dragons, Black Eyed Peas</b>. The average song came from around ${e.yr}.`,
+  e => `Electronic music was still a quarter of the mix (Martin Garrix, TheFatRat), but <b>Eminem</b> became your top artist with ${e.top[0][1]} hours and hip-hop doubled to ${e.g[2]}%.`,
+  e => `Hip-hop reached <b>${e.g[2]}%</b> of everything, and 57% in August. Dr. Dre, Drake, Post Malone and Usher had most of their lifetime plays in these four months.`,
+  e => `The biggest single change in the file. In November, classic rock and metal went from 9% to <b>72%</b> of your music, and the average song moved back about 14 years. Van Halen, AC/DC and the Eagles arrived.`,
+  e => `Your lightest era, ${e.h} hours in five months. Instrumental and classical rose to <b>${e.g[7]}%</b>, led by Gamazda's piano covers and Beethoven, while pop came back with Ariana Grande.`,
+  e => `The oldest-sounding era, averaging <b>${e.yr}</b>. Pink Floyd, Fleetwood Mac, Eric Clapton, Lynyrd Skynyrd. Guitar backing tracks and Polyphia show up for the first time.`,
+  e => `Your most focused era. Metallica alone took <b>${e.top[0][1]} hours</b> and Tuna ${e.top[1][1]}. Israeli music jumped to ${e.g[3]}%, with Tamir Bar and Yuval Dayan almost entirely in these months.`,
+  e => `After 65 silent days you came back with the widest mix of any era: 90s metal and rock (Pantera, Pearl Jam, Megadeth, Rush) next to Doja Cat and Crazy Town.`,
+];
+const eraOf = mo => D.eras.findIndex(e => mo >= e.a && mo <= e.b);
+
+/* ---------- hero ---------- */
+$('#hTot').textContent = `${fmt(D.tot.mh)} hours of music`;
+$('#lede').innerHTML = `Charted month by month, your listening falls into eight distinct periods. Each one has its own genres, its own artists and even its own decade. The shifts are rarely gradual. Several happen from one month to the next.`;
+(function(){
+  const el = $('#ribbon'); const idx = M.map(eraOf);
+  const cols = []; let h = '';
+  // grid columns proportional to months
+  let i = 0;
+  while (i < NM){
+    const e = idx[i]; let j = i; while (j < NM && idx[j] === e) j++;
+    cols.push(`${j-i}fr`);
+    if (e < 0) h += `<div class="seg" title="Almost no listening"><div class="gap"></div><div class="lab"><span>quiet</span></div></div>`;
+    else { const E = D.eras[e];
+      h += `<a class="seg" href="#era${e+1}"><div class="bar">${E.g.map((v,k) => v>0 ? `<i style="width:${v}%;background:${GC(k)}"></i>` : '').join('')}</div>
+        <div class="lab"><b>${ERA_NAMES[e]}</b><span>${mShort(E.a)}–${mShort(E.b)}</span></div></a>`; }
+    i = j;
+  }
+  el.style.gridTemplateColumns = cols.join(' '); el.innerHTML = h;
+})();
+
+/* ---------- river ---------- */
+const riverOn = new Set(GN.map((_,i) => i));
+let riverMode = 'share';
+function drawRiver(){
+  const svg = $("#river"), W = 1120, H = 440, pl = 40, pr = 185, pt = 34, pb = 26, iw = W-pl-pr, ih = H-pt-pb;
+  size(svg, W, H, 700);
+  const x = i => pl + i*iw/(NM-1);
+  const vals = D.genre.map(r => r.map((v,k) => riverOn.has(k) ? v : 0));
+  const tot = vals.map(r => r.reduce((a,b) => a+b, 0));
+  const series = vals.map((r,i) => r.map(v => riverMode === 'share' ? (tot[i] ? 100*v/tot[i] : 0) : v));
+  const maxV = riverMode === 'share' ? 100 : Math.ceil(Math.max(...series.map(r => r.reduce((a,b)=>a+b,0)))/10)*10;
+  const y = v => pt + ih - v/maxV*ih;
+  let s = '';
+  const tick = riverMode === 'share' ? 25 : 10;
+  for (let v = 0; v <= maxV; v += tick) s += `<line x1="${pl}" x2="${pl+iw}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule)"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}${riverMode==='share'?'%':''}</text>`;
+  // stacked bands; in share mode, months with under an hour of music become a marked gap
+  const ok = tot.map(v => riverMode === 'hours' || v >= 1);
+  const runs = []; { let st = -1; for (let i = 0; i <= NM; i++){ if (i < NM && ok[i]) { if (st < 0) st = i; } else if (st >= 0) { runs.push([st, i-1]); st = -1; } } }
+  const cum = series.map(() => 0);
+  const bands = [];
+  for (let k = 0; k < NG; k++){
+    if (!riverOn.has(k)) continue;
+    const lo = cum.slice(), hi = cum.map((c,i) => c + series[i][k]);
+    runs.forEach(([a,b]) => {
+      let d = `M${x(a)},${y(hi[a])}`;
+      for (let i = a+1; i <= b; i++){ const cx = (x(i-1)+x(i))/2; d += ` C${cx},${y(hi[i-1])} ${cx},${y(hi[i])} ${x(i)},${y(hi[i])}`; }
+      d += ` L${x(b)},${y(lo[b])}`;
+      for (let i = b-1; i >= a; i--){ const cx = (x(i+1)+x(i))/2; d += ` C${cx},${y(lo[i+1])} ${cx},${y(lo[i])} ${x(i)},${y(lo[i])}`; }
+      s += `<path d="${d}Z" fill="${GC(k)}" stroke="var(--paper)" stroke-width="1.2"/>`;
+    });
+    bands.push({k, lo, hi});
+    for (let i = 0; i < NM; i++) cum[i] = hi[i];
+  }
+  for (let r = 1; r < runs.length; r++){ const a = runs[r-1][1], b = runs[r][0];
+    s += `<rect x="${x(a)+3}" y="${pt}" width="${x(b)-x(a)-6}" height="${ih}" fill="url(#hatch)"/><text x="${(x(a)+x(b))/2}" y="${pt+ih/2}" text-anchor="middle" style="fill:var(--ink2)">quiet</text>`; }
+  s = `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="var(--rule)" stroke-width="2"/></pattern></defs>` + s;
+  // right-edge direct labels (last 3 months average position), de-overlapped
+  const labs = bands.map(b => { const n = 3, mid = [...Array(n)].map((_,j) => (b.lo[NM-1-j]+b.hi[NM-1-j])/2).reduce((a,c)=>a+c,0)/n; return {k:b.k, y:y(mid), th: y(b.lo[NM-1]) - y(b.hi[NM-1])}; }).sort((a,b) => a.y - b.y);
+  for (let i = 1; i < labs.length; i++) if (labs[i].y - labs[i-1].y < 13) labs[i].y = labs[i-1].y + 13;
+  const over = labs.length ? labs[labs.length-1].y - (pt+ih) : 0; if (over > 0) labs.forEach(l => l.y -= over);
+  labs.forEach(l => { s += `<line x1="${x(NM-1)+3}" x2="${x(NM-1)+12}" y1="${l.y}" y2="${l.y}" stroke="${GC(l.k)}" stroke-width="2"/><text x="${x(NM-1)+16}" y="${l.y+4}" style="fill:var(--ink2);font-family:var(--body);font-size:12px">${GN[l.k]}</text>`; });
+  // era boundaries + numbers
+  D.eras.forEach((e,i) => { const a = M.indexOf(e.a), b = M.indexOf(e.b);
+    const xa = a === 0 ? x(0) : (x(a)+x(a-1))/2, xb = b === NM-1 ? x(NM-1) : (x(b)+x(b+1))/2;
+    if (a > 0) s += `<line x1="${xa}" x2="${xa}" y1="${pt-22}" y2="${pt+ih}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 3"/>`;
+    s += `<text x="${(xa+xb)/2}" y="${pt-12}" text-anchor="middle" style="font-family:var(--display);font-style:italic;font-size:15px;fill:var(--ink)">${i+1}</text>`; });
+  M.forEach((m,i) => { if (m.endsWith('-01')) s += `<text x="${x(i)}" y="${H-6}" text-anchor="middle" style="fill:var(--ink2)">${m.slice(0,4)}</text>`; else if (+m.slice(5) % 3 === 1) s += `<text x="${x(i)}" y="${H-6}" text-anchor="middle">${MON[+m.slice(5)-1]}</text>`; });
+  s += `<line id="rcx" y1="${pt}" y2="${pt+ih}" stroke="var(--ink)" stroke-width="1" visibility="hidden"/>`;
+  svg.innerHTML = s;
+  const cx = svg.querySelector('#rcx');
+  svg.onmousemove = e => { const p = svgX(svg, e); if (p.x < pl - 10 || p.x > pl + iw + 10) { cx.setAttribute('visibility','hidden'); return hideTip(); }
+    const i = Math.max(0, Math.min(NM-1, Math.round((p.x-pl)/(iw/(NM-1)))));
+    cx.setAttribute('x1', x(i)); cx.setAttribute('x2', x(i)); cx.setAttribute('visibility','visible');
+    const t = D.genre[i].reduce((a,b)=>a+b,0), era = eraOf(M[i]);
+    const rows = D.genre[i].map((v,k) => [k,v]).filter(r => r[1] > 0.05).sort((a,b) => b[1]-a[1]);
+    showTip(e, `<b>${mLong(M[i])}</b> · ${t.toFixed(1)} h${era>=0?` · era ${era+1}`:''}<br>` + (t < 0.1 ? 'Almost nothing played' :
+      rows.map(([k,v]) => `<div class="r"><span><i style="background:${GC(k)}"></i>${GN[k]}</span><span>${Math.round(100*v/t)}%</span></div>`).join(''))); };
+  svg.onmouseleave = () => { cx.setAttribute('visibility','hidden'); hideTip(); };
+}
+$('#riverLegend').innerHTML = GN.map((g,k) => `<button type="button" aria-pressed="true" data-k="${k}"><i style="background:${GC(k)}"></i>${g}</button>`).join('');
+$('#riverLegend').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; const k = +b.dataset.k;
+  if (riverOn.has(k) && riverOn.size > 1) riverOn.delete(k); else riverOn.add(k); b.setAttribute('aria-pressed', riverOn.has(k)); drawRiver(); });
+document.querySelectorAll('.toggle button').forEach(b => b.addEventListener('click', () => {
+  riverMode = b.dataset.mode; document.querySelectorAll('.toggle button').forEach(z => z.setAttribute('aria-pressed', z === b)); drawRiver(); }));
+(function(){
+  const y = D.gyear;
+  $('#riverP').innerHTML = `<p>Every hour of music, colored by genre. In 2023, pop and electronic made up <b>${y['2023'][0]+y['2023'][1]}%</b> of what you played. In 2026 so far, it's ${y['2026'][0]+y['2026'][1]}%. Classic rock and metal went the other way, from ${y['2023'][5]+y['2023'][6]}% to <b>${y['2026'][5]+y['2026'][6]}%</b>.</p><p>Tap a genre to hide it, and switch to hours to see how much you listened overall. The dashed lines mark where the eras change.</p>`;
+})();
+drawRiver();
+
+/* ---------- each genre on its own ---------- */
+(function(){
+  const share = D.genre.map(r => { const t = r.reduce((a,b)=>a+b,0); return t >= 1 ? r.map(v => 100*v/t) : null; });
+  const box = $('#multi'), MAXS = 60;
+  const order = [0,1,2,4,5,6,3,7,8];
+  order.forEach(k => {
+    const vals = share.map(r => r ? r[k] : null);
+    const valid = vals.map((v,i) => [v,i]).filter(z => z[0] != null && D.musich[z[1]] > 2);
+    const pk = valid.reduce((a,b) => b[0] > a[0] ? b : a);
+    const tot = D.genre.reduce((a,r) => a + r[k], 0);
+    const d = document.createElement('div');
+    d.innerHTML = `<div class="mh"><b><i style="background:${GC(k)}"></i>${GN[k]}</b><span>${Math.round(tot)} h</span></div><svg></svg><p>Peak ${Math.round(pk[0])}% in ${mLong(M[pk[1]])}</p>`;
+    box.appendChild(d);
+    const svg = d.querySelector('svg'), W = 340, H = 110, pl = 26, pr = 6, pt = 8, pb = 16, iw = W-pl-pr, ih = H-pt-pb;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.width = '100%';
+    const x = i => pl + i*iw/(NM-1), y = v => pt + ih - Math.min(v, MAXS)/MAXS*ih;
+    let s = '';
+    D.eras.forEach((e,j) => { if (j % 2) return; const a = M.indexOf(e.a), b = M.indexOf(e.b);
+      const xa = a === 0 ? pl : (x(a)+x(a-1))/2, xb = b === NM-1 ? x(NM-1) : (x(b)+x(b+1))/2;
+      s += `<rect x="${xa}" y="${pt}" width="${xb-xa}" height="${ih}" fill="var(--rule)" opacity=".45"/>`; });
+    [0,30,60].forEach(v => s += `<line x1="${pl}" x2="${pl+iw}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule)"/><text x="${pl-4}" y="${y(v)+4}" text-anchor="end">${v}</text>`);
+    const segs = []; let cur = [];
+    vals.forEach((v,i) => { if (v == null) { if (cur.length) segs.push(cur); cur = []; } else cur.push([x(i), y(v)]); }); if (cur.length) segs.push(cur);
+    segs.forEach(sg => { s += `<polygon points="${sg[0][0]},${y(0)} ${sg.map(p => p.join(',')).join(' ')} ${sg.at(-1)[0]},${y(0)}" fill="${GC(k)}" opacity=".22"/><polyline points="${sg.map(p => p.join(',')).join(' ')}" fill="none" stroke="${GC(k)}" stroke-width="1.8" stroke-linejoin="round"/>`; });
+    s += `<circle cx="${x(pk[1])}" cy="${y(pk[0])}" r="3.5" fill="${GC(k)}" stroke="var(--paper)" stroke-width="1.5"/>`;
+    M.forEach((m,i) => { if (m.endsWith('-01')) s += `<text x="${x(i)}" y="${H-3}" text-anchor="middle">${m.slice(2,4)}</text>`; });
+    s += `<line class="cx" y1="${pt}" y2="${pt+ih}" stroke="var(--ink)" visibility="hidden"/>`;
+    svg.innerHTML = s;
+    const cx = svg.querySelector('.cx');
+    svg.onmousemove = e => { const p = svgX(svg, e), i = Math.max(0, Math.min(NM-1, Math.round((p.x-pl)/(iw/(NM-1)))));
+      cx.setAttribute('x1', x(i)); cx.setAttribute('x2', x(i)); cx.setAttribute('visibility','visible');
+      showTip(e, `<b>${GN[k]}</b> · ${mLong(M[i])}<br>${vals[i] == null ? 'Almost nothing played' : `${Math.round(vals[i])}% of the month · ${D.genre[i][k].toFixed(1)} h`}`); };
+    svg.onmouseleave = () => { cx.setAttribute('visibility','hidden'); hideTip(); };
+  });
+  $('#multiP').innerHTML = `<p>The river stacks everything together. Here each genre gets its own line, so you can see when it arrived, when it peaked and whether it came back. The shaded bands are alternating eras.</p><p>Some genres rose once and stayed, like <b>hard rock and metal</b>: rarely above 10% before November 2024, and between 9% and 40% of every month since. Others came and went: <b>electronic</b> was a fifth to a third of your music through June 2024 and almost vanished after early 2025. <b>Hip-hop</b> keeps coming back, in summer 2024, summer 2025 and again in summer 2026. <b>Israeli</b> music comes in short bursts.</p>`;
+})();
+
+/* ---------- the story ---------- */
+const TT = [
+  { type: 'Pause, then restart', when: 'Dec 2023 – Feb 2024',
+    text: `This change happened in silence. Through December and January you barely listened, about an hour a week. When you came back in the week of <b>5 February 2024</b> (8.6 hours that week), the music was different. On <b>11 February</b> Eminem had his first big day ("Rap God"). Hip-hop went from about a tenth of your music to a fifth and more, while Imagine Dragons, Pitbull and Cartoon dropped away. Alan Walker kept going, at a lower rate.` },
+  { type: 'Slow takeover', when: 'Jul – Aug 2024',
+    text: `This one built up over five weeks. Drake's first big day was <b>25 June 2024</b> ("One Dance"). Hip-hop then climbed week by week: 21% in early July, 47% by late July, <b>80% in the week of 5 August</b>. On 6 August you started Kan 88's Dr. Dre podcast series, and on <b>19 August</b> Dr. Dre's own music had its first big day. On the way out: Alan Walker, Martin Garrix, TheFatRat. Electronic music never got its share back. (The Israeli spike in late June came from Omer Adam and Osher Cohen and lasted one week.)` },
+  { type: 'Overnight flip', when: 'late Oct – mid Nov 2024',
+    text: `The sharpest change in the whole file. Through September hip-hop was still half of everything. There was one early sign, in the week of 30 September, when Linkin Park and Metallica pushed rock to a third. Then, on <b>31 October 2024</b>, the Eagles took 61% of your day. From 3 November rock led almost every day: the Eagles every day from 4 to 7 November, Van Halen on the 8th, Guns N' Roses on the 10th. Within two weeks hip-hop fell from 29% to <b>1%</b>, and Eminem went from 3 hours a month to almost nothing.` },
+  { type: 'Slow fade', when: 'Feb – Apr 2025',
+    text: `Nothing replaced the rock all at once. It thinned out. Pop came back first, reaching 35% in mid-February and over half of some weeks in March. On <b>5 March 2025</b> Gamazda's piano version of "Stairway to Heaven" opened something new, and instrumental music followed. Then the volume dropped: by April you were listening less than an hour a week. Van Halen, the Eagles, AC/DC and Calvin Harris disappeared. Metallica stayed, at a third of its earlier rate.` },
+  { type: 'Relapse, then flip', when: 'late Jun – mid Aug 2025',
+    text: `First a step back. In late June and early July hip-hop returned at over 60% of your music (Eminem, Biggie, 2Pac). Then metal took over in two jumps. In the week of 21 July it reached 47%, and between <b>10 and 14 August</b> it flipped for good: 77 minutes of Guns N' Roses on the 10th, <b>113 minutes of Metallica on the 13th</b>. The classic rock side came three weeks later. On <b>4 September</b> Pink Floyd and Fleetwood Mac had their first big day on the same day. Metallica's monthly listening quadrupled.` },
+  { type: 'Slow takeover', when: 'Oct – Dec 2025',
+    text: `Israeli music rose week by week for seven straight weeks: 1%, 2%, 5%, 8%, 9%, 23%, 32%, then <b>64% in the week of 24 November</b>. Tamir Bar arrived on <b>14 November</b>, Yuval Dayan on 1 December, and Tuna, the biggest of them, had his first big day on <b>8 January 2026</b>. Unlike earlier changes, the old favorite didn't leave: Metallica nearly doubled, to 5 hours a month. What fell away was the 70s side (Fleetwood Mac, Pink Floyd, Lynyrd Skynyrd). Mid-December had one classical week (Vivaldi, Beethoven).` },
+  { type: 'Silence, then reset', when: 'Apr – Aug 2026',
+    text: `After March 2026 you stopped. April had about a minute of music and May had none, <b>65 silent days</b> in total. On <b>22 June</b> you came back with 10 hours in a week, then 23 the next, spread across everything at once: Metallica, Black Eyed Peas, Drake, ZZ Top, Pantera, Beyoncé. New favorites then arrived one by one: Doja Cat on 26 June, Pearl Jam on 31 July, Rush on 10 August, Pantera on 15 August, Megadeth on 22 August. The Israeli wave did not come back: Tuna went from 2.1 hours a month to 0.3.` },
+];
+
+function transChart(svg, t){
+  const W = 1000, pl = 40, pr = 10, pt = 36, sh = 160, gap = 14, hh = 46, pb = 22, H = pt + sh + gap + hh + pb;
+  const n = t.weeks.length, iw = W - pl - pr, bw = iw/n;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.width = '100%'; svg.style.minWidth = '620px';
+  const tots = t.wg.map(r => r.reduce((a,b)=>a+b,0)), hmax = Math.max(...tots);
+  let s = `<defs><pattern id="h${t.frm}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="var(--rule)" stroke-width="2"/></pattern></defs>`;
+  [0,50,100].forEach(v => { const yy = pt + sh - v/100*sh; s += `<text x="${pl-6}" y="${yy+4}" text-anchor="end">${v}%</text>`; });
+  t.wg.forEach((r,i) => {
+    const x0 = pl + i*bw + 1, w = bw - 2, tot = tots[i];
+    if (tot < 0.15){ s += `<rect x="${x0}" y="${pt}" width="${w}" height="${sh}" fill="url(#h${t.frm})"/>`; }
+    else { let acc = 0; r.forEach((v,k) => { if (v <= 0) return; const h = v/tot*sh; const yy = pt + sh - acc - h; acc += h;
+      if (h > 1.2) s += `<rect x="${x0}" y="${yy + 0.6}" width="${w}" height="${h - 1.2}" fill="${GC(k)}" rx="1"/>`; }); }
+    const hb = tot/hmax*hh; s += `<rect x="${x0}" y="${pt + sh + gap + hh - hb}" width="${w}" height="${Math.max(hb, tot>0?1:0)}" fill="var(--muted)" rx="1"/>`;
+    s += `<rect data-i="${i}" x="${pl + i*bw}" y="${pt-14}" width="${bw}" height="${H - pb - pt + 14}" fill="transparent"/>`;
+    const d = t.weeks[i]; if (+d.slice(8) <= 7) s += `<text x="${pl + i*bw + 2}" y="${H-6}">${MON[+d.slice(5,7)-1]}${d.slice(5,7)==='01'?' ’'+d.slice(2,4):''}</text>`;
+  });
+  s += `<text x="${pl-6}" y="${pt + sh + gap + 10}" text-anchor="end">${Math.round(hmax)}h</text>`;
+  const bi = t.weeks.findIndex(w => w >= t.boundary + '-01'), xb = pl + Math.max(0, bi - (t.weeks[bi] > t.boundary + '-01' ? 1 : 0))*bw + (t.weeks[bi] > t.boundary + '-01' ? bw*((7 - (new Date(t.weeks[bi]) - new Date(t.boundary + '-01'))/864e5)/7) : 0);
+  s += `<line x1="${xb}" x2="${xb}" y1="${pt-30}" y2="${pt + sh + gap + hh}" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="3 3"/><text x="${xb + 5}" y="${pt-22}" style="fill:var(--ink);font-family:var(--display);font-style:italic;font-size:13px">era ${t.to+1} →</text>`;
+  const marks = {}; t.firsts.forEach(f => { const i = t.weeks.findIndex((w,j) => f[0] >= w && (j === n-1 || f[0] < t.weeks[j+1])); if (i >= 0) (marks[i] ||= []).push(f); });
+  Object.entries(marks).forEach(([i]) => { const cx = pl + (+i + .5)*bw; s += `<path d="M${cx-4},${pt-11} L${cx+4},${pt-11} L${cx},${pt-4} Z" fill="var(--ink)"/>`; });
+  svg.innerHTML = s;
+  svg.onmousemove = e => { const r = e.target.closest('[data-i]'); if (!r) return hideTip(); const i = +r.dataset.i, row = t.wg[i], tot = tots[i];
+    const end = new Date(new Date(t.weeks[i]).getTime() + 6*864e5).toISOString().slice(0,10);
+    const fs = (marks[i] || []).map(f => `<br>▼ ${esc(f[1])}: first big day (${+f[0].slice(8)} ${MON[+f[0].slice(5,7)-1]})`).join('');
+    showTip(e, `<b>Week of ${+t.weeks[i].slice(8)} ${MON[+t.weeks[i].slice(5,7)-1]} ${t.weeks[i].slice(0,4)}</b> · ${tot.toFixed(1)} h` + (tot < 0.15 ? '<br>Almost nothing played' :
+      row.map((v,k) => [k,v]).filter(z => z[1] > 0.02).sort((a,b) => b[1]-a[1]).map(([k,v]) => `<div class="r"><span><i style="background:${GC(k)}"></i>${GN[k]}</span><span>${Math.round(100*v/tot)}%</span></div>`).join('')) + fs); };
+  svg.onmouseleave = hideTip;
+}
+
+(function(){
+  const box = $('#story'); let h = '';
+  const rate = v => v < 0.05 ? '0' : v.toFixed(1);
+  D.eras.forEach((e,i) => {
+    const months = M.indexOf(e.b) - M.indexOf(e.a) + 1;
+    const mix = e.g.map((v,k) => v>0 ? `<i style="width:${v}%;background:${GC(k)}" class="${LIGHT_TEXT.has(k)?'lt':''}" title="${GN[k]} ${v}%">${v>=9?v+'%':''}</i>` : '').join('');
+    const sig = e.sig.length ? `<div><div class="lbl">Mostly heard here</div><ul>${e.sig.slice(0,4).map(s => `<li><span dir="auto">${esc(s[0])}</span><span>${s[2]}% of all time</span></li>`).join('')}</ul></div>` : '';
+    h += `<article class="era" id="era${i+1}"><div class="n">${i+1}</div><div class="body">
+      <div class="when">${mLong(e.a)} – ${mLong(e.b)} · ${months} months</div>
+      <h3>${ERA_NAMES[i]}</h3>
+      <div class="mix" role="img" aria-label="Genre mix">${mix}</div>
+      <p>${ERA_TEXT[i](e)}</p>
+      <div class="facts"><span><b>${e.h} h</b> music</span><span><b>${(e.h/months).toFixed(0)} h</b> a month</span><span>average year <b>${e.yr}</b></span><span>variety <b>${e.eff}</b></span></div>
+      <div class="cols">
+        <div><div class="lbl">Most played</div><ul>${e.top.slice(0,4).map(t => `<li><span dir="auto">${esc(t[0])}</span><span>${t[1]} h</span></li>`).join('')}</ul></div>
+        ${sig}
+        <div><div class="lbl">On repeat</div><ul>${e.trk.map(t => `<li><span dir="auto">${esc(clean(t[0]))}</span><span>${t[2]}×</span></li>`).join('')}</ul></div>
+      </div></div></article>`;
+    if (i < D.trans.length){
+      const t = D.trans[i], T = TT[i];
+      const li = (arr, f) => `<ul>${arr.slice(0,5).map(a => `<li><span dir="auto">${esc(a[0])}</span><span>${f(a)}</span></li>`).join('')}</ul>`;
+      h += `<div class="change" id="change${i+1}"><div class="rail"><i></i></div><div class="body">
+        <div class="tag"><span class="type">${T.type}</span><b>Era ${i+1} → ${i+2}</b><span>${T.when}</span></div>
+        <div class="scroll"><svg data-t="${i}" role="img" aria-label="Weekly genre mix around the change from era ${i+1} to ${i+2}"></svg></div>
+        <p>${T.text}</p>
+        <div class="flow">
+          <div><div class="lbl">Came in · hours a month</div>${li(t.inn, a => `${rate(a[1])} → ${rate(a[2])}`)}</div>
+          <div><div class="lbl">Faded out · hours a month</div>${li(t.out, a => `${rate(a[1])} → ${rate(a[2])}`)}</div>
+          <div><div class="lbl">Carried over</div>${li(t.stay, a => `${rate(a[1])} → ${rate(a[2])}`)}</div>
+          ${t.firsts.length ? `<div><div class="lbl">▼ First big days</div><ul class="firsts">${t.firsts.map(f => `<li><span>${+f[0].slice(8)} ${MON[+f[0].slice(5,7)-1]} ${f[0].slice(2,4)}</span><span><b dir="auto">${esc(f[1])}</b>, <span dir="auto">${esc(clean(f[2]))}</span></span></li>`).join('')}</ul></div>` : ''}
+        </div></div></div>`;
+    }
+  });
+  box.innerHTML = h;
+  box.querySelectorAll('svg[data-t]').forEach(svg => transChart(svg, D.trans[+svg.dataset.t]));
+})();
+
+/* ---------- afterlife ---------- */
+(function(){
+  const A = D.after, max = Math.max(...A.map(a => a.bef + a.inn + a.aft));
+  $('#after').innerHTML = A.map((a,i) => { const tot = a.bef + a.inn + a.aft;
+    const seg = (v,c) => v > 0 ? `<i style="width:${100*v/max}%;background:${c}" title="${v} h"></i>` : '';
+    return `<div class="arow"><div class="an">${i+1} · ${ERA_NAMES[i]}<small dir="auto">${a.art.map(esc).join(', ')}</small></div>
+      <div class="ab">${seg(a.bef,'var(--q2)')}${seg(a.inn,'var(--q5)')}${seg(a.aft,'var(--g1)')}</div>
+      <div class="av">${i === A.length-1 ? 'still now' : `${Math.round(100*a.aft/tot)}% after`}</div></div>`; }).join('');
+  $('#afterP').innerHTML = `<p>Each row takes the artists that lived mostly in one era and splits their total listening into before, during and after. It shows whether an era really ended or kept echoing.</p><p>The 2023 pop and EDM era echoes the most: Alan Walker, Imagine Dragons and Avicii got another ${A[0].aft} hours after it ended. The Israeli wave of winter 2025–26 ended the most cleanly. Tuna, Tamir Bar and Yuval Dayan got only ${A[6].aft} hours in the months since. Every era shows the same pattern: once it ends, its defining artists get far less than they had during it.</p>`;
+})();
+
+/* ---------- music age ---------- */
+(function(){
+  const svg = $('#age'), W = 1120, H = 300, pl = 40, pr = 10, pt = 10, pb = 26, iw = W-pl-pr, ih = H-pt-pb, bw = iw/NM;
+  size(svg, W, H, 700);
+  const K = D.dkeys.length; let s = '';
+  [0,25,50,75,100].forEach(v => { const yy = pt + ih - v/100*ih; s += `<text x="${pl-6}" y="${yy+4}" text-anchor="end">${v}%</text>`; });
+  D.decade.forEach((r,i) => { const t = r.reduce((a,b)=>a+b,0); if (t < 0.5) return; let acc = 0;
+    // oldest at the bottom
+    r.forEach((v,k) => { if (!v) return; const h = v/t*ih, yy = pt + ih - acc - h; acc += h;
+      s += `<rect x="${pl + i*bw + 1}" y="${yy + 1}" width="${bw-2}" height="${Math.max(0,h-2)}" fill="var(--q${K-1-k})" rx="1"/>`; });
+    s += `<rect data-i="${i}" x="${pl+i*bw}" y="${pt}" width="${bw}" height="${ih}" fill="transparent"/>`; });
+  M.forEach((m,i) => { if (m.endsWith('-01')) s += `<text x="${pl+i*bw+bw/2}" y="${H-6}" text-anchor="middle" style="fill:var(--ink2)">${m.slice(0,4)}</text>`; });
+  svg.innerHTML = s;
+  svg.onmousemove = e => { const r = e.target.closest('[data-i]'); if (!r) return hideTip(); const i = +r.dataset.i, row = D.decade[i], t = row.reduce((a,b)=>a+b,0);
+    showTip(e, `<b>${mLong(M[i])}</b> · average year ${D.avgyear[i] ? Math.round(D.avgyear[i]) : '–'}<br>` + row.map((v,k) => [k,v]).reverse().filter(x => x[1] > 0.05).map(([k,v]) => `<div class="r"><span><i style="background:var(--q${K-1-k})"></i>${D.dkeys[k]}</span><span>${Math.round(100*v/t)}%</span></div>`).join('')); };
+  svg.onmouseleave = hideTip;
+  $('#ageLegend').innerHTML = D.dkeys.map((d,k) => `<span style="display:inline-flex;gap:6px;align-items:center"><i style="background:var(--q${K-1-k})"></i>${d}</span>`).join('');
+  const e = D.eras;
+  const old = D.decade.map(r => { const t = r.reduce((a,b)=>a+b,0); return t ? (r[0]+r[1]+r[2])/t : 0; });
+  const y23 = [], y26 = []; M.forEach((m,i) => { if (m < '2024-01' && old[i]) y23.push(old[i]); if (m >= '2026-01' && D.decade[i].reduce((a,b)=>a+b,0) > 0.5) y26.push(old[i]); });
+  const avg = a => Math.round(100*a.reduce((x,y)=>x+y,0)/a.length);
+  $('#ageP').innerHTML = `<p>Through 2023 and most of 2024, the typical song you played came out around <b>2008–2010</b>, and music from before 1990 was about <b>${avg(y23)}%</b> of the mix. With the rock turn in November 2024 the average dropped to the mid-90s, and in late 2025 it reached <b>${e[5].yr}</b>. In 2026, ${avg(y26)}% of your music comes from the 60s, 70s and 80s.</p><p>Darker blue is older. Each bar is one month.</p>`;
+})();
+
+/* ---------- variety + novelty ---------- */
+function line(svg, vals, o){
+  const W = 540, H = 230, pl = 34, pr = 10, pt = 14, pb = 26, iw = W-pl-pr, ih = H-pt-pb;
+  size(svg, W, H, 420);
+  const max = o.max, x = i => pl + i*iw/(NM-1), y = v => pt + ih - v/max*ih;
+  let s = '';
+  D.eras.forEach((e,k) => { if (k % 2) return; const a = M.indexOf(e.a), b = M.indexOf(e.b);
+    s += `<rect x="${a===0?pl:(x(a)+x(a-1))/2}" y="${pt}" width="${(b===NM-1?x(NM-1):(x(b)+x(b+1))/2) - (a===0?pl:(x(a)+x(a-1))/2)}" height="${ih}" fill="var(--rule)" opacity=".45"/>`; });
+  for (let v = 0; v <= max; v += o.tick) s += `<line x1="${pl}" x2="${pl+iw}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule)"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}${o.unit||''}</text>`;
+  let d = '', area = '', started = false, segStart = null;
+  const segs = []; let cur = [];
+  vals.forEach((v,i) => { if (v == null) { if (cur.length) segs.push(cur); cur = []; } else cur.push([x(i), y(v)]); }); if (cur.length) segs.push(cur);
+  segs.forEach(sg => { s += `<polygon points="${sg[0][0]},${y(0)} ${sg.map(p => p.join(',')).join(' ')} ${sg.at(-1)[0]},${y(0)}" fill="${o.c}" opacity=".12"/>`;
+    s += `<polyline points="${sg.map(p => p.join(',')).join(' ')}" fill="none" stroke="${o.c}" stroke-width="2" stroke-linejoin="round"/>`; });
+  (o.marks||[]).forEach(([i,label,anchor]) => { const v = vals[i]; s += `<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${o.c}" stroke="var(--paper)" stroke-width="2"/><text x="${x(i)}" y="${y(v)-10}" text-anchor="${anchor||'middle'}" style="fill:var(--ink2)">${label}</text>`; });
+  M.forEach((m,i) => { if (m.endsWith('-01')) s += `<text x="${x(i)}" y="${H-6}" text-anchor="middle">${m.slice(0,4)}</text>`; });
+  s += `<line class="cx" y1="${pt}" y2="${pt+ih}" stroke="var(--ink)" visibility="hidden"/>`;
+  svg.innerHTML = s;
+  const cx = svg.querySelector('.cx');
+  svg.onmousemove = e => { const p = svgX(svg, e), i = Math.max(0, Math.min(NM-1, Math.round((p.x-pl)/(iw/(NM-1)))));
+    cx.setAttribute('x1', x(i)); cx.setAttribute('x2', x(i)); cx.setAttribute('visibility','visible');
+    showTip(e, `<b>${mLong(M[i])}</b><br>${vals[i] == null ? 'Not enough listening' : o.tip(i)}`); };
+  svg.onmouseleave = () => { cx.setAttribute('visibility','hidden'); hideTip(); };
+}
+(function(){
+  const eff = D.eff, nt = D.newtr;
+  const valid = eff.map((v,i) => [v,i]).filter(z => z[0] != null && D.musich[z[1]] > 2);
+  const lo = valid.reduce((a,b) => b[0] < a[0] ? b : a), hi = valid.reduce((a,b) => b[0] > a[0] ? b : a);
+  line($('#var1'), eff, { max: 120, tick: 30, c: 'var(--g0)', marks: [[lo[1], `${mShort(M[lo[1]])}: ${lo[0]}`], [hi[1], `${mShort(M[hi[1]])}: ${hi[0]}`, 'end']],
+    tip: i => `Variety ${eff[i]} · ${D.arts[i]} artists played<br>Top 5 artists: ${D.top5[i]}% of the month` });
+  const nv = nt.map((v,i) => [v,i]).filter(z => z[0] != null && D.musich[z[1]] > 2);
+  const nhi = nv.reduce((a,b) => b[0] > a[0] ? b : a);
+  line($('#var2'), nt, { max: 50, tick: 10, unit: '%', c: 'var(--g1)', marks: [[nhi[1], `${mShort(M[nhi[1]])}: ${nhi[0]}%`]],
+    tip: i => `${nt[i]}% of listening on songs new to you` });
+  const avgNew = Math.round(nv.reduce((a,b)=>a+b[0],0)/nv.length);
+  $('#varP').innerHTML = `<p>Some months you spread your time across a hundred artists, others you mostly played five. Your narrowest stretch was 2025: in ${mLong(M[lo[1]])} your listening was effectively split between just <b>${lo[0]}</b> artists. Since coming back in June 2026 you've been at your widest ever, peaking at <b>${hi[0]}</b> in ${mLong(M[hi[1]])}.</p><p>Discovery runs in bursts. On average ${avgNew}% of a month goes to songs you met in the last 30 days, but in ${mLong(M[nhi[1]])} it was ${nhi[0]}%, the month Tamir Bar arrived. The shaded bands are alternating eras.</p>`;
+})();
+
+/* ---------- similarity ---------- */
+(function(){
+  const S = D.sim, SM = D.simm, n = SM.length, svg = $('#sim');
+  const cell = 15, pl = 64, pt = 10, W = pl + n*cell + 230, H = pt + n*cell + 40;
+  size(svg, W, H, 640); svg.style.maxWidth = W + 'px';
+  const step = v => v >= .8 ? 6 : v >= .65 ? 5 : v >= .5 ? 4 : v >= .38 ? 3 : v >= .26 ? 2 : v >= .15 ? 1 : 0;
+  let s = '';
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++)
+    s += `<rect data-i="${i}" data-j="${j}" x="${pl + j*cell}" y="${pt + i*cell}" width="${cell-1}" height="${cell-1}" fill="var(--q${step(S[i][j])})"/>`;
+  SM.forEach((m,i) => { if (m.endsWith('-01') || i === 0) { s += `<text x="${pl-6}" y="${pt + i*cell + 11}" text-anchor="end" style="fill:var(--ink2)">${m.slice(0,4)}</text><text x="${pl + i*cell}" y="${pt + n*cell + 16}" style="fill:var(--ink2)">${m.slice(0,4)}</text>`; } });
+  D.eras.forEach((e,k) => { const a = SM.indexOf(e.a), b = SM.indexOf(e.b); if (a < 0) return;
+    s += `<rect x="${pl + a*cell - 1}" y="${pt + a*cell - 1}" width="${(b-a+1)*cell + 1}" height="${(b-a+1)*cell + 1}" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+      <text x="${pl + n*cell + 14}" y="${pt + ((a+b+1)/2)*cell + 4}" style="font-family:var(--body);font-size:12px;fill:var(--ink2)">${k+1}  ${ERA_NAMES[k]}</text>`; });
+  svg.innerHTML = s;
+  svg.onmousemove = e => { const r = e.target.closest('[data-i]'); if (!r) return hideTip(); const i = +r.dataset.i, j = +r.dataset.j;
+    showTip(e, i === j ? `<b>${mLong(SM[i])}</b>` : `<b>${mLong(SM[i])}</b> vs <b>${mLong(SM[j])}</b><br>${Math.round(100*S[i][j])}% similar`); };
+  svg.onmouseleave = hideTip;
+  const t = D.turn.map((v,i) => [v,i]).filter(z => z[0] != null).sort((a,b) => b[0]-a[0]).slice(0,3);
+  $('#simP').innerHTML = `<p>Each square compares two months by which artists filled them. Dark means the same artists, light means different ones. The dark blocks along the diagonal are the eras, and the boxes show where the segmentation drew them. The sharpest month-to-month breaks were <b>${t.map(z => mLong(SM[z[1]])).join(', ')}</b>.</p><p>Look along a row to see whether you ever went back. 2023 stays pale against everything after it: that music never really returned.</p>`;
+})();
+
+/* ---------- lifelines ---------- */
+(function(){
+  const L = D.life.map(r => { const tot = r.v.reduce((a,b)=>a+b,0); let c = 0, med = 0; for (let i = 0; i < NM; i++){ c += r.v[i]; if (c >= tot/2) { med = i; break; } } return {...r, med, gi: D.gkeys.indexOf(r.g)}; })
+    .sort((a,b) => a.med - b.med || b.h - a.h);
+  let filter = -1, all = false;
+  const svg = $('#life'), btn = $('#lifeMore');
+  function draw(){
+    let rows = filter < 0 ? L : L.filter(r => r.gi === filter);
+if (!all && filter < 0) rows = rows.filter(r => r.h >= 4);
+    const rh = 15, pl = 170, pr = 56, pt = 22, W = 1120, iw = W - pl - pr, cw = iw/NM, H = pt + rows.length*rh + 26;
+    size(svg, W, H, 760);
+    let s = '';
+    M.forEach((m,i) => { if (m.endsWith('-01')) s += `<line x1="${pl + i*cw}" x2="${pl + i*cw}" y1="${pt-6}" y2="${H-20}" stroke="var(--rule)"/><text x="${pl + i*cw}" y="${pt-10}" style="fill:var(--ink2)">${m.slice(0,4)}</text>`; });
+    D.eras.forEach((e,k) => { const a = M.indexOf(e.a); s += `<text x="${pl + a*cw + 2}" y="${H-6}" style="font-family:var(--display);font-style:italic;font-size:12px;fill:var(--muted)">${k+1}</text>`; });
+    rows.forEach((r,j) => { const yy = pt + j*rh, mx = Math.max(...r.v);
+      s += `<g data-j="${j}"><rect x="0" y="${yy}" width="${W}" height="${rh}" fill="transparent"/><text x="${pl-8}" y="${yy+11}" text-anchor="end" style="fill:var(--ink);font-family:var(--body);font-size:12px">${esc(r.a)}</text>`;
+      r.v.forEach((v,i) => { if (v < 0.02) return; const o = Math.max(.12, Math.sqrt(v/mx));
+        s += `<rect x="${pl + i*cw + .5}" y="${yy + 2}" width="${cw - 1}" height="${rh - 4}" rx="1.5" fill="${GC(r.gi)}" fill-opacity="${o.toFixed(2)}"/>`; });
+      s += `<text x="${W - pr + 8}" y="${yy+11}">${r.h} h</text></g>`; });
+    svg.innerHTML = s;
+    svg.onmousemove = e => { const g = e.target.closest('g[data-j]'); if (!g) return hideTip(); const r = rows[+g.dataset.j];
+      const p = svgX(svg, e), i = Math.floor((p.x - pl)/cw);
+      const first = M[r.v.findIndex(v => v >= 0.02)], last = M[NM - 1 - [...r.v].reverse().findIndex(v => v >= 0.02)];
+      showTip(e, `<b>${esc(r.a)}</b> · ${GN[r.gi]}<br>${r.h} h total · active ${mShort(first)} to ${mShort(last)}` + (i >= 0 && i < NM ? `<br>${mLong(M[i])}: ${r.v[i].toFixed(1)} h` : '')); };
+    svg.onmouseleave = hideTip;
+    btn.hidden = filter >= 0; btn.textContent = all ? 'Show only artists with 4+ hours' : `Show all ${L.length} artists`;
+  }
+  $('#lifeCtl').innerHTML = `<button type="button" aria-pressed="true" data-k="-1">All genres</button>` + GN.map((g,k) => L.some(r => r.gi === k) ? `<button type="button" aria-pressed="false" data-k="${k}"><i style="background:${GC(k)}"></i>${g}</button>` : '').join('');
+  $('#lifeCtl').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; filter = +b.dataset.k;
+    document.querySelectorAll('#lifeCtl button').forEach(z => z.setAttribute('aria-pressed', z === b)); draw(); });
+  btn.addEventListener('click', () => { all = !all; draw(); });
+  const cs = D.constants;
+  $('#lifeP').innerHTML = `<p>One row per artist, sorted by when they mattered most to you, so the page reads like a timeline from top to bottom. Brighter means more listening <i>for that artist</i>. Each row is scaled to its own peak, so you can see when an artist was active rather than how big they were.</p><p>Most artists live inside one era and disappear. Only a few cross almost all of them: <b>${esc(cs[0][0])}</b> appears in all ${cs[0][1]} eras, and ${cs.slice(1,5).map(c => esc(c[0])).join(', ')} in ${cs[1][1]}.</p>`;
+  draw();
+})();
+
+</script>
+
+</body>
+</html>

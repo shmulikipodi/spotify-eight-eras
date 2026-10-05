@@ -1,0 +1,5 @@
+spotify_raw
+.venv
+output
+*.py
+*.txt

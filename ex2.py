@@ -1,0 +1,25 @@
+exec(open('explore.py').read().split("print(df.reason_start")[0])
+p=df[df.spotify_episode_uri.notna()]
+dre=p[p.episode_name.fillna('').str.contains('דרה')]; print('dre pod', dre.ts.min(), dre.ts.max(), dre.sec.sum()/3600)
+dm=m[m.master_metadata_album_artist_name=='Dr. Dre']; print(dm.groupby(dm.ts.dt.to_period('M')).sec.sum().div(3600).round(1).loc[lambda s:s>0.2])
+fa=m.groupby('master_metadata_album_artist_name').agg(first=('ts','min'),h=('sec','sum')); fa['h']/=3600
+print(fa[(fa['first']>'2024-01-01')&(fa.h>=3)].sort_values('h'))
+print('ios first', df[df.platform=='ios'].ts.min(), 'android last', df[df.platform=='android'].ts.max())
+print('osx', df[df.platform=='osx'].ts.min(), df[df.platform=='osx'].ts.max())
+daily=df.groupby(df.ts.dt.date).sec.sum()
+allday=pd.date_range(daily.index.min(),daily.index.max()).date
+present=pd.Series([x in set(daily.index) for x in allday],index=allday)
+st=(present!=present.shift()).cumsum(); runs=present.groupby(st).agg(['first','size']); r=runs[runs['first']].sort_values('size').tail(1)
+grp=r.index[0]; print('streak', present[st==grp].index.min(), present[st==grp].index.max())
+print(daily.sort_values().tail(3)/3600)
+x=df[df.ts.dt.date==daily.idxmax()]; print(x.master_metadata_album_artist_name.value_counts().head(5), x.episode_show_name.value_counts().head(3))
+s=df.groupby('sess').agg(start=('ts','min'),end=('ts','max'),n=('sec','size'),sec=('sec','sum'))
+L=s.sec.idxmax(); y=df[df.sess==L]; print(y.master_metadata_album_artist_name.value_counts().head(5), y.ts.min(), y.ts.max())
+print('session len dist', (s.sec/60).quantile([.25,.5,.75,.9,.99]).round(1).tolist())
+print('Gamazda/backing by year', m[m.master_metadata_album_artist_name.str.contains('Backing|Gamazda',na=False)].groupby(m.ts.dt.year).sec.sum()/3600)
+print('Driftveil', m[m.master_metadata_track_name.str.contains('Driftveil',na=False)].groupby(m.ts.dt.year).size())
+print('Saturday hours', df[df.ts.dt.dayofweek==5].groupby(df.ts.dt.hour).sec.sum().div(3600).round(1).to_dict())
+print('Friday hours', df[df.ts.dt.dayofweek==4].groupby(df.ts.dt.hour).sec.sum().div(3600).round(1).to_dict())
+print('ge', df[df.conn_country=='GE'].master_metadata_album_artist_name.value_counts().head(5))
+print('repeat back-to-back max');
+mm=m.reset_index(drop=True); same=(mm.spotify_track_uri==mm.spotify_track_uri.shift())&(mm.sec>=30); grp2=(~same).cumsum(); c=mm[mm.sec>=30].groupby(grp2).agg(n=('sec','size'),t=('master_metadata_track_name','first'),d=('ts','first')).sort_values('n').tail(5); print(c)

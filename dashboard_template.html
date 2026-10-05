@@ -1,0 +1,280 @@
+<title>Three Years on Repeat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Hebrew:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: liner-notes sheet — one 1080px column, filter chips sticky on top, summary → time → taste → habits. */
+:root{
+  --bg:#F7F7FA; --panel:#FFFFFF; --ink:#1A1824; --ink2:#55526A; --muted:#8A879C; --line:#E4E2EC;
+  --music:#D9480F; --pod:#1575A8; --track:#EEEDF3;
+  --h0:#F4F2F7; --h1:#FBD9C4; --h2:#F5A57A; --h3:#E8642A; --h4:#B83A0A; --h5:#7A2504;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans","IBM Plex Sans Hebrew",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#15141C; --panel:#1D1C26; --ink:#EEEDF4; --ink2:#B4B1C6; --muted:#7F7C92; --line:#2D2B39;
+  --music:#E8642A; --pod:#3A9DD0; --track:#272533;
+  --h0:#201F29; --h1:#4A2416; --h2:#7E3514; --h3:#B9491A; --h4:#E8642A; --h5:#FFA572; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15141C; --panel:#1D1C26; --ink:#EEEDF4; --ink2:#B4B1C6; --muted:#7F7C92; --line:#2D2B39;
+  --music:#E8642A; --pod:#3A9DD0; --track:#272533;
+  --h0:#201F29; --h1:#4A2416; --h2:#7E3514; --h3:#B9491A; --h4:#E8642A; --h5:#FFA572; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:clamp(2.4rem,7vw,4.6rem);font-weight:850;font-stretch:72%;line-height:.95;letter-spacing:-.01em;text-transform:uppercase}
+h2{font-size:1.5rem;font-weight:750;font-stretch:85%;text-transform:uppercase;letter-spacing:.01em}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sub{color:var(--ink2);max-width:62ch;margin:0}
+header{padding-top:48px;display:flex;flex-direction:column;gap:14px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{font:500 14px var(--mono);border:1px solid var(--line);background:var(--panel);color:var(--ink2);padding:6px 14px;border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--ink2)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,button:focus-visible{outline:2px solid var(--music);outline-offset:2px}
+.chip small{opacity:.65;font-size:11px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.stat{background:var(--panel);padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+.stat b{font:800 2rem/1.1 var(--display);font-stretch:80%;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--ink2)}
+section{display:flex;flex-direction:column;gap:16px}
+.sechead{display:flex;flex-direction:column;gap:4px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:40px}
+.grid2>*{min-width:0}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--ink2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:6px;vertical-align:-1px}
+.chartbox{overflow-x:auto}
+svg text{fill:var(--muted);font:11px var(--mono)}
+/* ranked lists */
+ol.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ol.rank li{display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding-block:7px;border-bottom:1px solid var(--line)}
+.rk{font:500 13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.nm{min-width:0;display:flex;flex-direction:column}
+.nm .t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nm .a{font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.val{font:500 13px var(--mono);color:var(--ink2);text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
+.meter{grid-column:2/4;height:4px;background:var(--track);border-radius:2px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--music);border-radius:0 2px 2px 0}
+.meter.p i{background:var(--pod)}
+.more{align-self:flex-start;font:500 13px var(--mono);background:none;border:0;color:var(--music);cursor:pointer;padding:4px 0}
+/* heatmap */
+.heat{display:grid;grid-template-columns:2.6em repeat(24,minmax(12px,1fr));gap:2px;min-width:420px}
+.heat div{aspect-ratio:1;border-radius:2px;max-width:100%}
+.heat .lbl{aspect-ratio:auto;font:11px var(--mono);color:var(--muted);display:flex;align-items:center}
+.heat .hl{aspect-ratio:auto;font:10px var(--mono);color:var(--muted);text-align:center}
+.scale{display:flex;align-items:center;gap:6px;font:11px var(--mono);color:var(--muted)}
+.scale i{width:16px;height:10px;border-radius:2px;display:inline-block}
+/* timeline */
+.aom{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.aom div{background:var(--panel);padding:10px 12px;display:flex;flex-direction:column}
+.aom .m{font:500 11px var(--mono);color:var(--muted);text-transform:uppercase}
+.aom .x{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aom .h{font:12px var(--mono);color:var(--ink2)}
+.aom div.sel{box-shadow:inset 0 3px 0 var(--music)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px}
+.note{display:flex;flex-direction:column;gap:6px}
+.note h3{margin:0;font:700 1rem var(--display);font-stretch:90%;text-transform:uppercase}
+.note p{margin:0;color:var(--ink2);font-size:14px}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font:12px/1.4 var(--mono);padding:6px 9px;border-radius:4px;z-index:20;max-width:260px}
+.dim{opacity:.35}
+@media (prefers-reduced-motion:no-preference){.meter i{transition:width .4s ease}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow" id="range"></span>
+    <h1>Three years<br>on repeat</h1>
+    <p class="sub" id="lede"></p>
+  </header>
+
+  <nav class="bar" id="years" aria-label="Choose a year"></nav>
+
+  <div class="stats" id="stats"></div>
+
+  <section>
+    <div class="sechead">
+      <span class="eyebrow">Hours per month · all time</span>
+      <h2>When you listened</h2>
+      <p class="sub" id="monthNote"></p>
+    </div>
+    <div class="legend"><span><i style="background:var(--music)"></i>Music</span><span><i style="background:var(--pod)"></i>Podcasts</span></div>
+    <div class="chartbox"><svg id="monthly" role="img" aria-label="Stacked bar chart of music and podcast hours per month"></svg></div>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <div class="sechead"><span class="eyebrow" id="artEy"></span><h2>Top artists</h2></div>
+      <ol class="rank" id="artists"></ol>
+      <button class="more" data-k="artists">Show 25</button>
+    </section>
+    <section>
+      <div class="sechead"><span class="eyebrow">Ranked by time played · plays counted at 30s+</span><h2>Top tracks</h2></div>
+      <ol class="rank" id="tracks"></ol>
+      <button class="more" data-k="tracks">Show 25</button>
+    </section>
+  </div>
+
+  <section>
+    <div class="sechead">
+      <span class="eyebrow">Weekday × hour, Israel time · hours listened</span>
+      <h2>Your listening clock</h2>
+      <p class="sub" id="clockNote"></p>
+    </div>
+    <div class="chartbox"><div class="heat" id="heat" role="img" aria-label="Heatmap of listening hours by weekday and hour"></div></div>
+    <div class="scale" id="scale"></div>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <div class="sechead"><span class="eyebrow">Ranked by time played</span><h2>Top albums</h2></div>
+      <ol class="rank" id="albums"></ol>
+    </section>
+    <section>
+      <div class="sechead"><span class="eyebrow">Ranked by time played</span><h2>Podcasts</h2></div>
+      <ol class="rank" id="shows"></ol>
+    </section>
+  </div>
+
+  <section>
+    <div class="sechead">
+      <span class="eyebrow">Most-played artist each month</span>
+      <h2>Artist of the month</h2>
+    </div>
+    <div class="aom" id="aom"></div>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <span class="eyebrow">Same song, 30s+ plays, one day</span>
+      <h2>On-repeat days</h2>
+    </div>
+    <ol class="rank" id="obs"></ol>
+  </section>
+
+  <section>
+    <div class="sechead"><span class="eyebrow">Reading the numbers</span><h2>Notes</h2></div>
+    <div class="notes">
+      <div class="note"><h3>Partial years</h3><p>The export starts on 14 May 2023 and ends on 27 Sep 2026, so 2023 and 2026 cover only part of a year.</p></div>
+      <div class="note"><h3>Plays vs. time</h3><p>A play counts when a track ran 30 seconds or more, the same rule Spotify uses. Rankings use total time, so long songs weigh more than short ones.</p></div>
+      <div class="note"><h3>Skips</h3><p>Spotify marks a track as skipped whenever you moved on before it ended, including a tap on the next button after a few seconds. That makes skip rates look high for everyone.</p></div>
+      <div class="note"><h3>Video plays included</h3><p>Music videos and video podcasts come in separate files. They are merged in here, and 91 duplicate rows were removed.</p></div>
+    </div>
+  </section>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = __DATA__;
+const $ = s => document.querySelector(s);
+const fmt = n => n.toLocaleString('en-US');
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const mlabel = m => MON[+m.slice(5)-1]+' '+m.slice(0,4);
+let year = 'all', expanded = {artists:false, tracks:false};
+try { const s = localStorage.getItem('yr'); if (s && D.years[s]) year = s; } catch(e){}
+
+const tip = $('#tip');
+function showTip(e, html){ tip.innerHTML = html; tip.hidden = false;
+  const r = tip.getBoundingClientRect(); let x = e.clientX+12, y = e.clientY+12;
+  if (x + r.width > innerWidth-8) x = e.clientX - r.width - 12;
+  if (y + r.height > innerHeight-8) y = e.clientY - r.height - 12;
+  tip.style.left = x+'px'; tip.style.top = y+'px'; }
+const hideTip = () => tip.hidden = true;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+$('#range').textContent = '14 May 2023 – 27 Sep 2026 · Spotify extended streaming history';
+
+function chips(){
+  const partial = {'2023':'from May','2026':'to Sep'};
+  $('#years').innerHTML = ['all', ...Object.keys(D.years).filter(k => k!=='all')].map(y =>
+    `<button class="chip" aria-pressed="${y===year}" data-y="${y}">${y==='all'?'All time':y}${partial[y]?` <small>${partial[y]}</small>`:''}</button>`).join('');
+}
+$('#years').addEventListener('click', e => { const b = e.target.closest('[data-y]'); if(!b) return;
+  year = b.dataset.y; try{localStorage.setItem('yr',year)}catch(e){} render(); });
+
+function rankList(el, items, opts){
+  const max = items[0]?.h || 1;
+  el.innerHTML = items.map((it,i) => `<li>
+    <span class="rk">${i+1}</span>
+    <span class="nm"><span class="t" dir="auto">${esc(it.n)}</span>${opts.sub?`<span class="a" dir="auto">${esc(opts.sub(it))}</span>`:''}</span>
+    <span class="val">${opts.val(it)}</span>
+    <span class="meter ${opts.cls||''}"><i style="width:${(100*it.h/max).toFixed(1)}%"></i></span></li>`).join('')
+    || '<li><span></span><span class="a">Nothing here for this year.</span></li>';
+}
+
+function monthly(){
+  const svg = $('#monthly'), data = D.monthly, W = Math.max(640, svg.parentElement.clientWidth), H = 240;
+  const pad = {l:36, r:8, t:10, b:28}, iw = W-pad.l-pad.r, ih = H-pad.t-pad.b;
+  const maxV = Math.max(...data.map(d => d.music+d.pod)), top = Math.ceil(maxV/20)*20;
+  const bw = iw/data.length, y = v => pad.t + ih - v/top*ih;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.setAttribute('height', H);
+  let s = '';
+  for (let v=0; v<=top; v+=20){ s += `<line x1="${pad.l}" x2="${W-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${pad.l-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`; }
+  data.forEach((d,i) => {
+    const x = pad.l + i*bw + 1, w = Math.max(2, bw-3), on = year==='all' || d.m.startsWith(year);
+    const hm = d.music/top*ih, hp = d.pod/top*ih, base = pad.t+ih;
+    const gap = hp>0 && hm>0 ? 2 : 0;
+    s += `<g class="${on?'':'dim'}" data-i="${i}">
+      <rect x="${x}" y="${base-hm}" width="${w}" height="${hm}" fill="var(--music)" rx="${Math.min(2,hp>0?0:2)}"/>
+      ${hp>0?`<rect x="${x}" y="${base-hm-hp-gap}" width="${w}" height="${Math.max(0,hp)}" fill="var(--pod)" rx="2"/>`:''}
+      <rect x="${x-1}" y="${pad.t}" width="${bw}" height="${ih}" fill="transparent"/></g>`;
+    if (d.m.endsWith('-01') || i===0) s += `<text x="${x}" y="${H-8}">${d.m.endsWith('-01')?d.m.slice(0,4):mlabel(d.m)}</text>`;
+  });
+  svg.innerHTML = s;
+  svg.onmousemove = e => { const g = e.target.closest('g[data-i]'); if(!g) return hideTip();
+    const d = data[+g.dataset.i]; const am = D.artist_of_month.find(a => a.m===d.m);
+    showTip(e, `<b>${mlabel(d.m)}</b><br>Music ${d.music} h · Podcasts ${d.pod} h${am?`<br>Top artist: ${esc(am.a)}`:''}`); };
+  svg.onmouseleave = hideTip;
+}
+
+function heat(Y){
+  const max = Math.max(...Y.heat.flat()), steps = ['--h0','--h1','--h2','--h3','--h4','--h5'];
+  const lvl = v => v<=0 ? 0 : Math.min(5, 1 + Math.floor(4.999*Math.sqrt(v/max)));
+  let s = '<div></div>' + Array.from({length:24},(_,h)=>`<div class="hl">${h%3===0?h:''}</div>`).join('');
+  Y.heat.forEach((row,d) => { s += `<div class="lbl">${DAYS[d]}</div>` + row.map((v,h) =>
+    `<div data-d="${d}" data-h="${h}" style="background:var(${steps[lvl(v)]})"></div>`).join(''); });
+  const el = $('#heat'); el.innerHTML = s;
+  el.onmousemove = e => { const c = e.target.closest('[data-h]'); if(!c) return hideTip();
+    const v = Y.heat[c.dataset.d][c.dataset.h], h = +c.dataset.h;
+    showTip(e, `<b>${DAYS[c.dataset.d]} ${String(h).padStart(2,'0')}:00–${String(h+1).padStart(2,'0')}:00</b><br>${v} hours`); };
+  el.onmouseleave = hideTip;
+  $('#scale').innerHTML = 'Less ' + steps.map(t=>`<i style="background:var(${t})"></i>`).join('') + ' More';
+  // peak
+  let best=[0,0,0]; Y.heat.forEach((r,d)=>r.forEach((v,h)=>{ if(v>best[0]) best=[v,d,h]; }));
+  const byDay = Y.heat.map(r => r.reduce((a,b)=>a+b,0)), dmax = byDay.indexOf(Math.max(...byDay));
+  const night = Y.heat.reduce((a,r)=>a+r.slice(0,5).reduce((x,y)=>x+y,0),0), tot = byDay.reduce((a,b)=>a+b,0);
+  $('#clockNote').textContent = `Busiest slot: ${DAYS[best[1]]} at ${best[2]}:00. Busiest day overall: ${DAYS[dmax]}. Between midnight and 5 am you played ${Math.round(100*night/tot)}% of your time. Saturday is your quietest day, ${Math.round(100*byDay[5]/tot)}% of the week's listening, and ${Math.round(100*Y.heat[5].slice(18).reduce((a,b)=>a+b,0)/Math.max(byDay[5],0.1))}% of Saturday's comes after 18:00.`;
+}
+
+function render(){
+  chips();
+  const Y = D.years[year], label = year==='all' ? 'all time' : year;
+  const tot = Y.music_h + Y.pod_h;
+  $('#lede').textContent = year==='all'
+    ? `${fmt(tot)} hours of Spotify across ${fmt(D.years.all.days)} days. Metallica owns the top spot, but the mix runs from Eminem and Guns N' Roses to Tuna and Alan Walker.`
+    : `In ${year} you listened for ${fmt(tot)} hours. Your top artist was ${Y.top_artists[0].n}, and your most-played track was “${Y.top_tracks[0].n}”.`;
+  const st = [
+    [fmt(tot), 'hours listened'],
+    [fmt(Y.plays), 'songs played (30s+)'],
+    [fmt(Y.artists), 'different artists'],
+    [fmt(Y.tracks), 'different tracks'],
+    [Y.avg_day + ' min', 'average on a listening day'],
+    [Y.top_day[1] + ' h', 'biggest day, ' + new Date(Y.top_day[0]).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})],
+  ];
+  $('#stats').innerHTML = st.map(([b,s]) => `<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
+  $('#artEy').textContent = `Ranked by hours · ${label}`;
+  rankList($('#artists'), Y.top_artists.slice(0, expanded.artists?25:10), {val: it => `${it.h} h`, sub: it => `${fmt(it.p)} plays · since ${it.f.slice(0,7)}`});
+  rankList($('#tracks'), Y.top_tracks.slice(0, expanded.tracks?25:10), {val: it => `${fmt(it.p)} plays`, sub: it => it.a});
+  rankList($('#albums'), Y.top_albums.slice(0,10), {val: it => `${it.h} h`, sub: it => it.a});
+  rankList($('#shows'), Y.shows.slice(0,10), {val: it => `${it.h} h`, cls:'p'});
+  document.querySelectorAll('.more').forEach(b => b.textContent = expanded[b.dataset.k] ? 'Show 10' : 'Show 25');
+  heat(Y); monthly();
+  $('#aom').innerHTML = D.artist_of_month.map(a => `<div class="${year!=='all'&&a.m.startsWith(year)?'sel':''}"><span class="m">${mlabel(a.m)}</span><span class="x" dir="auto">${esc(a.a)}</span><span class="h">${a.h} h</span></div>`).join('');
+  rankList($('#obs'), D.obsessions.map(o => ({...o, n:o.t, h:o.n})), {val: o => `${o.n}×`, sub: o => `${o.a} · ${new Date(o.d).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}`});
+}
+document.querySelectorAll('.more').forEach(b => b.addEventListener('click', () => { expanded[b.dataset.k] = !expanded[b.dataset.k]; render(); }));
+$('#monthNote').textContent = 'Podcasts took up a big share in 2023 and faded out after that. The quiet stretch in spring 2026 stands out. In summer 2025 you moved from Android to iPhone.';
+addEventListener('resize', () => monthly());
+render();
+</script>

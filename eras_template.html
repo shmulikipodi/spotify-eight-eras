@@ -1,0 +1,493 @@
+<title>Eight Eras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Rubik:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: companion to The Long Play. One 1120px column; the genre river is the centerpiece,
+   then eight era chapters in sequence, then the slower measures (age, variety, similarity), then every artist's lifeline. */
+:root{
+  --paper:#F3F4F1; --sheet:#FBFBF9; --ink:#15161A; --ink2:#4A4D57; --muted:#80838D; --rule:#DADDD6;
+  --g0:#2a78d6; --g1:#eb6834; --g2:#1baf7a; --g3:#eda100; --g4:#e87ba4; --g5:#008300; --g6:#4a3aa7; --g7:#e34948; --g8:#B3B5AE;
+  --q0:#E3E9F6; --q1:#C2D0EE; --q2:#97AFE3; --q3:#6A8CD6; --q4:#3F68C4; --q5:#25489E; --q6:#152E70;
+  --display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --body:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111318; --sheet:#171A21; --ink:#ECEDEA; --ink2:#B3B6BF; --muted:#7D818C; --rule:#2A2E37;
+  --g0:#3987e5; --g1:#d95926; --g2:#199e70; --g3:#c98500; --g4:#d55181; --g5:#008300; --g6:#9085e9; --g7:#e66767; --g8:#5A5E68;
+  --q0:#1B2233; --q1:#1F3260; --q2:#26478A; --q3:#3260B4; --q4:#4F80D8; --q5:#82A6EB; --q6:#BFD1F7; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111318; --sheet:#171A21; --ink:#ECEDEA; --ink2:#B3B6BF; --muted:#7D818C; --rule:#2A2E37;
+  --g0:#3987e5; --g1:#d95926; --g2:#199e70; --g3:#c98500; --g4:#d55181; --g5:#008300; --g6:#9085e9; --g7:#e66767; --g8:#5A5E68;
+  --q0:#1B2233; --q1:#1F3260; --q2:#26478A; --q3:#3260B4; --q4:#4F80D8; --q5:#82A6EB; --q6:#BFD1F7; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:16px/1.6 var(--body);padding-inline:20px;padding-block:0 80px}
+.col{max-width:1120px;margin-inline:auto}
+h1,h2,h3{font-family:var(--display);font-weight:500;margin:0;text-wrap:balance}
+h1{font-size:clamp(3rem,9vw,6.6rem);line-height:.92;letter-spacing:-.025em}
+h2{font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.05;letter-spacing:-.01em}
+h1 em,h2 em{font-style:italic}
+h3{font-size:1.4rem;line-height:1.15}
+p{margin:0}
+.prose{max-width:64ch;color:var(--ink2);display:flex;flex-direction:column;gap:12px}
+.prose b{color:var(--ink);font-weight:500}
+.kicker{font:500 12px/1.4 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums lining-nums}
+section{padding-block:80px 0;display:flex;flex-direction:column;gap:26px}
+.head{display:flex;flex-direction:column;gap:14px}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+svg{display:block;overflow:visible}
+svg text{font:11px var(--mono);fill:var(--muted)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--ink);color:var(--paper);font:12px/1.5 var(--mono);padding:8px 10px;border-radius:3px;max-width:300px}
+.tip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-inline-end:6px}
+.tip .r{display:flex;justify-content:space-between;gap:14px}
+:focus-visible{outline:2px solid var(--g0);outline-offset:2px}
+a{color:var(--ink)}
+
+header{padding-block:64px 0;display:flex;flex-direction:column;gap:22px}
+.lede{font-size:1.15rem;max-width:60ch;color:var(--ink2)}
+.lede b{color:var(--ink);font-weight:500}
+
+/* era ribbon */
+.ribbon{display:grid;gap:3px;margin-top:8px}
+.ribbon .seg{display:flex;flex-direction:column;gap:6px;min-width:0;text-decoration:none;color:inherit}
+.ribbon .bar{height:14px;border-radius:2px;display:flex;overflow:hidden;gap:1px;background:var(--paper)}
+.ribbon .bar i{display:block;height:100%}
+.ribbon .lab{font-size:13px;line-height:1.25;overflow:hidden}
+.ribbon .lab b{display:block;font:italic 500 1.05rem var(--display)}
+.ribbon .lab span{font:11px var(--mono);color:var(--muted)}
+.ribbon .gap{background:repeating-linear-gradient(135deg,var(--rule) 0 2px,transparent 2px 6px);height:14px;border-radius:2px}
+@media (max-width:760px){ .ribbon .lab{display:none} }
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--ink2)}
+.legend button{font:inherit;color:inherit;background:none;border:0;padding:2px 0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.legend button[aria-pressed="false"]{opacity:.35}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px}
+.toggle{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:2px;gap:2px;align-self:flex-start}
+.toggle button{font:13px var(--body);border:0;background:none;color:var(--ink2);padding:4px 12px;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.controls{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+
+/* era chapters */
+.eras{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,500px),1fr));gap:0 56px}
+.era{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:4px 16px;padding-block:28px;border-top:1px solid var(--ink)}
+.era .n{font:italic 500 2.6rem/1 var(--display);color:var(--muted)}
+.era .body{display:flex;flex-direction:column;gap:12px;min-width:0}
+.era .when{font:12px var(--mono);color:var(--muted)}
+.era h3{font-size:1.7rem}
+.era p{color:var(--ink2);font-size:15px}
+.era p b{color:var(--ink);font-weight:500}
+.mix{display:flex;height:22px;gap:2px;border-radius:2px;overflow:hidden}
+.mix i{display:flex;align-items:center;justify-content:center;font:500 10px var(--mono);color:#fff;min-width:0;overflow:hidden;white-space:nowrap}
+.mix i.lt{color:#15161A}
+.facts{display:flex;flex-wrap:wrap;gap:6px 22px;font:12px var(--mono);color:var(--muted)}
+.facts b{font:500 14px var(--body);color:var(--ink)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px 24px;font-size:14px}
+.cols .lbl{font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.cols ul{list-style:none;margin:0;padding:0;color:var(--ink2)}
+.cols li{display:flex;justify-content:space-between;gap:10px}
+.cols li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cols li span:last-child{font:12px var(--mono);color:var(--muted);white-space:nowrap}
+
+.twin{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:40px 56px}
+.twin>*{min-width:0;display:flex;flex-direction:column;gap:10px}
+.twin h3{font-size:1.25rem}
+.twin .q{font-size:14px;color:var(--muted)}
+
+/* lifelines */
+.lifectl{display:flex;flex-wrap:wrap;gap:6px}
+.lifectl button{font:13px var(--body);border:1px solid var(--rule);background:var(--paper);color:var(--ink2);padding:4px 11px;border-radius:999px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.lifectl button i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.lifectl button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.more{align-self:flex-start;font:500 14px var(--body);background:none;border:1px solid var(--ink2);color:var(--ink);padding:7px 14px;border-radius:3px;cursor:pointer}
+
+/* library */
+.tailbar{display:flex;height:44px;gap:2px}
+.tailbar div{display:flex;flex-direction:column;justify-content:flex-end;padding:0 8px 6px;color:#fff;font:500 12px var(--mono);overflow:hidden;white-space:nowrap;min-width:0}
+.tailkey{display:flex;gap:2px;font-size:13px;color:var(--ink2)}
+.tailkey div{padding:6px 8px 0 0;min-width:0;overflow:hidden}
+.glist{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:0 48px;border-top:1px solid var(--ink)}
+.grow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding-block:12px;border-bottom:1px solid var(--rule)}
+.grow .gn{font-weight:500;display:flex;align-items:center;gap:8px}
+.grow .gn i{width:11px;height:11px;border-radius:2px;flex:none}
+.grow .gh{font:500 1.3rem var(--display);text-align:end}
+.grow .gb{grid-column:1/3;height:5px;background:var(--rule);border-radius:2px;overflow:hidden}
+.grow .gb i{display:block;height:100%;border-radius:0 2px 2px 0}
+.grow .ga{grid-column:1/3;font-size:13px;color:var(--muted)}
+
+footer{padding-block:80px 0}
+footer .notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:20px 32px;font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+footer b{color:var(--ink2);font-weight:500}
+</style>
+
+<div class="col">
+  <header>
+    <p class="kicker">Spotify, May 2023 – September 2026 · 41 months · <span id="hTot"></span></p>
+    <h1>Your taste changed <em>seven times</em></h1>
+    <p class="lede" id="lede"></p>
+    <div class="ribbon" id="ribbon"></div>
+  </header>
+
+  <section aria-labelledby="riverH">
+    <div class="head">
+      <p class="kicker">Music per month, by genre</p>
+      <h2 id="riverH">The whole <em>river</em></h2>
+      <div class="prose" id="riverP"></div>
+    </div>
+    <div class="controls">
+      <div class="legend" id="riverLegend"></div>
+      <div class="toggle" role="group" aria-label="Scale"><button type="button" data-mode="share" aria-pressed="true">Share of month</button><button type="button" data-mode="hours" aria-pressed="false">Hours</button></div>
+    </div>
+    <div class="scroll"><svg id="river" role="img" aria-label="Stacked area chart of music by genre per month, with era boundaries"></svg></div>
+  </section>
+
+  <section aria-labelledby="erasH">
+    <div class="head">
+      <p class="kicker">Each era begins where your listening shifted most</p>
+      <h2 id="erasH">The eight <em>eras</em></h2>
+    </div>
+    <div class="eras" id="eras"></div>
+  </section>
+
+  <section aria-labelledby="ageH">
+    <div class="head">
+      <p class="kicker">When the music you played was made</p>
+      <h2 id="ageH">Your music got <em>older</em></h2>
+      <div class="prose" id="ageP"></div>
+    </div>
+    <div class="legend" id="ageLegend"></div>
+    <div class="scroll"><svg id="age" role="img" aria-label="Stacked bars of music by decade it comes from, per month"></svg></div>
+  </section>
+
+  <section aria-labelledby="varH">
+    <div class="head">
+      <p class="kicker">How spread out, and how new</p>
+      <h2 id="varH">Wide months, <em>narrow months</em></h2>
+      <div class="prose" id="varP"></div>
+    </div>
+    <div class="twin">
+      <div><h3>Variety</h3><p class="q">How many artists your month was really split between</p><div class="scroll"><svg id="var1"></svg></div></div>
+      <div><h3>New to you</h3><p class="q">Share of listening on songs you first heard in the past 30 days</p><div class="scroll"><svg id="var2"></svg></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="simH">
+    <div class="head">
+      <p class="kicker">Every month compared with every other month</p>
+      <h2 id="simH">Where the <em>breaks</em> are</h2>
+      <div class="prose" id="simP"></div>
+    </div>
+    <div class="scroll"><svg id="sim" role="img" aria-label="Similarity matrix between months"></svg></div>
+  </section>
+
+  <section aria-labelledby="lifeH">
+    <div class="head">
+      <p class="kicker">Every artist you played for two hours or more</p>
+      <h2 id="lifeH">Who came, who stayed, <em>who left</em></h2>
+      <div class="prose" id="lifeP"></div>
+    </div>
+    <div class="lifectl" id="lifeCtl"></div>
+    <div class="scroll"><svg id="life" role="img" aria-label="Lifelines of artists across months"></svg></div>
+    <button type="button" class="more" id="lifeMore"></button>
+  </section>
+
+  <section aria-labelledby="libH">
+    <div class="head">
+      <p class="kicker">All <span id="libN"></span> artists at once</p>
+      <h2 id="libH">The whole <em>library</em></h2>
+      <div class="prose" id="libP"></div>
+    </div>
+    <div><div class="tailbar" id="tail"></div><div class="tailkey" id="tailKey"></div></div>
+    <div class="glist" id="glist"></div>
+  </section>
+
+  <footer>
+    <div class="notes">
+      <p><b>Genres and decades</b> are tags I gave your 400 most-played artists (95% of your music time) based on what each artist is known for. Spotify's export has no genre data. Unknown artists with Hebrew song titles count as Israeli; the rest go to "Everything else".</p>
+      <p><b>Eras</b> come from a segmentation that splits the timeline where the mix of genres and artists changed most. April–May 2026 had almost no listening and sits outside any era.</p>
+      <p><b>Variety</b> is the number of artists that would give the same spread if your time were split evenly among them. <b>Similarity</b> compares which artists filled each month.</p>
+      <p><b>Companion page:</b> listening habits, skips, sessions and side stories are in <a href="https://claude.ai/artifact/HiEz7vniAU1m1NCaFH7qny">The Long Play</a>.</p>
+    </div>
+  </footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = __DATA__;
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mLong = s => `${MON[+s.slice(5)-1]} ${s.slice(0,4)}`;
+const mShort = s => `${MON[+s.slice(5)-1]} ’${s.slice(2,4)}`;
+const clean = t => String(t).replace(/ - (\d{4} )?Remaster(ed)?( \d{4})?$/,'').replace(/ \(feat\..*\)$/,'');
+const GC = i => `var(--g${i})`;
+const GN = D.gnames, NG = GN.length, M = D.months, NM = M.length;
+const LIGHT_TEXT = new Set([1,2,3,4,8]);   // segments that need dark text for contrast
+
+const tip = $('#tip');
+function showTip(e, html){ tip.innerHTML = html; tip.hidden = false;
+  const r = tip.getBoundingClientRect(); let x = e.clientX + 14, y = e.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = Math.max(8, e.clientY - r.height - 14);
+  tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
+const hideTip = () => { tip.hidden = true; };
+function svgX(svg, e){ const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+function size(svg, W, H, minW){ svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.width = '100%'; svg.style.minWidth = (minW || 640) + 'px'; }
+
+const ERA_NAMES = ['Pop and festival EDM','Eminem moves in','Hip-hop summer','The rock turn','Quieter, and instrumental','Deep classic rock','Metallica and Tuna','Wide open'];
+const ERA_TEXT = [
+  e => `The widest era until 2026. A third pop and a fifth electronic: <b>Alan Walker, Avicii, Imagine Dragons, Black Eyed Peas</b>. The average song came from around ${e.yr}.`,
+  e => `Electronic music was still a quarter of the mix (Martin Garrix, TheFatRat), but <b>Eminem</b> became your top artist with ${e.top[0][1]} hours and hip-hop doubled to ${e.g[2]}%.`,
+  e => `Hip-hop reached <b>${e.g[2]}%</b> of everything, and 57% in August. Dr. Dre, Drake, Post Malone and Usher had most of their lifetime plays in these four months.`,
+  e => `The biggest single change in the file. In November, classic rock and metal went from 9% to <b>72%</b> of your music, and the average song moved back about 14 years. Van Halen, AC/DC and the Eagles arrived.`,
+  e => `Your lightest era, ${e.h} hours in five months. Instrumental and classical rose to <b>${e.g[7]}%</b>, led by Gamazda's piano covers and Beethoven, while pop came back with Ariana Grande.`,
+  e => `The oldest-sounding era, averaging <b>${e.yr}</b>. Pink Floyd, Fleetwood Mac, Eric Clapton, Lynyrd Skynyrd. Guitar backing tracks and Polyphia show up for the first time.`,
+  e => `Your most focused era. Metallica alone took <b>${e.top[0][1]} hours</b> and Tuna ${e.top[1][1]}. Israeli music jumped to ${e.g[3]}%, with Tamir Bar and Yuval Dayan almost entirely in these months.`,
+  e => `After 65 silent days you came back with the widest mix of any era: 90s metal and rock (Pantera, Pearl Jam, Megadeth, Rush) next to Doja Cat and Crazy Town.`,
+];
+const eraOf = mo => D.eras.findIndex(e => mo >= e.a && mo <= e.b);
+
+/* ---------- hero ---------- */
+$('#hTot').textContent = `${fmt(D.tot.mh)} hours of music`;
+$('#lede').innerHTML = `Charted month by month, your listening falls into eight distinct periods. Each one has its own genres, its own artists and even its own decade. The shifts are rarely gradual. Several happen from one month to the next.`;
+(function(){
+  const el = $('#ribbon'); const idx = M.map(eraOf);
+  const cols = []; let h = '';
+  // grid columns proportional to months
+  let i = 0;
+  while (i < NM){
+    const e = idx[i]; let j = i; while (j < NM && idx[j] === e) j++;
+    cols.push(`${j-i}fr`);
+    if (e < 0) h += `<div class="seg" title="Almost no listening"><div class="gap"></div><div class="lab"><span>quiet</span></div></div>`;
+    else { const E = D.eras[e];
+      h += `<a class="seg" href="#era${e+1}"><div class="bar">${E.g.map((v,k) => v>0 ? `<i style="width:${v}%;background:${GC(k)}"></i>` : '').join('')}</div>
+        <div class="lab"><b>${ERA_NAMES[e]}</b><span>${mShort(E.a)}–${mShort(E.b)}</span></div></a>`; }
+    i = j;
+  }
+  el.style.gridTemplateColumns = cols.join(' '); el.innerHTML = h;
+})();
+
+/* ---------- river ---------- */
+const riverOn = new Set(GN.map((_,i) => i));
+let riverMode = 'share';
+function drawRiver(){
+  const svg = $("#river"), W = 1120, H = 440, pl = 40, pr = 185, pt = 34, pb = 26, iw = W-pl-pr, ih = H-pt-pb;
+  size(svg, W, H, 700);
+  const x = i => pl + i*iw/(NM-1);
+  const vals = D.genre.map(r => r.map((v,k) => riverOn.has(k) ? v : 0));
+  const tot = vals.map(r => r.reduce((a,b) => a+b, 0));
+  const series = vals.map((r,i) => r.map(v => riverMode === 'share' ? (tot[i] ? 100*v/tot[i] : 0) : v));
+  const maxV = riverMode === 'share' ? 100 : Math.ceil(Math.max(...series.map(r => r.reduce((a,b)=>a+b,0)))/10)*10;
+  const y = v => pt + ih - v/maxV*ih;
+  let s = '';
+  const tick = riverMode === 'share' ? 25 : 10;
+  for (let v = 0; v <= maxV; v += tick) s += `<line x1="${pl}" x2="${pl+iw}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule)"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}${riverMode==='share'?'%':''}</text>`;
+  // stacked bands; in share mode, months with under an hour of music become a marked gap
+  const ok = tot.map(v => riverMode === 'hours' || v >= 1);
+  const runs = []; { let st = -1; for (let i = 0; i <= NM; i++){ if (i < NM && ok[i]) { if (st < 0) st = i; } else if (st >= 0) { runs.push([st, i-1]); st = -1; } } }
+  const cum = series.map(() => 0);
+  const bands = [];
+  for (let k = 0; k < NG; k++){
+    if (!riverOn.has(k)) continue;
+    const lo = cum.slice(), hi = cum.map((c,i) => c + series[i][k]);
+    runs.forEach(([a,b]) => {
+      let d = `M${x(a)},${y(hi[a])}`;
+      for (let i = a+1; i <= b; i++){ const cx = (x(i-1)+x(i))/2; d += ` C${cx},${y(hi[i-1])} ${cx},${y(hi[i])} ${x(i)},${y(hi[i])}`; }
+      d += ` L${x(b)},${y(lo[b])}`;
+      for (let i = b-1; i >= a; i--){ const cx = (x(i+1)+x(i))/2; d += ` C${cx},${y(lo[i+1])} ${cx},${y(lo[i])} ${x(i)},${y(lo[i])}`; }
+      s += `<path d="${d}Z" fill="${GC(k)}" stroke="var(--paper)" stroke-width="1.2"/>`;
+    });
+    bands.push({k, lo, hi});
+    for (let i = 0; i < NM; i++) cum[i] = hi[i];
+  }
+  for (let r = 1; r < runs.length; r++){ const a = runs[r-1][1], b = runs[r][0];
+    s += `<rect x="${x(a)+3}" y="${pt}" width="${x(b)-x(a)-6}" height="${ih}" fill="url(#hatch)"/><text x="${(x(a)+x(b))/2}" y="${pt+ih/2}" text-anchor="middle" style="fill:var(--ink2)">quiet</text>`; }
+  s = `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="var(--rule)" stroke-width="2"/></pattern></defs>` + s;
+  // right-edge direct labels (last 3 months average position), de-overlapped
+  const labs = bands.map(b => { const n = 3, mid = [...Array(n)].map((_,j) => (b.lo[NM-1-j]+b.hi[NM-1-j])/2).reduce((a,c)=>a+c,0)/n; return {k:b.k, y:y(mid), th: y(b.lo[NM-1]) - y(b.hi[NM-1])}; }).sort((a,b) => a.y - b.y);
+  for (let i = 1; i < labs.length; i++) if (labs[i].y - labs[i-1].y < 13) labs[i].y = labs[i-1].y + 13;
+  const over = labs.length ? labs[labs.length-1].y - (pt+ih) : 0; if (over > 0) labs.forEach(l => l.y -= over);
+  labs.forEach(l => { s += `<line x1="${x(NM-1)+3}" x2="${x(NM-1)+12}" y1="${l.y}" y2="${l.y}" stroke="${GC(l.k)}" stroke-width="2"/><text x="${x(NM-1)+16}" y="${l.y+4}" style="fill:var(--ink2);font-family:var(--body);font-size:12px">${GN[l.k]}</text>`; });
+  // era boundaries + numbers
+  D.eras.forEach((e,i) => { const a = M.indexOf(e.a), b = M.indexOf(e.b);
+    const xa = a === 0 ? x(0) : (x(a)+x(a-1))/2, xb = b === NM-1 ? x(NM-1) : (x(b)+x(b+1))/2;
+    if (a > 0) s += `<line x1="${xa}" x2="${xa}" y1="${pt-22}" y2="${pt+ih}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 3"/>`;
+    s += `<text x="${(xa+xb)/2}" y="${pt-12}" text-anchor="middle" style="font-family:var(--display);font-style:italic;font-size:15px;fill:var(--ink)">${i+1}</text>`; });
+  M.forEach((m,i) => { if (m.endsWith('-01')) s += `<text x="${x(i)}" y="${H-6}" text-anchor="middle" style="fill:var(--ink2)">${m.slice(0,4)}</text>`; else if (+m.slice(5) % 3 === 1) s += `<text x="${x(i)}" y="${H-6}" text-anchor="middle">${MON[+m.slice(5)-1]}</text>`; });
+  s += `<line id="rcx" y1="${pt}" y2="${pt+ih}" stroke="var(--ink)" stroke-width="1" visibility="hidden"/>`;
+  svg.innerHTML = s;
+  const cx = svg.querySelector('#rcx');
+  svg.onmousemove = e => { const p = svgX(svg, e); if (p.x < pl - 10 || p.x > pl + iw + 10) { cx.setAttribute('visibility','hidden'); return hideTip(); }
+    const i = Math.max(0, Math.min(NM-1, Math.round((p.x-pl)/(iw/(NM-1)))));
+    cx.setAttribute('x1', x(i)); cx.setAttribute('x2', x(i)); cx.setAttribute('visibility','visible');
+    const t = D.genre[i].reduce((a,b)=>a+b,0), era = eraOf(M[i]);
+    const rows = D.genre[i].map((v,k) => [k,v]).filter(r => r[1] > 0.05).sort((a,b) => b[1]-a[1]);
+    showTip(e, `<b>${mLong(M[i])}</b> · ${t.toFixed(1)} h${era>=0?` · era ${era+1}`:''}<br>` + (t < 0.1 ? 'Almost nothing played' :
+      rows.map(([k,v]) => `<div class="r"><span><i style="background:${GC(k)}"></i>${GN[k]}</span><span>${Math.round(100*v/t)}%</span></div>`).join(''))); };
+  svg.onmouseleave = () => { cx.setAttribute('visibility','hidden'); hideTip(); };
+}
+$('#riverLegend').innerHTML = GN.map((g,k) => `<button type="button" aria-pressed="true" data-k="${k}"><i style="background:${GC(k)}"></i>${g}</button>`).join('');
+$('#riverLegend').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; const k = +b.dataset.k;
+  if (riverOn.has(k) && riverOn.size > 1) riverOn.delete(k); else riverOn.add(k); b.setAttribute('aria-pressed', riverOn.has(k)); drawRiver(); });
+document.querySelectorAll('.toggle button').forEach(b => b.addEventListener('click', () => {
+  riverMode = b.dataset.mode; document.querySelectorAll('.toggle button').forEach(z => z.setAttribute('aria-pressed', z === b)); drawRiver(); }));
+(function(){
+  const y = D.gyear;
+  $('#riverP').innerHTML = `<p>Every hour of music, colored by genre. In 2023, pop and electronic made up <b>${y['2023'][0]+y['2023'][1]}%</b> of what you played. In 2026 so far, it's ${y['2026'][0]+y['2026'][1]}%. Classic rock and metal went the other way, from ${y['2023'][5]+y['2023'][6]}% to <b>${y['2026'][5]+y['2026'][6]}%</b>.</p><p>Tap a genre to hide it, and switch to hours to see how much you listened overall. The dashed lines mark where the eras change.</p>`;
+})();
+drawRiver();
+
+/* ---------- eras ---------- */
+$('#eras').innerHTML = D.eras.map((e,i) => {
+  const months = M.indexOf(e.b) - M.indexOf(e.a) + 1;
+  const mix = e.g.map((v,k) => v>0 ? `<i style="width:${v}%;background:${GC(k)}" class="${LIGHT_TEXT.has(k)?'lt':''}" title="${GN[k]} ${v}%">${v>=9?v+'%':''}</i>` : '').join('');
+  const sig = e.sig.length ? `<div><div class="lbl">Mostly heard here</div><ul>${e.sig.slice(0,4).map(s => `<li><span dir="auto">${esc(s[0])}</span><span>${s[2]}% of all time</span></li>`).join('')}</ul></div>` : '';
+  return `<article class="era" id="era${i+1}"><div class="n">${i+1}</div><div class="body">
+    <div class="when">${mLong(e.a)} – ${mLong(e.b)} · ${months} months</div>
+    <h3>${ERA_NAMES[i]}</h3>
+    <div class="mix" role="img" aria-label="Genre mix">${mix}</div>
+    <p>${ERA_TEXT[i](e)}</p>
+    <div class="facts"><span><b>${e.h} h</b> music</span><span><b>${(e.h/months).toFixed(0)} h</b> a month</span><span>average year <b>${e.yr}</b></span><span>variety <b>${e.eff}</b></span></div>
+    <div class="cols">
+      <div><div class="lbl">Most played</div><ul>${e.top.slice(0,4).map(t => `<li><span dir="auto">${esc(t[0])}</span><span>${t[1]} h</span></li>`).join('')}</ul></div>
+      ${sig}
+      <div><div class="lbl">On repeat</div><ul>${e.trk.map(t => `<li><span dir="auto">${esc(clean(t[0]))}</span><span>${t[2]}×</span></li>`).join('')}</ul></div>
+    </div></div></article>`;
+}).join('');
+
+/* ---------- music age ---------- */
+(function(){
+  const svg = $('#age'), W = 1120, H = 300, pl = 40, pr = 10, pt = 10, pb = 26, iw = W-pl-pr, ih = H-pt-pb, bw = iw/NM;
+  size(svg, W, H, 700);
+  const K = D.dkeys.length; let s = '';
+  [0,25,50,75,100].forEach(v => { const yy = pt + ih - v/100*ih; s += `<text x="${pl-6}" y="${yy+4}" text-anchor="end">${v}%</text>`; });
+  D.decade.forEach((r,i) => { const t = r.reduce((a,b)=>a+b,0); if (t < 0.5) return; let acc = 0;
+    // oldest at the bottom
+    r.forEach((v,k) => { if (!v) return; const h = v/t*ih, yy = pt + ih - acc - h; acc += h;
+      s += `<rect x="${pl + i*bw + 1}" y="${yy + 1}" width="${bw-2}" height="${Math.max(0,h-2)}" fill="var(--q${K-1-k})" rx="1"/>`; });
+    s += `<rect data-i="${i}" x="${pl+i*bw}" y="${pt}" width="${bw}" height="${ih}" fill="transparent"/>`; });
+  M.forEach((m,i) => { if (m.endsWith('-01')) s += `<text x="${pl+i*bw+bw/2}" y="${H-6}" text-anchor="middle" style="fill:var(--ink2)">${m.slice(0,4)}</text>`; });
+  svg.innerHTML = s;
+  svg.onmousemove = e => { const r = e.target.closest('[data-i]'); if (!r) return hideTip(); const i = +r.dataset.i, row = D.decade[i], t = row.reduce((a,b)=>a+b,0);
+    showTip(e, `<b>${mLong(M[i])}</b> · average year ${D.avgyear[i] ? Math.round(D.avgyear[i]) : '–'}<br>` + row.map((v,k) => [k,v]).reverse().filter(x => x[1] > 0.05).map(([k,v]) => `<div class="r"><span><i style="background:var(--q${K-1-k})"></i>${D.dkeys[k]}</span><span>${Math.round(100*v/t)}%</span></div>`).join('')); };
+  svg.onmouseleave = hideTip;
+  $('#ageLegend').innerHTML = D.dkeys.map((d,k) => `<span style="display:inline-flex;gap:6px;align-items:center"><i style="background:var(--q${K-1-k})"></i>${d}</span>`).join('');
+  const e = D.eras;
+  const old = D.decade.map(r => { const t = r.reduce((a,b)=>a+b,0); return t ? (r[0]+r[1]+r[2])/t : 0; });
+  const y23 = [], y26 = []; M.forEach((m,i) => { if (m < '2024-01' && old[i]) y23.push(old[i]); if (m >= '2026-01' && D.decade[i].reduce((a,b)=>a+b,0) > 0.5) y26.push(old[i]); });
+  const avg = a => Math.round(100*a.reduce((x,y)=>x+y,0)/a.length);
+  $('#ageP').innerHTML = `<p>Through 2023 and most of 2024, the typical song you played came out around <b>2008–2010</b>, and music from before 1990 was about <b>${avg(y23)}%</b> of the mix. With the rock turn in November 2024 the average dropped to the mid-90s, and in late 2025 it reached <b>${e[5].yr}</b>. In 2026, ${avg(y26)}% of your music comes from the 60s, 70s and 80s.</p><p>Darker blue is older. Each bar is one month.</p>`;
+})();
+
+/* ---------- variety + novelty ---------- */
+function line(svg, vals, o){
+  const W = 540, H = 230, pl = 34, pr = 10, pt = 14, pb = 26, iw = W-pl-pr, ih = H-pt-pb;
+  size(svg, W, H, 420);
+  const max = o.max, x = i => pl + i*iw/(NM-1), y = v => pt + ih - v/max*ih;
+  let s = '';
+  D.eras.forEach((e,k) => { if (k % 2) return; const a = M.indexOf(e.a), b = M.indexOf(e.b);
+    s += `<rect x="${a===0?pl:(x(a)+x(a-1))/2}" y="${pt}" width="${(b===NM-1?x(NM-1):(x(b)+x(b+1))/2) - (a===0?pl:(x(a)+x(a-1))/2)}" height="${ih}" fill="var(--rule)" opacity=".45"/>`; });
+  for (let v = 0; v <= max; v += o.tick) s += `<line x1="${pl}" x2="${pl+iw}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule)"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}${o.unit||''}</text>`;
+  let d = '', area = '', started = false, segStart = null;
+  const segs = []; let cur = [];
+  vals.forEach((v,i) => { if (v == null) { if (cur.length) segs.push(cur); cur = []; } else cur.push([x(i), y(v)]); }); if (cur.length) segs.push(cur);
+  segs.forEach(sg => { s += `<polygon points="${sg[0][0]},${y(0)} ${sg.map(p => p.join(',')).join(' ')} ${sg.at(-1)[0]},${y(0)}" fill="${o.c}" opacity=".12"/>`;
+    s += `<polyline points="${sg.map(p => p.join(',')).join(' ')}" fill="none" stroke="${o.c}" stroke-width="2" stroke-linejoin="round"/>`; });
+  (o.marks||[]).forEach(([i,label,anchor]) => { const v = vals[i]; s += `<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${o.c}" stroke="var(--paper)" stroke-width="2"/><text x="${x(i)}" y="${y(v)-10}" text-anchor="${anchor||'middle'}" style="fill:var(--ink2)">${label}</text>`; });
+  M.forEach((m,i) => { if (m.endsWith('-01')) s += `<text x="${x(i)}" y="${H-6}" text-anchor="middle">${m.slice(0,4)}</text>`; });
+  s += `<line class="cx" y1="${pt}" y2="${pt+ih}" stroke="var(--ink)" visibility="hidden"/>`;
+  svg.innerHTML = s;
+  const cx = svg.querySelector('.cx');
+  svg.onmousemove = e => { const p = svgX(svg, e), i = Math.max(0, Math.min(NM-1, Math.round((p.x-pl)/(iw/(NM-1)))));
+    cx.setAttribute('x1', x(i)); cx.setAttribute('x2', x(i)); cx.setAttribute('visibility','visible');
+    showTip(e, `<b>${mLong(M[i])}</b><br>${vals[i] == null ? 'Not enough listening' : o.tip(i)}`); };
+  svg.onmouseleave = () => { cx.setAttribute('visibility','hidden'); hideTip(); };
+}
+(function(){
+  const eff = D.eff, nt = D.newtr;
+  const valid = eff.map((v,i) => [v,i]).filter(z => z[0] != null && D.musich[z[1]] > 2);
+  const lo = valid.reduce((a,b) => b[0] < a[0] ? b : a), hi = valid.reduce((a,b) => b[0] > a[0] ? b : a);
+  line($('#var1'), eff, { max: 120, tick: 30, c: 'var(--g0)', marks: [[lo[1], `${mShort(M[lo[1]])}: ${lo[0]}`], [hi[1], `${mShort(M[hi[1]])}: ${hi[0]}`, 'end']],
+    tip: i => `Variety ${eff[i]} · ${D.arts[i]} artists played<br>Top 5 artists: ${D.top5[i]}% of the month` });
+  const nv = nt.map((v,i) => [v,i]).filter(z => z[0] != null && D.musich[z[1]] > 2);
+  const nhi = nv.reduce((a,b) => b[0] > a[0] ? b : a);
+  line($('#var2'), nt, { max: 50, tick: 10, unit: '%', c: 'var(--g1)', marks: [[nhi[1], `${mShort(M[nhi[1]])}: ${nhi[0]}%`]],
+    tip: i => `${nt[i]}% of listening on songs new to you` });
+  const avgNew = Math.round(nv.reduce((a,b)=>a+b[0],0)/nv.length);
+  $('#varP').innerHTML = `<p>Some months you spread your time across a hundred artists, others you mostly played five. Your narrowest stretch was 2025: in ${mLong(M[lo[1]])} your listening was effectively split between just <b>${lo[0]}</b> artists. Since coming back in June 2026 you've been at your widest ever, peaking at <b>${hi[0]}</b> in ${mLong(M[hi[1]])}.</p><p>Discovery runs in bursts. On average ${avgNew}% of a month goes to songs you met in the last 30 days, but in ${mLong(M[nhi[1]])} it was ${nhi[0]}%, the month Tamir Bar arrived. The shaded bands are alternating eras.</p>`;
+})();
+
+/* ---------- similarity ---------- */
+(function(){
+  const S = D.sim, SM = D.simm, n = SM.length, svg = $('#sim');
+  const cell = 15, pl = 64, pt = 10, W = pl + n*cell + 230, H = pt + n*cell + 40;
+  size(svg, W, H, 640); svg.style.maxWidth = W + 'px';
+  const step = v => v >= .8 ? 6 : v >= .65 ? 5 : v >= .5 ? 4 : v >= .38 ? 3 : v >= .26 ? 2 : v >= .15 ? 1 : 0;
+  let s = '';
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++)
+    s += `<rect data-i="${i}" data-j="${j}" x="${pl + j*cell}" y="${pt + i*cell}" width="${cell-1}" height="${cell-1}" fill="var(--q${step(S[i][j])})"/>`;
+  SM.forEach((m,i) => { if (m.endsWith('-01') || i === 0) { s += `<text x="${pl-6}" y="${pt + i*cell + 11}" text-anchor="end" style="fill:var(--ink2)">${m.slice(0,4)}</text><text x="${pl + i*cell}" y="${pt + n*cell + 16}" style="fill:var(--ink2)">${m.slice(0,4)}</text>`; } });
+  D.eras.forEach((e,k) => { const a = SM.indexOf(e.a), b = SM.indexOf(e.b); if (a < 0) return;
+    s += `<rect x="${pl + a*cell - 1}" y="${pt + a*cell - 1}" width="${(b-a+1)*cell + 1}" height="${(b-a+1)*cell + 1}" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+      <text x="${pl + n*cell + 14}" y="${pt + ((a+b+1)/2)*cell + 4}" style="font-family:var(--body);font-size:12px;fill:var(--ink2)">${k+1}  ${ERA_NAMES[k]}</text>`; });
+  svg.innerHTML = s;
+  svg.onmousemove = e => { const r = e.target.closest('[data-i]'); if (!r) return hideTip(); const i = +r.dataset.i, j = +r.dataset.j;
+    showTip(e, i === j ? `<b>${mLong(SM[i])}</b>` : `<b>${mLong(SM[i])}</b> vs <b>${mLong(SM[j])}</b><br>${Math.round(100*S[i][j])}% similar`); };
+  svg.onmouseleave = hideTip;
+  const t = D.turn.map((v,i) => [v,i]).filter(z => z[0] != null).sort((a,b) => b[0]-a[0]).slice(0,3);
+  $('#simP').innerHTML = `<p>Each square compares two months by which artists filled them. Dark means the same artists, light means different ones. The dark blocks along the diagonal are the eras, and the boxes show where the segmentation drew them. The sharpest month-to-month breaks were <b>${t.map(z => mLong(SM[z[1]])).join(', ')}</b>.</p><p>Look along a row to see whether you ever went back. 2023 stays pale against everything after it: that music never really returned.</p>`;
+})();
+
+/* ---------- lifelines ---------- */
+(function(){
+  const L = D.life.map(r => { const tot = r.v.reduce((a,b)=>a+b,0); let c = 0, med = 0; for (let i = 0; i < NM; i++){ c += r.v[i]; if (c >= tot/2) { med = i; break; } } return {...r, med, gi: D.gkeys.indexOf(r.g)}; })
+    .sort((a,b) => a.med - b.med || b.h - a.h);
+  let filter = -1, all = false;
+  const svg = $('#life'), btn = $('#lifeMore');
+  function draw(){
+    let rows = filter < 0 ? L : L.filter(r => r.gi === filter);
+if (!all && filter < 0) rows = rows.filter(r => r.h >= 4);
+    const rh = 15, pl = 170, pr = 56, pt = 22, W = 1120, iw = W - pl - pr, cw = iw/NM, H = pt + rows.length*rh + 26;
+    size(svg, W, H, 760);
+    let s = '';
+    M.forEach((m,i) => { if (m.endsWith('-01')) s += `<line x1="${pl + i*cw}" x2="${pl + i*cw}" y1="${pt-6}" y2="${H-20}" stroke="var(--rule)"/><text x="${pl + i*cw}" y="${pt-10}" style="fill:var(--ink2)">${m.slice(0,4)}</text>`; });
+    D.eras.forEach((e,k) => { const a = M.indexOf(e.a); s += `<text x="${pl + a*cw + 2}" y="${H-6}" style="font-family:var(--display);font-style:italic;font-size:12px;fill:var(--muted)">${k+1}</text>`; });
+    rows.forEach((r,j) => { const yy = pt + j*rh, mx = Math.max(...r.v);
+      s += `<g data-j="${j}"><rect x="0" y="${yy}" width="${W}" height="${rh}" fill="transparent"/><text x="${pl-8}" y="${yy+11}" text-anchor="end" style="fill:var(--ink);font-family:var(--body);font-size:12px">${esc(r.a)}</text>`;
+      r.v.forEach((v,i) => { if (v < 0.02) return; const o = Math.max(.12, Math.sqrt(v/mx));
+        s += `<rect x="${pl + i*cw + .5}" y="${yy + 2}" width="${cw - 1}" height="${rh - 4}" rx="1.5" fill="${GC(r.gi)}" fill-opacity="${o.toFixed(2)}"/>`; });
+      s += `<text x="${W - pr + 8}" y="${yy+11}">${r.h} h</text></g>`; });
+    svg.innerHTML = s;
+    svg.onmousemove = e => { const g = e.target.closest('g[data-j]'); if (!g) return hideTip(); const r = rows[+g.dataset.j];
+      const p = svgX(svg, e), i = Math.floor((p.x - pl)/cw);
+      const first = M[r.v.findIndex(v => v >= 0.02)], last = M[NM - 1 - [...r.v].reverse().findIndex(v => v >= 0.02)];
+      showTip(e, `<b>${esc(r.a)}</b> · ${GN[r.gi]}<br>${r.h} h total · active ${mShort(first)} to ${mShort(last)}` + (i >= 0 && i < NM ? `<br>${mLong(M[i])}: ${r.v[i].toFixed(1)} h` : '')); };
+    svg.onmouseleave = hideTip;
+    btn.hidden = filter >= 0; btn.textContent = all ? 'Show only artists with 4+ hours' : `Show all ${L.length} artists`;
+  }
+  $('#lifeCtl').innerHTML = `<button type="button" aria-pressed="true" data-k="-1">All genres</button>` + GN.map((g,k) => L.some(r => r.gi === k) ? `<button type="button" aria-pressed="false" data-k="${k}"><i style="background:${GC(k)}"></i>${g}</button>` : '').join('');
+  $('#lifeCtl').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; filter = +b.dataset.k;
+    document.querySelectorAll('#lifeCtl button').forEach(z => z.setAttribute('aria-pressed', z === b)); draw(); });
+  btn.addEventListener('click', () => { all = !all; draw(); });
+  const cs = D.constants;
+  $('#lifeP').innerHTML = `<p>One row per artist, sorted by when they mattered most to you, so the page reads like a timeline from top to bottom. Brighter means more listening <i>for that artist</i>. Each row is scaled to its own peak, so you can see when an artist was active rather than how big they were.</p><p>Most artists live inside one era and disappear. Only a few cross almost all of them: <b>${esc(cs[0][0])}</b> appears in all ${cs[0][1]} eras, and ${cs.slice(1,5).map(c => esc(c[0])).join(', ')} in ${cs[1][1]}.</p>`;
+  draw();
+})();
+
+/* ---------- library ---------- */
+(function(){
+  const t = D.tail; $('#libN').textContent = fmt(t.n);
+  const segs = [[t.top10, 'Top 10 artists', 'var(--q6)'], [t.top100 - t.top10, 'Next 90', 'var(--q4)'], [t.top400 - t.top100, 'Next 300', 'var(--q3)'], [100 - t.top400, `The other ${fmt(t.n - 400)}`, 'var(--q1)']];
+  $('#tail').innerHTML = segs.map(s => `<div style="flex:${s[0]};background:${s[2]}">${s[0]}%</div>`).join('');
+  $('#tailKey').innerHTML = segs.map(s => `<div style="flex:${s[0]}">${s[1]}</div>`).join('');
+  $('#tail').lastElementChild.style.color = 'var(--ink)';
+  $('#libP').innerHTML = `<p>You played <b>${fmt(t.n)} artists</b> and ${fmt(D.tot.tracks)} different tracks. Your top 10 artists hold ${t.top10}% of your music time and the top 100 hold ${t.top100}%. Then the tail goes on: <b>${fmt(t.under5)}</b> artists got less than five minutes each, and ${fmt(t.once)} were played exactly once, usually a song that came up and got skipped.</p>`;
+  const max = Math.max(...D.gtot.map(g => g[1]));
+  $('#glist').innerHTML = D.gtot.map((g,k) => [g,k]).sort((a,b) => b[0][1] - a[0][1]).map(([g,k]) => `<div class="grow"><span class="gn"><i style="background:${GC(k)}"></i>${g[0]}</span><span class="gh">${g[1]} h</span>
+    <span class="gb"><i style="width:${100*g[1]/max}%;background:${GC(k)}"></i></span>
+    <span class="ga">${fmt(g[2])} artists · ${g[3].slice(0,4).map(a => `<span dir="auto">${esc(a[0])}</span>`).join(', ')}</span></div>`).join('');
+})();
+</script>
