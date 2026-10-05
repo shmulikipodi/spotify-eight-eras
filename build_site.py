@@ -5,7 +5,8 @@ links = {
     'https://claude.ai/artifact/AoFCVRTdEmTrrKvJ2GYDCn': '/',            # Eight Eras
     'https://claude.ai/artifact/HiEz7vniAU1m1NCaFH7qny': '/long-play',   # The Long Play
 }
-for src, dst in [('output/eight_eras.html', 'site/index.html'), ('output/the_long_play.html', 'site/long-play.html')]:
+for src, dst in [('output/eight_eras.html', 'site/index.html'), ('output/the_long_play.html', 'site/long-play.html'),
+                 ('output/wrapped.html', 'site/wrapped.html')]:
     html = open(src, encoding='utf-8').read()
     for a, b in links.items():
         html = html.replace(a, b)

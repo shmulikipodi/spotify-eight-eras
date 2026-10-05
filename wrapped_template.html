@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0C0D11">
+<title>Unwrapped</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Unwrapped: a tap-through story. One phone-shaped stage; every card owns a full-bleed colour
+   from the genre palette of the long pages, so the story and the deep dives read as one set. */
+:root{
+  --night:#0C0D11; --ink:#15161A; --paper:#F3F4F1;
+  --blue:#2a78d6; --orange:#eb6834; --green:#1baf7a; --yellow:#eda100; --pink:#e87ba4;
+  --forest:#008300; --purple:#4a3aa7; --red:#e34948; --grey:#B3B5AE; --rust:#B4570B;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --serif:"Bodoni Moda","Didot",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--night);color:var(--paper);font:16px/1.4 var(--display);overflow:hidden;
+  display:grid;place-items:center;-webkit-tap-highlight-color:transparent}
+.stage{position:relative;width:100vw;height:100dvh;overflow:hidden;background:var(--ink);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+@media (min-aspect-ratio:3/4){.stage{width:min(100vw,calc((100dvh - 48px)*9/16));height:calc(100dvh - 48px);border-radius:18px;box-shadow:0 30px 80px #000a}}
+
+/* top chrome */
+.chrome{position:absolute;inset:0 0 auto;z-index:20;padding:max(12px,env(safe-area-inset-top)) 14px 0;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.bars{display:flex;gap:4px}
+.bars span{flex:1;height:3px;border-radius:2px;background:color-mix(in srgb,var(--fg,#fff) 28%,transparent);overflow:hidden}
+.bars i{display:block;height:100%;width:100%;background:var(--fg,#fff);transform-origin:left;transform:scaleX(0)}
+.bars .done i{transform:scaleX(1)}
+.bars .now i{animation:fill var(--t,7s) linear forwards}
+.paused .bars .now i{animation-play-state:paused}
+@keyframes fill{to{transform:scaleX(1)}}
+.top{display:flex;justify-content:space-between;align-items:center;color:var(--fg,#fff);font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.top .btns{display:flex;gap:4px;pointer-events:auto}
+.top button,.top a{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;color:var(--fg,#fff)}
+.top button:focus-visible,.top a:focus-visible{outline:2px solid var(--fg,#fff)}
+.top svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+
+/* cards */
+.card{position:absolute;inset:0;padding:calc(max(12px,env(safe-area-inset-top)) + 64px) 26px calc(max(20px,env(safe-area-inset-bottom)) + 28px);
+  display:flex;flex-direction:column;gap:14px;background:var(--bg);color:var(--fg);visibility:hidden;overflow:hidden}
+.card.on{visibility:visible}
+.card>*{position:relative;z-index:1}
+.kick{font:500 11px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.h{font-weight:800;font-size:clamp(2rem,9.5vmin,3.3rem);line-height:.95;letter-spacing:-.03em;text-wrap:balance}
+.mega{font-weight:800;font-size:clamp(4.5rem,27vmin,9.5rem);line-height:.82;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+.big{font-weight:800;line-height:.9;letter-spacing:-.04em;white-space:nowrap}
+.lead{font-size:clamp(1.15rem,4.6vmin,1.5rem);line-height:1.25;font-weight:500;text-wrap:pretty}
+.lead b{font-weight:800}
+.small{font-size:15px;line-height:1.4;opacity:.85;text-wrap:pretty}
+.it{font-family:var(--serif);font-style:italic;font-weight:500;letter-spacing:-.01em}
+.grow{flex:1}
+bdi{unicode-bidi:isolate}
+
+/* entrance: children with .a fade up when their card turns on, staggered by --d */
+.a{opacity:0;transform:translateY(22px)}
+.on .a{animation:up .7s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--d,0) * 1s)}
+@keyframes up{to{opacity:1;transform:none}}
+.paused .on .a,.paused .on .bar i,.paused .on .shape{animation-play-state:paused}
+
+/* decorative shapes */
+.shape{position:absolute;z-index:0;border-radius:50%;pointer-events:none}
+.on .shape{animation:drift 9s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(var(--x,20px),var(--y,-30px)) rotate(var(--r,0deg)) scale(var(--s,1.08))}}
+
+/* cover */
+.cover .word{font-weight:800;font-size:clamp(4.2rem,24vmin,8.6rem);line-height:.8;letter-spacing:-.06em}
+.cover .word span{display:block}
+.cover .word span:nth-child(2){padding-left:.42em}
+.cover .tap{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.cover .tap::after{content:"";width:28px;height:2px;background:currentColor;animation:nudge 1.4s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateX(8px)}}
+
+/* dot grid */
+.dots{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;max-width:340px}
+.dots i{aspect-ratio:1;border-radius:50%;background:currentColor;opacity:.18}
+.dots i.k{opacity:1}
+.on .dots i{animation:pop .3s ease-out backwards;animation-delay:calc(1.4s + var(--i) * 6ms)}
+@keyframes pop{from{transform:scale(0)}}
+
+/* music vs podcasts */
+.split{display:flex;gap:4px;height:14px}
+.split i{border-radius:4px;background:var(--paper)}
+.split i+i{background:var(--yellow)}
+
+/* lists */
+.rank{display:flex;flex-direction:column;gap:12px}
+.rank .r{display:grid;grid-template-columns:2.2ch 1fr;align-items:baseline;gap:6px 14px}
+.rank .n{font:800 2.2rem/1 var(--display);letter-spacing:-.04em}
+.rank .nm{font-weight:800;font-size:clamp(1.3rem,6.4vmin,1.9rem);line-height:1;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank .bar{grid-column:2;height:6px;border-radius:3px;background:color-mix(in srgb,currentColor 18%,transparent);overflow:hidden}
+.bar i{display:block;height:100%;background:currentColor;transform-origin:left;transform:scaleX(0)}
+.on .bar i{animation:bar 1s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--d,0) * 1s + .2s)}
+@keyframes bar{to{transform:scaleX(var(--v))}}
+.rank .hh{font:500 12px/1 var(--mono);opacity:.8;grid-column:2}
+
+/* eras */
+.eras{display:flex;flex-direction:column;gap:7px}
+.eras .e{display:grid;grid-template-columns:14px 1fr auto;gap:12px;align-items:center}
+.eras .c{width:14px;height:14px;border-radius:4px}
+.eras .en{font-weight:700;font-size:clamp(1rem,4.4vmin,1.25rem);line-height:1.1;letter-spacing:-.01em}
+.eras .en small{display:block;font:500 11px/1.4 var(--mono);opacity:.6;letter-spacing:.02em}
+.eras .ed{font:500 11px/1 var(--mono);opacity:.6;white-space:nowrap}
+
+/* stacked genre years */
+.years{flex:1;min-height:180px;display:grid;grid-template-columns:repeat(var(--n),1fr);gap:12px;align-items:end}
+.years .y{display:flex;flex-direction:column;gap:8px;height:100%}
+.years .stack{flex:1;display:flex;flex-direction:column-reverse;border-radius:8px;overflow:hidden;transform-origin:bottom;transform:scaleY(0)}
+.on .years .stack{animation:rise 1s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(.6s + var(--i) * .15s)}
+@keyframes rise{to{transform:none}}
+.years .stack i{display:block}
+.years .yl{font:500 12px/1 var(--mono);text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font:500 11px/1.2 var(--mono)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* clock */
+.clock{display:flex;align-items:flex-end;gap:3px;height:150px}
+.clock i{flex:1;border-radius:3px 3px 1px 1px;background:currentColor;opacity:.35;transform-origin:bottom;transform:scaleY(0)}
+.clock i.pk{opacity:1}
+.on .clock i{animation:rise .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(.5s + var(--i) * 25ms)}
+.ticks{display:flex;justify-content:space-between;font:500 11px/1 var(--mono);opacity:.7}
+
+/* streak */
+.streak{display:flex;flex-wrap:wrap;gap:3px;max-width:360px}
+.streak i{width:9px;height:22px;border-radius:2px;background:currentColor}
+.on .streak i{animation:pop .25s ease-out backwards;animation-delay:calc(.9s + var(--i) * 12ms)}
+.streak i.gap{background:transparent;box-shadow:inset 0 0 0 1.5px currentColor;opacity:.45}
+
+/* summary */
+.sum{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:auto;gap:10px;align-content:start}
+.sum>div{border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.sum .wide{grid-column:1/-1}
+.sum .lab{font:500 10px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.sum .val{font-weight:800;font-size:clamp(1.5rem,7vmin,2.2rem);line-height:.95;letter-spacing:-.03em}
+.sum ol{list-style:none;padding:0;display:flex;flex-direction:column;gap:2px;font-weight:700;font-size:15px}
+.sum ol li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sum ol b{display:inline-block;width:1.4em;opacity:.6}
+
+/* outro */
+.links{display:flex;flex-direction:column;gap:10px}
+.links a,.links button{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-radius:14px;
+  font-weight:700;font-size:1.1rem;line-height:1.15;background:var(--ink);color:var(--paper)}
+.links a small{display:block;font:500 11px/1.4 var(--mono);opacity:.65;margin-top:3px;letter-spacing:.02em}
+.links .ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.links a:focus-visible,.links button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.links span:last-child{font-size:1.4rem}
+
+/* hint */
+.hint{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));z-index:20;text-align:center;font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg);opacity:.6;pointer-events:none;transition:opacity .4s}
+.hint.gone{opacity:0}
+
+@media (prefers-reduced-motion:reduce){
+  .a,.on .a{animation:none;opacity:1;transform:none}
+  .on .shape,.on .dots i,.on .streak i,.cover .tap::after{animation:none}
+  .bar i,.on .bar i{animation:none;transform:scaleX(var(--v))}
+  .years .stack,.on .years .stack,.clock i,.on .clock i{animation:none;transform:none}
+}
+</style>
+</head>
+<body>
+<main class="stage" id="stage" aria-roledescription="story" aria-label="Unwrapped">
+  <div class="chrome">
+    <div class="bars" id="bars"></div>
+    <div class="top">
+      <span>Unwrapped</span>
+      <div class="btns">
+        <button id="pause" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
+        <a href="/" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div id="cards"></div>
+  <div class="hint" id="hint">Tap to go on · hold to pause</div>
+</main>
+<script>
+const W = __DATA__;
+
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const ymd = s => s.slice(0,10).split('-').map(Number);
+const dLong = s => { const [y,m,d] = ymd(s); return `${d} ${MON[m-1]} ${y}`; };
+const dShort = s => { const [y,m,d] = ymd(s); return `${d} ${MON[m-1].slice(0,3)} ${y}`; };
+const mShort = s => { const [y,m] = ymd(s); return `${MON[m-1].slice(0,3)} ${String(y).slice(2)}`; };
+const mLong = s => { const [y,m] = ymd(s); return `${MON[m-1]} ${y}`; };
+const GC = ['--blue','--orange','--green','--yellow','--pink','--forest','--purple','--red','--grey'].map(v => `var(${v})`);
+const gLow = n => n === 'Israeli' ? n : n.toLowerCase();
+const T = (n, s) => `<bdi dir="auto">${esc(n)}</bdi>`;
+
+// span of the history, in words
+const [y0,m0] = ymd(W.first), [y1,m1] = ymd(W.last);
+const months = (y1 - y0) * 12 + (m1 - m0) + 1, yrs = Math.floor(months / 12), mos = months % 12;
+const span = [yrs && `${yrs} year${yrs > 1 ? 's' : ''}`, mos && `${mos} month${mos > 1 ? 's' : ''}`].filter(Boolean).join(' and ');
+
+// a few derived numbers
+const peakH = W.hours.indexOf(Math.max(...W.hours));
+const topDay = W.wday.indexOf(Math.max(...W.wday)), lowDay = W.wday.indexOf(Math.min(...W.wday));
+const yearsK = Object.keys(W.gyear);
+const gTop = y => W.gyear[y].indexOf(Math.max(...W.gyear[y]));
+const gFrom = gTop(yearsK[0]), gTo = gTop(yearsK[yearsK.length - 1]);
+const kept = Math.round(100 * W.plays / W.attempts);
+const changes = W.eras.length - 1;
+
+// each card: bg, fg, seconds on screen, html
+const C = [];
+const card = (bg, fg, t, html, cls = '') => C.push({bg, fg, t, html, cls});
+
+card('var(--ink)', 'var(--paper)', 6, `
+  <span class="shape" style="width:62vmin;height:62vmin;background:var(--orange);right:-22vmin;top:12%;--x:-30px;--y:40px"></span>
+  <span class="shape" style="width:34vmin;height:34vmin;background:var(--blue);left:-10vmin;bottom:18%;--x:40px;--y:-20px"></span>
+  <span class="shape" style="width:16vmin;height:16vmin;background:var(--yellow);right:12%;top:56%;--x:-20px;--y:-40px"></span>
+  <p class="kick a">${mLong(W.first)} – ${mLong(W.last)}</p>
+  <div class="grow"></div>
+  <h1 class="word a" style="--d:.15"><span>Un</span><span>wrap</span><span>ped</span></h1>
+  <p class="lead a" style="--d:.35">${span} of listening, <span class="it">the long version.</span></p>
+  <p class="tap a" style="--d:.6">Tap to start</p>`, 'cover');
+
+card('var(--blue)', 'var(--paper)', 7, `
+  <span class="shape" style="width:90vmin;height:90vmin;border:3px solid #fff3;left:-30vmin;bottom:-40vmin;--s:1.15"></span>
+  <p class="kick a">Total time</p>
+  <p class="lead a" style="--d:.1">You listened for</p>
+  <div class="mega a" style="--d:.2" data-count="${W.h}">0</div>
+  <p class="h a" style="--d:.3">hours.</p>
+  <div class="grow"></div>
+  <div class="split a" style="--d:1.2"><i style="flex:${W.mh}"></i><i style="flex:${W.ph}"></i></div>
+  <p class="lead a" style="--d:1.4">That's <b>${fmt(W.h / 24)} days</b> back to back: <b>${fmt(W.mh)}</b> hours of music and <b style="color:var(--yellow)">${fmt(W.ph)}</b> of podcasts.</p>`);
+
+card('var(--yellow)', 'var(--ink)', 8, `
+  <p class="kick a">Skips</p>
+  <p class="lead a" style="--d:.1">You started</p>
+  <div class="mega a" style="--d:.2;font-size:clamp(3.6rem,21vmin,7.6rem)" data-count="${W.attempts}">0</div>
+  <p class="h a" style="--d:.3">songs.</p>
+  <div class="dots a" style="--d:1.1">${Array.from({length:100}, (_, i) => `<i style="--i:${i}" class="${i < kept ? 'k' : ''}"></i>`).join('')}</div>
+  <div class="grow"></div>
+  <p class="lead a" style="--d:2">Only <b>${kept} in 100</b> made it past 30 seconds. Half your skips came within <b>${W.skipmed} seconds</b>.</p>`);
+
+card('var(--ink)', 'var(--paper)', 7, `
+  <span class="shape" style="right:-4vmin;top:6%;border-radius:0;font:800 92vmin/.8 var(--display);letter-spacing:-.06em;color:#ffffff0c;--x:-10px;--y:10px">1</span>
+  <p class="kick a">Your number one</p>
+  <div class="grow"></div>
+  <div class="big a fit" style="--d:.25;color:var(--orange)">${T(W.top[0][0])}</div>
+  <p class="lead a" style="--d:.6"><b>${W.top[0][1]} hours</b> and <b>${fmt(W.top[0][2])}</b> plays, since ${dLong(W.top[0][3])}.</p>
+  <p class="small a" style="--d:.9">That's ${Math.round(100 * W.top[0][1] / W.mh)}% of all your music.</p>`);
+
+const tmax = W.top[0][1];
+card('var(--orange)', 'var(--ink)', 8, `
+  <p class="kick a">Top artists</p>
+  <h2 class="h a" style="--d:.1">The ones you kept coming back to.</h2>
+  <div class="grow"></div>
+  <div class="rank">${W.top.map((a, i) => `
+    <div class="r a" style="--d:${.4 + i * .18}">
+      <span class="n">${i + 1}</span><span class="nm">${T(a[0])}</span>
+      <span class="bar" style="--d:${.4 + i * .18}"><i style="--v:${(a[1] / tmax).toFixed(3)}"></i></span>
+      <span class="hh">${a[1]} h · ${fmt(a[2])} plays</span>
+    </div>`).join('')}</div>`);
+
+card('var(--paper)', 'var(--ink)', 10, `
+  <p class="kick a">Eras</p>
+  <h2 class="h a" style="--d:.1">Your taste changed <span class="it">${changes} times.</span></h2>
+  <div class="grow"></div>
+  <div class="eras">${W.eras.map((e, i) => `
+    <div class="e a" style="--d:${.5 + i * .14}">
+      <span class="c" style="background:${GC[e.g]}"></span>
+      <span class="en">${esc(e.name)}<small>${T(e.top)} · ${e.h} h</small></span>
+      <span class="ed">${mShort(e.a)}–${mShort(e.b)}</span>
+    </div>`).join('')}</div>`);
+
+const legendG = [...new Set(yearsK.flatMap(y => W.gyear[y].map((v, g) => [v, g]).sort((a, b) => b[0] - a[0]).slice(0, 2).map(x => x[1])))];
+card('var(--ink)', 'var(--paper)', 8, `
+  <p class="kick a">Genres, year by year</p>
+  <h2 class="h a" style="--d:.1">${gFrom === gTo ? `${W.gnames[gFrom]}, <span class="it">every year.</span>` : `From ${gLow(W.gnames[gFrom])} <span class="it">to ${gLow(W.gnames[gTo])}.</span>`}</h2>
+  <div class="years" style="--n:${yearsK.length}">${yearsK.map((y, i) => `
+    <div class="y"><div class="stack" style="--i:${i}">${W.gyear[y].map((v, g) => `<i style="flex:${v};background:${GC[g]}"></i>`).join('')}</div><span class="yl">${y}</span></div>`).join('')}</div>
+  <div class="legend a" style="--d:1.4">${legendG.map(g => `<span><i style="background:${GC[g]}"></i>${esc(W.gnames[g])}</span>`).join('')}</div>`);
+
+const ls = W.longsess;
+card('var(--pink)', 'var(--ink)', 8, `
+  <span class="shape" style="width:70vmin;height:70vmin;background:#fff4;right:-25vmin;top:-12vmin;--y:30px"></span>
+  <p class="kick a">Your biggest day</p>
+  <div class="grow"></div>
+  <h2 class="h a" style="--d:.15">${dLong(W.bigday[0])}</h2>
+  <div class="mega a" style="--d:.3" data-count="${W.bigday[1]}" data-dec="1">0</div>
+  <p class="h a" style="--d:.4">hours of listening.</p>
+  <div class="grow"></div>
+  <p class="lead a" style="--d:1.3">Your longest single session ran <b>${ls.h} hours</b>, from ${ls.s.slice(11)} on ${dShort(ls.s)} to ${ls.e.slice(11)}: <b>${ls.n} songs</b> without a break.</p>`);
+
+card('var(--green)', 'var(--ink)', 8, `
+  <p class="kick a">Streak</p>
+  <div class="mega a" style="--d:.15" data-count="${W.streak[2]}">0</div>
+  <p class="h a" style="--d:.25">days in a row.</p>
+  <p class="lead a" style="--d:.5">${dShort(W.streak[0])} to ${dShort(W.streak[1])}, something played every single day.</p>
+  <div class="streak a" style="--d:.8">${Array.from({length:W.streak[2]}, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>
+  <div class="grow"></div>
+  <p class="lead a" style="--d:2.2">And the longest silence: <b>${W.silence[2]} days</b>, until ${dShort(W.silence[1])}.</p>`);
+
+const ob = W.obs;
+card('var(--red)', 'var(--paper)', 7, `
+  <p class="kick a">Obsession</p>
+  <p class="lead a" style="--d:.1">On ${dLong(ob[0])} you played</p>
+  <div class="grow"></div>
+  <div class="big a fit" style="--d:.3">“${T(ob[1])}”</div>
+  <p class="lead a" style="--d:.5">by <b>${T(ob[2])}</b></p>
+  <div class="grow"></div>
+  <div class="mega a" style="--d:.8" data-count="${ob[3]}">0</div>
+  <p class="h a" style="--d:.9">times in one day.</p>`);
+
+const hmax = Math.max(...W.hours);
+card('var(--ink)', 'var(--yellow)', 8, `
+  <p class="kick a">Your hour</p>
+  <div class="mega a" style="--d:.15">${String(peakH).padStart(2, '0')}:00</div>
+  <p class="lead a" style="--d:.3" >is when you listen most.</p>
+  <div class="grow"></div>
+  <div class="clock">${W.hours.map((v, i) => `<i style="--i:${i};height:${Math.max(3, 100 * v / hmax)}%" class="${i === peakH ? 'pk' : ''}"></i>`).join('')}</div>
+  <div class="ticks"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>
+  <p class="lead a" style="--d:1.4;color:var(--paper)"><b>${DAYS[topDay]}</b> is your biggest day of the week. <b>${DAYS[lowDay]}</b> gets just ${W.wday[lowDay]}% of it.</p>`);
+
+if (W.ph >= 5) card('var(--rust)', 'var(--paper)', 7, `
+  <span class="shape" style="width:120vmin;height:120vmin;border:2px solid #fff3;left:-40vmin;top:20%"></span>
+  <span class="shape" style="width:80vmin;height:80vmin;border:2px solid #fff3;left:-20vmin;top:calc(20% + 20vmin)"></span>
+  <p class="kick a">Podcasts</p>
+  <div class="mega a" style="--d:.15" data-count="${W.pod.h}">0</div>
+  <p class="h a" style="--d:.25">hours of talk.</p>
+  <p class="lead a" style="--d:.6"><b>${fmt(W.pod.eps)}</b> episodes from <b>${fmt(W.pod.shows)}</b> shows.</p>
+  <div class="grow"></div>
+  <p class="small a" style="--d:1">Most played</p>
+  <div class="h a" style="--d:1.1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${T(W.pod.top)}</div>`);
+
+card('var(--paper)', 'var(--blue)', 8, `
+  <p class="kick a" style="color:var(--ink)">Variety</p>
+  <div class="mega a" style="--d:.15" data-count="${W.artists}">0</div>
+  <p class="h a" style="--d:.25;color:var(--ink)">different artists.</p>
+  <div class="grow"></div>
+  <p class="lead a" style="--d:.8;color:var(--ink)"><b>${fmt(W.tail.once)}</b> of them got one play and never came back.</p>
+  <p class="lead a" style="--d:1.4;color:var(--ink)">Meanwhile your top 10 took <b>${W.tail.top10}%</b> of all your music time.</p>
+  <p class="lead a" style="--d:2;color:var(--ink)">Always there: <b>${W.constants.map(c => T(c[0])).join(', ')}</b>.</p>`);
+
+card('var(--night)', 'var(--paper)', 10, `
+  <p class="kick a">${mLong(W.first)} – ${mLong(W.last)}</p>
+  <div class="sum">
+    <div class="a" style="--d:.1;background:var(--orange);color:var(--ink)"><span class="lab">Top artists</span>
+      <ol>${W.top.map((a, i) => `<li><b>${i + 1}</b>${T(a[0])}</li>`).join('')}</ol></div>
+    <div class="a" style="--d:.2;background:var(--blue)"><span class="lab">Top songs by year</span>
+      <ol>${W.years.map(y => `<li><b style="width:auto;margin-right:6px">${String(y[0]).slice(2)}</b>${T(y[3])}</li>`).join('')}</ol></div>
+    <div class="a" style="--d:.3;background:var(--yellow);color:var(--ink)"><span class="lab">Hours</span><span class="val">${fmt(W.h)}</span></div>
+    <div class="a" style="--d:.4;background:var(--green);color:var(--ink)"><span class="lab">Eras</span><span class="val">${W.eras.length}</span></div>
+    <div class="a wide" style="--d:.5;background:var(--purple)"><span class="lab">Where it went</span><span class="val" style="font-size:clamp(1.2rem,5.6vmin,1.7rem)">${esc(W.gnames[gFrom])} → ${esc(W.gnames[gTo])}</span></div>
+  </div>
+  <p class="small a" style="--d:.8;text-align:center">Unwrapped · ${fmt(W.plays)} plays · ${fmt(W.tracks)} songs</p>`);
+
+card('var(--paper)', 'var(--ink)', 0, `
+  <span class="shape" style="width:56vmin;height:56vmin;background:var(--blue);right:-16vmin;top:22%"></span>
+  <span class="shape" style="width:26vmin;height:26vmin;background:var(--orange);right:30vmin;top:34%;--x:-10px;--y:20px"></span>
+  <p class="kick a">That was the short version</p>
+  <div class="grow"></div>
+  <h2 class="h a" style="--d:.1">Every chart, <span class="it">every era,</span> every skip.</h2>
+  <div class="links a" style="--d:.35">
+    <a href="/"><span>The eras<small>How the taste changed, week by week</small></span><span>→</span></a>
+    <a href="/long-play"><span>The Long Play<small>Habits: every day, every skip, every hour</small></span><span>→</span></a>
+    <button class="ghost" id="replay"><span>Watch again</span><span>↺</span></button>
+  </div>`);
+
+// ---------- player ----------
+const stage = $('#stage'), cardsEl = $('#cards'), bars = $('#bars');
+cardsEl.innerHTML = C.map((c, i) => `<section class="card ${c.cls}" style="--bg:${c.bg};--fg:${c.fg}" aria-label="Card ${i + 1} of ${C.length}">${c.html}</section>`).join('');
+bars.innerHTML = C.map(() => '<span><i></i></span>').join('');
+const cards = [...cardsEl.children], segs = [...bars.children];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let cur = -1, paused = false;
+
+function fit(el) {            // shrink a one-line headline until it fits the card
+  const card = el.closest('.card'), cs = getComputedStyle(card);
+  const max = card.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  let size = Math.min(max * .28, 150);
+  el.style.fontSize = size + 'px';
+  while (el.scrollWidth > max && size > 18) { size -= 2; el.style.fontSize = size + 'px'; }
+}
+function count(el) {
+  const to = +el.dataset.count, dec = +(el.dataset.dec || 0), f = v => dec ? v.toFixed(dec) : fmt(v);
+  if (reduce) { el.textContent = f(to); return; }
+  const d0 = (parseFloat(getComputedStyle(el).animationDelay) || 0) * 1000, dur = 1300;
+  let t0 = null;
+  el.textContent = f(0);
+  const step = t => {
+    if (paused) { t0 = null; return requestAnimationFrame(step); }
+    if (t0 === null) t0 = t - (el._p || 0);
+    const p = Math.min(1, Math.max(0, (t - t0 - d0) / dur)); el._p = t - t0;
+    el.textContent = f(to * (1 - Math.pow(1 - p, 3)));
+    if (p < 1 && el.closest('.card') === cards[cur]) requestAnimationFrame(step);
+  };
+  el._p = 0; requestAnimationFrame(step);
+}
+function go(i) {
+  i = Math.max(0, Math.min(C.length - 1, i));
+  if (cur >= 0) cards[cur].classList.remove('on');
+  cur = i;
+  const c = cards[i];
+  void c.offsetWidth;                         // restart the entrance animations
+  c.classList.add('on');
+  stage.style.setProperty('--fg', C[i].fg);
+  segs.forEach((s, k) => { s.className = k < i ? 'done' : ''; });
+  const seg = segs[i];
+  void seg.offsetWidth;
+  if (C[i].t) { seg.style.setProperty('--t', C[i].t + 's'); seg.className = 'now'; }
+  else seg.className = 'done';
+  c.querySelectorAll('.fit').forEach(fit);
+  c.querySelectorAll('[data-count]').forEach(count);
+  if (i > 0) $('#hint').classList.add('gone');
+}
+segs.forEach(s => s.addEventListener('animationend', () => go(cur + 1)));
+
+function setPaused(p) {
+  paused = p; stage.classList.toggle('paused', p);
+  $('#pause').setAttribute('aria-label', p ? 'Play' : 'Pause');
+  $('#pause').innerHTML = p ? '<svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>';
+}
+$('#pause').addEventListener('click', e => { e.stopPropagation(); setPaused(!paused); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) setPaused(true); });
+
+// tap left third = back, elsewhere = next; press and hold = pause
+let downAt = 0, holdTimer = null, held = false;
+stage.addEventListener('pointerdown', e => {
+  if (e.target.closest('a,button')) return;
+  downAt = Date.now(); held = false;
+  holdTimer = setTimeout(() => { held = true; setPaused(true); }, 220);
+});
+stage.addEventListener('pointerup', e => {
+  clearTimeout(holdTimer);
+  if (e.target.closest('a,button') || !downAt) return;
+  downAt = 0;
+  if (held) { setPaused(false); return; }
+  const r = stage.getBoundingClientRect();
+  if (paused) setPaused(false);
+  go(e.clientX - r.left < r.width / 3 ? cur - 1 : cur + 1);
+});
+stage.addEventListener('pointercancel', () => { clearTimeout(holdTimer); if (held) setPaused(false); downAt = 0; });
+stage.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') go(cur + 1);
+  else if (e.key === 'ArrowLeft') go(cur - 1);
+  else if (e.key === ' ' && !e.target.closest('a,button')) { e.preventDefault(); setPaused(!paused); }
+});
+$('#replay').addEventListener('click', () => { setPaused(false); go(0); });
+addEventListener('resize', () => cards[cur] && cards[cur].querySelectorAll('.fit').forEach(fit));
+
+document.fonts.ready.then(() => go(0));
+</script>
+</body>
+</html>
