@@ -179,7 +179,13 @@ bdi{unicode-bidi:isolate}
   <div class="hint" id="hint">Tap to go on · hold to pause</div>
 </main>
 <script>
-const W = __DATA__;
+// the example is baked in; an upload arrives from the home page through sessionStorage
+const MINE = location.hash === '#mine';
+let W = __DATA__;
+if (MINE) {
+  try { W = JSON.parse(sessionStorage.getItem('unwrapped:mine')); } catch { W = null; }
+  if (!W) location.replace('/');
+}
 
 const $ = s => document.querySelector(s);
 const fmt = n => Math.round(n).toLocaleString('en-US');
@@ -203,11 +209,11 @@ const span = [yrs && `${yrs} year${yrs > 1 ? 's' : ''}`, mos && `${mos} month${m
 // a few derived numbers
 const peakH = W.hours.indexOf(Math.max(...W.hours));
 const topDay = W.wday.indexOf(Math.max(...W.wday)), lowDay = W.wday.indexOf(Math.min(...W.wday));
-const yearsK = Object.keys(W.gyear);
+const yearsK = W.gyear ? Object.keys(W.gyear) : [];
 const gTop = y => W.gyear[y].indexOf(Math.max(...W.gyear[y]));
-const gFrom = gTop(yearsK[0]), gTo = gTop(yearsK[yearsK.length - 1]);
+const gFrom = yearsK.length ? gTop(yearsK[0]) : 0, gTo = yearsK.length ? gTop(yearsK[yearsK.length - 1]) : 0;
 const kept = Math.round(100 * W.plays / W.attempts);
-const changes = W.eras.length - 1;
+const changes = W.eras ? W.eras.length - 1 : 0;
 
 // each card: bg, fg, seconds on screen, html
 const C = [];
@@ -217,7 +223,7 @@ card('var(--ink)', 'var(--paper)', 6, `
   <span class="shape" style="width:62vmin;height:62vmin;background:var(--orange);right:-22vmin;top:12%;--x:-30px;--y:40px"></span>
   <span class="shape" style="width:34vmin;height:34vmin;background:var(--blue);left:-10vmin;bottom:18%;--x:40px;--y:-20px"></span>
   <span class="shape" style="width:16vmin;height:16vmin;background:var(--yellow);right:12%;top:56%;--x:-20px;--y:-40px"></span>
-  <p class="kick a">${mLong(W.first)} – ${mLong(W.last)}</p>
+  <p class="kick a">${MINE ? '' : 'Example · '}${mLong(W.first)} – ${mLong(W.last)}</p>
   <div class="grow"></div>
   <h1 class="word a" style="--d:.15"><span>Un</span><span>wrap</span><span>ped</span></h1>
   <p class="lead a" style="--d:.35">${span} of listening, <span class="it">the long version.</span></p>
@@ -262,7 +268,7 @@ card('var(--orange)', 'var(--ink)', 8, `
       <span class="hh">${a[1]} h · ${fmt(a[2])} plays</span>
     </div>`).join('')}</div>`);
 
-card('var(--paper)', 'var(--ink)', 10, `
+if (W.eras && changes > 0) card('var(--paper)', 'var(--ink)', 10, `
   <p class="kick a">Eras</p>
   <h2 class="h a" style="--d:.1">Your taste changed <span class="it">${changes} times.</span></h2>
   <div class="grow"></div>
@@ -273,8 +279,8 @@ card('var(--paper)', 'var(--ink)', 10, `
       <span class="ed">${mShort(e.a)}–${mShort(e.b)}</span>
     </div>`).join('')}</div>`);
 
-const legendG = [...new Set(yearsK.flatMap(y => W.gyear[y].map((v, g) => [v, g]).sort((a, b) => b[0] - a[0]).slice(0, 2).map(x => x[1])))];
-card('var(--ink)', 'var(--paper)', 8, `
+const legendG = !yearsK.length ? [] : [...new Set(yearsK.flatMap(y => W.gyear[y].map((v, g) => [v, g]).sort((a, b) => b[0] - a[0]).slice(0, 2).map(x => x[1])))];
+if (yearsK.length) card('var(--ink)', 'var(--paper)', 8, `
   <p class="kick a">Genres, year by year</p>
   <h2 class="h a" style="--d:.1">${gFrom === gTo ? `${W.gnames[gFrom]}, <span class="it">every year.</span>` : `From ${gLow(W.gnames[gFrom])} <span class="it">to ${gLow(W.gnames[gTo])}.</span>`}</h2>
   <div class="years" style="--n:${yearsK.length}">${yearsK.map((y, i) => `
@@ -292,17 +298,17 @@ card('var(--pink)', 'var(--ink)', 8, `
   <div class="grow"></div>
   <p class="lead a" style="--d:1.3">Your longest single session ran <b>${ls.h} hours</b>, from ${ls.s.slice(11)} on ${dShort(ls.s)} to ${ls.e.slice(11)}: <b>${ls.n} songs</b> without a break.</p>`);
 
-card('var(--green)', 'var(--ink)', 8, `
+if (W.streak[2] >= 3) card('var(--green)', 'var(--ink)', 8, `
   <p class="kick a">Streak</p>
   <div class="mega a" style="--d:.15" data-count="${W.streak[2]}">0</div>
   <p class="h a" style="--d:.25">days in a row.</p>
   <p class="lead a" style="--d:.5">${dShort(W.streak[0])} to ${dShort(W.streak[1])}, something played every single day.</p>
-  <div class="streak a" style="--d:.8">${Array.from({length:W.streak[2]}, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>
+  <div class="streak a" style="--d:.8">${Array.from({length:Math.min(W.streak[2], 140)}, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>
   <div class="grow"></div>
-  <p class="lead a" style="--d:2.2">And the longest silence: <b>${W.silence[2]} days</b>, until ${dShort(W.silence[1])}.</p>`);
+  ${W.silence && W.silence[2] > 1 ? `<p class="lead a" style="--d:2.2">And the longest silence: <b>${W.silence[2]} days</b>, until ${dShort(W.silence[1])}.</p>` : `<p class="lead a" style="--d:2.2">Not one day off. <b>Ever.</b></p>`}`);
 
 const ob = W.obs;
-card('var(--red)', 'var(--paper)', 7, `
+if (ob && ob[3] >= 3) card('var(--red)', 'var(--paper)', 7, `
   <p class="kick a">Obsession</p>
   <p class="lead a" style="--d:.1">On ${dLong(ob[0])} you played</p>
   <div class="grow"></div>
@@ -338,7 +344,7 @@ card('var(--paper)', 'var(--blue)', 8, `
   <div class="mega a" style="--d:.15" data-count="${W.artists}">0</div>
   <p class="h a" style="--d:.25;color:var(--ink)">different artists.</p>
   <div class="grow"></div>
-  <p class="lead a" style="--d:.8;color:var(--ink)"><b>${fmt(W.tail.once)}</b> of them got one play and never came back.</p>
+  ${W.tail.once ? `<p class="lead a" style="--d:.8;color:var(--ink)"><b>${fmt(W.tail.once)}</b> of them got one play and never came back.</p>` : ''}
   <p class="lead a" style="--d:1.4;color:var(--ink)">Meanwhile your top 10 took <b>${W.tail.top10}%</b> of all your music time.</p>
   <p class="lead a" style="--d:2;color:var(--ink)">Always there: <b>${W.constants.map(c => T(c[0])).join(', ')}</b>.</p>`);
 
@@ -350,8 +356,10 @@ card('var(--night)', 'var(--paper)', 10, `
     <div class="a" style="--d:.2;background:var(--blue)"><span class="lab">Top songs by year</span>
       <ol>${W.years.map(y => `<li><b style="width:auto;margin-right:6px">${String(y[0]).slice(2)}</b>${T(y[3])}</li>`).join('')}</ol></div>
     <div class="a" style="--d:.3;background:var(--yellow);color:var(--ink)"><span class="lab">Hours</span><span class="val">${fmt(W.h)}</span></div>
-    <div class="a" style="--d:.4;background:var(--green);color:var(--ink)"><span class="lab">Eras</span><span class="val">${W.eras.length}</span></div>
-    <div class="a wide" style="--d:.5;background:var(--purple)"><span class="lab">Where it went</span><span class="val" style="font-size:clamp(1.2rem,5.6vmin,1.7rem)">${esc(W.gnames[gFrom])} → ${esc(W.gnames[gTo])}</span></div>
+    ${W.eras ? `<div class="a" style="--d:.4;background:var(--green);color:var(--ink)"><span class="lab">Eras</span><span class="val">${W.eras.length}</span></div>`
+             : `<div class="a" style="--d:.4;background:var(--green);color:var(--ink)"><span class="lab">Artists</span><span class="val">${fmt(W.artists)}</span></div>`}
+    ${yearsK.length ? `<div class="a wide" style="--d:.5;background:var(--purple)"><span class="lab">Where it went</span><span class="val" style="font-size:clamp(1.2rem,5.6vmin,1.7rem)">${esc(W.gnames[gFrom])} → ${esc(W.gnames[gTo])}</span></div>`
+                    : `<div class="a wide" style="--d:.5;background:var(--purple)"><span class="lab">Biggest day</span><span class="val" style="font-size:clamp(1.2rem,5.6vmin,1.7rem)">${dLong(W.bigday[0])} · ${W.bigday[1]} h</span></div>`}
   </div>
   <p class="small a" style="--d:.8;text-align:center">Unwrapped · ${fmt(W.plays)} plays · ${fmt(W.tracks)} songs</p>`);
 
@@ -360,10 +368,11 @@ card('var(--paper)', 'var(--ink)', 0, `
   <span class="shape" style="width:26vmin;height:26vmin;background:var(--orange);right:30vmin;top:34%;--x:-10px;--y:20px"></span>
   <p class="kick a">That was the short version</p>
   <div class="grow"></div>
-  <h2 class="h a" style="--d:.1">Every chart, <span class="it">every era,</span> every skip.</h2>
+  <h2 class="h a" style="--d:.1">${MINE ? `That's yours. <span class="it">Unwrapped.</span>` : `Every chart, <span class="it">every era,</span> every skip.`}</h2>
   <div class="links a" style="--d:.35">
-    <a href="/"><span>The eras<small>How the taste changed, week by week</small></span><span>→</span></a>
-    <a href="/long-play"><span>The Long Play<small>Habits: every day, every skip, every hour</small></span><span>→</span></a>
+    ${MINE ? `<a href="/"><span>Try another file<small>Back to the start</small></span><span>→</span></a>` : `
+    <a href="/eras"><span>The eras<small>How the taste changed, week by week</small></span><span>→</span></a>
+    <a href="/long-play"><span>The Long Play<small>Habits: every day, every skip, every hour</small></span><span>→</span></a>`}
     <button class="ghost" id="replay"><span>Watch again</span><span>↺</span></button>
   </div>`);
 
