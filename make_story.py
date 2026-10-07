@@ -42,7 +42,7 @@ css='''
 .arow .ab{display:flex;height:18px;gap:2px;min-width:0}
 .arow .ab i{display:block;height:100%;border-radius:2px}
 .arow .av{font:12px var(--mono);color:var(--ink2);text-align:end}
-@media (max-width:640px){ .arow{grid-template-columns:1fr} .arow .av{text-align:start} .change,.story .era{grid-template-columns:1.6rem minmax(0,1fr)} .era .n{font-size:1.6rem} .change .body{padding:16px} }
+@media (max-width:640px){ .arow{grid-template-columns:minmax(0,1fr)} .arow .av{text-align:start} .change,.story .era{grid-template-columns:1.6rem minmax(0,1fr)} .era .n{font-size:1.6rem} .change .body{padding:16px} }
 </style>'''
 t=t.replace('</style>',css,1)
 # ---- HTML: genre multiples before eras; eras section becomes story; afterlife after; drop library
